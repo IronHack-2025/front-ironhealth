@@ -2,7 +2,7 @@
   <v-container class="pa-6">
     <!-- pa-6  padding all -->
     <v-card class="pa-6" max-width="500" outlined>
-      <v-card-title>📩 Suscríbete a nuestra newsletter</v-card-title>
+      <v-card-title>📩 Suscríbete a nuestra newsletter.</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="subscribe">
           <v-text-field
