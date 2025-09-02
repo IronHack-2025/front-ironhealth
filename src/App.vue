@@ -1,20 +1,58 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { ref } from "vue";
+
+// Tab Seleccionada
+const currentView = ref("patients");
+
 </script>
 
 <template>
   <header>
-    <div class="wrapper">
+      <v-app>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
+    <v-navigation-drawer app permanent color="primary">
+      <v-list-item title="IronHealth" subtitle="CRM"></v-list-item>
+      <v-divider />
+      <v-list>
+        <v-list-item
+          link
+          prepend-icon="mdi-account-multiple"
+          title="Patients"
+          @click="currentView = 'patients'"
+        ></v-list-item>
+        <v-list-item
+          link
+          prepend-icon="mdi-doctor"
+          title="Proffesionals"
+          @click="currentView = 'proffesionals'"
+        ></v-list-item>
+
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-main v-if="currentView === 'patients'">
+      <v-container fluid>
+        <h1>Patients</h1>
+      </v-container>
+    </v-main>
+    <v-main v-if="currentView === 'proffesionals'">
+      <v-container fluid>
+        <h1>DPoffesionals</h1>
+      </v-container>
+    </v-main>
+
+
+
+
+      </v-app>
+
   </header>
 
-  <RouterView />
 </template>
+
+
+
 
 <style scoped>
 header {
