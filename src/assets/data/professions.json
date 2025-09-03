@@ -1,0 +1,176 @@
+{
+  "professions": [
+    {
+      "profession": "Médico",
+      "speciality": [
+        {"speciality-name": "Alergología"},
+        {"speciality-name": "Anestesiología y Reanimación"},
+        {"speciality-name": "Angiología y Cirugía Vascular"},
+        {"speciality-name": "Aparato Digestivo"},
+        {"speciality-name": "Cardiología"},
+        {"speciality-name": "Cirugía Cardiovascular"},
+        {"speciality-name": "Cirugía General y del Aparato Digestivo"},
+        {"speciality-name": "Cirugía Oral y Maxilofacial"},
+        {"speciality-name": "Cirugía Ortopédica y Traumatología"},
+        {"speciality-name": "Cirugía Pediátrica"},
+        {"speciality-name": "Cirugía Plástica, Estética y Reparadora"},
+        {"speciality-name": "Cirugía Torácica"},
+        {"speciality-name": "Dermatología Médico-Quirúrgica y Venereología"},
+        {"speciality-name": "Endocrinología y Nutrición"},
+        {"speciality-name": "Farmacología Clínica"},
+        {"speciality-name": "Geriatría"},
+        {"speciality-name": "Hematología y Hemoterapia"},
+        {"speciality-name": "Inmunología"},
+        {"speciality-name": "Medicina del Trabajo"},
+        {"speciality-name": "Medicina Familiar y Comunitaria"},
+        {"speciality-name": "Medicina Física y Rehabilitación"},
+        {"speciality-name": "Medicina Intensiva"},
+        {"speciality-name": "Medicina Interna"},
+        {"speciality-name": "Medicina Nuclear"},
+        {"speciality-name": "Medicina Preventiva y Salud Pública"},
+        {"speciality-name": "Nefrología"},
+        {"speciality-name": "Neumología"},
+        {"speciality-name": "Neurocirugía"},
+        {"speciality-name": "Neurología"},
+        {"speciality-name": "Obstetricia y Ginecología"},
+        {"speciality-name": "Oftalmología"},
+        {"speciality-name": "Oncología Médica"},
+        {"speciality-name": "Oncología Radioterápica"},
+        {"speciality-name": "Otorrinolaringología"},
+        {"speciality-name": "Pediatría y sus Áreas Específicas"},
+        {"speciality-name": "Psiquiatría"},
+        {"speciality-name": "Radiodiagnóstico"},
+        {"speciality-name": "Reumatología"},
+        {"speciality-name": "Urología"}
+      ]
+    },
+    {
+      "profession": "Farmacéutico",
+      "speciality": [
+        {"speciality-name": "Análisis Clínicos"},
+        {"speciality-name": "Bioquímica Clínica"},
+        {"speciality-name": "Farmacia Hospitalaria"},
+        {"speciality-name": "Microbiología y Parasitología"},
+        {"speciality-name": "Radiofarmacia"}
+      ]
+    },
+    {
+      "profession": "Dentista (Odontólogo)",
+      "speciality": [
+        {"speciality-name": "Odontología General"},
+        {"speciality-name": "Ortodoncia"},
+        {"speciality-name": "Odontopediatría"},
+        {"speciality-name": "Periodoncia"},
+        {"speciality-name": "Endodoncia"},
+        {"speciality-name": "Cirugía Bucal"},
+        {"speciality-name": "Prótesis Dentales"}
+      ]
+    },
+    {
+      "profession": "Veterinario",
+      "speciality": [
+        {"speciality-name": "Medicina Veterinaria General"},
+        {"speciality-name": "Sanidad Animal"},
+        {"speciality-name": "Higiene y Seguridad Alimentaria"},
+        {"speciality-name": "Veterinaria de Animales de Compañía"},
+        {"speciality-name": "Veterinaria de Animales de Producción"}
+      ]
+    },
+    {
+      "profession": "Enfermero (Enfermería)",
+      "speciality": [
+        {"speciality-name": "Enfermería Obstétrico-Ginecológica (Matrona)"},
+        {"speciality-name": "Enfermería de Salud Mental"},
+        {"speciality-name": "Enfermería del Trabajo"},
+        {"speciality-name": "Enfermería Pediátrica"},
+        {"speciality-name": "Enfermería Médico-Quirúrgica"},
+        {"speciality-name": "Enfermería Familiar y Comunitaria"},
+        {"speciality-name": "Enfermería Geriátrica"},
+        {"speciality-name": "Enfermería en Cuidados Críticos y Urgencias"}
+      ]
+    },
+    {
+      "profession": "Fisioterapeuta",
+      "speciality": [
+        {"speciality-name": "Fisioterapia Traumatológica"},
+        {"speciality-name": "Fisioterapia Neurológica"},
+        {"speciality-name": "Fisioterapia Respiratoria"},
+        {"speciality-name": "Fisioterapia Pediátrica"},
+        {"speciality-name": "Fisioterapia Geriátrica"},
+        {"speciality-name": "Fisioterapia Deportiva"}
+      ]
+    },
+    {
+      "profession": "Terapeuta ocupacional",
+      "speciality": [
+        {"speciality-name": "Terapia Ocupacional en Salud Mental"},
+        {"speciality-name": "Terapia Ocupacional en Pediatría"},
+        {"speciality-name": "Terapia Ocupacional Geriátrica"},
+        {"speciality-name": "Terapia Ocupacional en Rehabilitación Física"}
+      ]
+    },
+    {
+      "profession": "Podólogo",
+      "speciality": [
+        {"speciality-name": "Podología General"},
+        {"speciality-name": "Podología Deportiva"},
+        {"speciality-name": "Podología Pediátrica"},
+        {"speciality-name": "Cirugía Podológica"}
+      ]
+    },
+    {
+      "profession": "Óptico-optometrista",
+      "speciality": [
+        {"speciality-name": "Optometría Clínica"},
+        {"speciality-name": "Optometría Pediátrica"},
+        {"speciality-name": "Contactología"},
+        {"speciality-name": "Baja Visión"}
+      ]
+    },
+    {
+      "profession": "Logopeda",
+      "speciality": [
+        {"speciality-name": "Logopedia Infantil"},
+        {"speciality-name": "Logopedia en Trastornos del Lenguaje"},
+        {"speciality-name": "Logopedia en Disfagia"},
+        {"speciality-name": "Logopedia en Voz y Foniatría"}
+      ]
+    },
+    {
+      "profession": "Dietista-nutricionista",
+      "speciality": [
+        {"speciality-name": "Nutrición Clínica"},
+        {"speciality-name": "Nutrición Comunitaria y Salud Pública"},
+        {"speciality-name": "Nutrición Deportiva"},
+        {"speciality-name": "Nutrición Pediátrica"},
+        {"speciality-name": "Nutrición Geriátrica"}
+      ]
+    },
+    {
+      "profession": "Especialista en Análisis Clínicos",
+      "speciality": [
+        {"speciality-name": "Hematología de Laboratorio"},
+        {"speciality-name": "Bioquímica Clínica"},
+        {"speciality-name": "Microbiología Clínica"},
+        {"speciality-name": "Inmunología Clínica"}
+      ]
+    },
+    {
+      "profession": "Especialista en Bioquímica Clínica",
+      "speciality": [
+        {"speciality-name": "Metabolismo y Nutrición"},
+        {"speciality-name": "Genética Bioquímica"},
+        {"speciality-name": "Bioquímica Molecular Clínica"}
+      ]
+    },
+    {
+      "profession": "Psicólogo general sanitario",
+      "speciality": [
+        {"speciality-name": "Psicología Clínica"},
+        {"speciality-name": "Psicología de la Salud"},
+        {"speciality-name": "Psicoterapia"},
+        {"speciality-name": "Neuropsicología"}
+      ]
+    }
+  ]
+}
