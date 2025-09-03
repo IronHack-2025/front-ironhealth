@@ -98,7 +98,7 @@ const specialtiesList = computed(() => {
 })
 
 watch(selectedProfession, () => {
-  selectedSpecialty.value = null
+  selectedSpecialty.value = ''
 })
 
 const form = reactive({
