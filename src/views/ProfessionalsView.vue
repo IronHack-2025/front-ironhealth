@@ -4,6 +4,5 @@
   </div>
 </template>
 <script setup>
-import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue';
-
+import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 </script>

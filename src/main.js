@@ -1,10 +1,8 @@
 import './assets/main.css'
 
-
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-
 
 // Vuetify
 import 'vuetify/styles'
@@ -18,8 +16,6 @@ const vuetify = createVuetify({
   components,
   directives,
 })
-
-
 
 const app = createApp(App)
 

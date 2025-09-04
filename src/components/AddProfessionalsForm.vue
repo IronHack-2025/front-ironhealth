@@ -10,31 +10,69 @@
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.firstName" label="Nombre" prepend-inner-icon="mdi-account"
-                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
+                  <v-text-field
+                    v-model="form.firstName"
+                    label="Nombre"
+                    prepend-inner-icon="mdi-account"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.surname" label="Apellidos" prepend-inner-icon="mdi-account-details"
-                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
+                  <v-text-field
+                    v-model="form.surname"
+                    label="Apellidos"
+                    prepend-inner-icon="mdi-account-details"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                  />
                 </v-col>
               </v-row>
-              <v-select v-model="selectedProfession" label="Profesión" prepend-inner-icon="mdi-briefcase"
-                :items="professionsList" :rules="[rules.required]" variant="outlined" class="mt-2" />
+              <v-select
+                v-model="selectedProfession"
+                label="Profesión"
+                prepend-inner-icon="mdi-briefcase"
+                :items="professionsList"
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+              />
 
-              <v-select v-model="selectedSpecialty" label="Especialidad (opcional)" prepend-inner-icon="mdi-stethoscope"
-                :items="specialtiesList" variant="outlined" class="mt-2" />
+              <v-select
+                v-model="selectedSpecialty"
+                label="Especialidad (opcional)"
+                prepend-inner-icon="mdi-stethoscope"
+                :items="specialtiesList"
+                variant="outlined"
+                class="mt-2"
+              />
 
-              <v-text-field v-model="form.email" label="Correo electrónico" prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email, rules.acceptedLength]" variant="outlined" class="mt-2" />
-              <v-text-field v-model="form.professionLicenseNumber" label="Número Colegiado (opcional)"
-                prepend-inner-icon="mdi-card-account-details" :rules="[rules.acceptedLength]" variant="outlined" class="mt-2" maxlength="50"/>
+              <v-text-field
+                v-model="form.email"
+                label="Correo electrónico"
+                prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email, rules.acceptedLength]"
+                variant="outlined"
+                class="mt-2"
+              />
+              <v-text-field
+                v-model="form.professionLicenseNumber"
+                label="Número Colegiado (opcional)"
+                prepend-inner-icon="mdi-card-account-details"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+              />
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
                 Registrar Profesional
               </v-btn>
             </v-form>
-            <v-alert v-if="alert.show" :type="alert.type" variant="tonal" border="start" prominent class="mt-4">
+            <!-- <v-alert v-if="alert.show" :type="alert.type" variant="tonal" border="start" prominent class="mt-4">
               {{ alert.message }}
-            </v-alert>
+            </v-alert> -->
+            <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -44,6 +82,7 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
+import Alert from './AlertMessage.vue'
 import professionsData from '@/assets/data/professions.json'
 
 const formRef = ref(null)
@@ -106,22 +145,21 @@ const submitForm = async () => {
       body: JSON.stringify(formData),
     })
 
-    if (response.ok) {
-      formRef.value.reset()
-      alert.message = "Profesional registrado con éxito."
+    if (response.status === 201) {
       alert.type = 'success'
+      alert.message = 'La información se ha guardado correctamente.'
       alert.show = true
-
+      formRef.value.reset()
     } else {
       const errorData = await response.json()
-      alert.message = errorData.error
       alert.type = 'error'
+      alert.message = errorData.error || 'Se ha producido un error.'
       alert.show = true
-
     }
   } catch (error) {
-    alert.message = "Error de conexión: " + error.message
+    console.error('Error de conexión:', error.message)
     alert.type = 'error'
+    alert.message = 'Error de conexión: ' + error.message
     alert.show = true
   }
 }
@@ -132,7 +170,7 @@ const rules = {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return pattern.test(value) || 'Correo electrónico no válido.'
   },
-  
+
   acceptedLength: (value) => {
     const lengthMax = 50
     const lengthMin = 2
