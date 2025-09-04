@@ -33,8 +33,9 @@
                 </v-btn>
             </v-form>
 
-            <p v-if="message" class="mt-4">{{ message }}</p>
-
+            <v-alert v-if="alert.show" :type="alert.type" variant="tonal" border="start" prominent class="mt-4">
+                {{ alert.message }}
+            </v-alert>
 
         </v-card-text>
     </v-card>
@@ -42,12 +43,11 @@
 
 <script setup>
 
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 
 const formRef = ref(null)
 const isValid = ref(false)
 const dateActive = ref(false)
-const message = ref("")
 
 const rules = {
     required: value => !!value || 'Este campo es obligatorio',
@@ -64,7 +64,7 @@ const rules = {
     }
 };
 
-const form = ref({
+const form = reactive({
     firstName: '',
     lastName: '',
     email: '',
@@ -72,25 +72,58 @@ const form = ref({
     birthDate: ''
 });
 
+const alert = reactive({
+    show: false,
+    message: '',
+    type: 'success',
+})
+
 const newPatient = async () => {
-    // const valid = await formRef.value.validate();
-    // console.log("¿Formulario válido?", valid);
+    const { valid } = await formRef.value.validate()
+    if (!valid) {
+        alert.show = true
+        alert.type = 'error'
+        alert.message = " Revisa los campos del formulario"
+        return
+    }
+
+    const formData = {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone,
+        birthDate: form.birthDate
+    }
+
+    console.log(formData)
+
     try {
         const res = await fetch("http://localhost:3000/api/patients", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form.value),
+            body: JSON.stringify(formData),
         });
-        const data = await res.json();
-        message.value = data.message || data.error;
+        if (res.ok) {
+            alert.show = true
+            alert.type = 'success'
+            alert.message = 'Paciente registrado con éxito'
+            formRef.value.reset()
 
 
-    } catch (err) {
-        message.value = "❌ Error al conectar con el servidor";
+        } else {
+            const errorData = await res.json()
+            alert.show = true
+            alert.type = 'error'
+            alert.message = errorData.error
 
+        }
+
+
+    } catch (error) {
+        alert.show = true
+        alert.type = 'error'
+        alert.message = "Error de conexión: " + error.message
     }
-
-    setTimeout(() => { alert.value.show = false; }, 3000);
 
 };
 
