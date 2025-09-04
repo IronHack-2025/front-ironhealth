@@ -104,10 +104,10 @@ const newPatient = async () => {
             body: JSON.stringify(formData),
         });
         if (res.ok) {
+            formRef.value.reset()
             alert.show = true
             alert.type = 'success'
             alert.message = 'Paciente registrado con éxito'
-            formRef.value.reset()
 
 
         } else {
@@ -129,5 +129,3 @@ const newPatient = async () => {
 
 
 </script>
-
-<style scoped></style>
