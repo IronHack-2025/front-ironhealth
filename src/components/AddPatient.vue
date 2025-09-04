@@ -27,24 +27,17 @@
                 <v-date-picker v-if="dateActive" v-model="form.birthDate" label="Fecha de nacimiento"
                     prepend-inner-icon="mdi-calendar-account-outline" :rules="[rules.required]" variant="outlined"
                     class="mt-2"></v-date-picker> -->
-               
-                     <v-date-input
-                    v-model="form.birthDate"
-                    label="Fecha de nacimiento"
-                    prepend-inner-icon="mdi-calendar-account-outline"
-                    prepend-icon=""
-                    :rules="[rules.required]"
-                    variant="outlined"
-                    class="mt-2"
-                />
+
+                <v-date-input v-model="form.birthDate" label="Fecha de nacimiento"
+                    prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
+                    variant="outlined" class="mt-2" />
                 <v-btn block color="primary" class="mt-6" size="large" @click="newPatient" cursor="pointer">
                     Registrar Paciente
                 </v-btn>
             </v-form>
 
-            <v-alert v-if="alert.show" :type="alert.type" variant="tonal" border="start" prominent class="mt-4">
-                {{ alert.message }}
-            </v-alert>
+            <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
+
 
         </v-card-text>
     </v-card>
@@ -53,6 +46,7 @@
 <script setup>
 
 import { ref, reactive } from "vue";
+import Alert from './AlertMessage.vue'
 
 
 const formRef = ref(null)
