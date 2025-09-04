@@ -21,13 +21,22 @@
                 <v-text-field v-model="form.phone" label="Número de teléfono" prepend-inner-icon="mdi-phone"
                     :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" />
 
-                <v-btn color="dark" class="mt-2" size="large" @click="dateActive = !dateActive" cursor="pointer">Fecha
+                <!-- <v-btn color="dark" class="mt-2" size="large" @click="dateActive = !dateActive" cursor="pointer">Fecha
                     de nacimiento</v-btn>
 
                 <v-date-picker v-if="dateActive" v-model="form.birthDate" label="Fecha de nacimiento"
                     prepend-inner-icon="mdi-calendar-account-outline" :rules="[rules.required]" variant="outlined"
-                    class="mt-2"></v-date-picker>
-
+                    class="mt-2"></v-date-picker> -->
+               
+                     <v-date-input
+                    v-model="form.birthDate"
+                    label="Fecha de nacimiento"
+                    prepend-inner-icon="mdi-calendar-account-outline"
+                    prepend-icon=""
+                    :rules="[rules.required]"
+                    variant="outlined"
+                    class="mt-2"
+                />
                 <v-btn block color="primary" class="mt-6" size="large" @click="newPatient" cursor="pointer">
                     Registrar Paciente
                 </v-btn>
@@ -44,6 +53,7 @@
 <script setup>
 
 import { ref, reactive } from "vue";
+
 
 const formRef = ref(null)
 const isValid = ref(false)

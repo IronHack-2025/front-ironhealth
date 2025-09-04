@@ -6,7 +6,6 @@ import AddPatient from '@/components/AddPatient.vue';
 
 <template>
   <div>
-    <h1>Patients</h1>
     <AddPatient />
   </div>
 
