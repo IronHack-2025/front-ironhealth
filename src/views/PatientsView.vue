@@ -10,4 +10,3 @@ import AddPatient from '@/components/AddPatient.vue';
   </div>
 
 </template>
-

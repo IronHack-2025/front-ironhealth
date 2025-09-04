@@ -1,10 +1,7 @@
-<script setup>
-import Newsletter from '@/components/Newsletter.vue';
-import Dashboard from '../components/Dashboard.vue'
+<script setup lang="ts">
+import Dashboard from '@/components/DashboardComponent.vue'
 </script>
 
 <template>
-  <main>
-    <Newsletter />
-  </main>
+  <Dashboard />
 </template>
