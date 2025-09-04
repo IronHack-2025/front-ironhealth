@@ -11,11 +11,11 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field v-model="form.firstName" label="Nombre" prepend-inner-icon="mdi-account"
-                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" />
+                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field v-model="form.surname" label="Apellidos" prepend-inner-icon="mdi-account-details"
-                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" />
+                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
                 </v-col>
               </v-row>
               <v-select v-model="selectedProfession" label="Profesión" prepend-inner-icon="mdi-briefcase"
@@ -25,9 +25,9 @@
                 :items="specialtiesList" variant="outlined" class="mt-2" />
 
               <v-text-field v-model="form.email" label="Correo electrónico" prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email]" variant="outlined" class="mt-2" />
+                :rules="[rules.required, rules.email, rules.acceptedLength]" variant="outlined" class="mt-2" />
               <v-text-field v-model="form.professionLicenseNumber" label="Número Colegiado (opcional)"
-                prepend-inner-icon="mdi-card-account-details" variant="outlined" class="mt-2" />
+                prepend-inner-icon="mdi-card-account-details" :rules="[rules.acceptedLength]" variant="outlined" class="mt-2" maxlength="50"/>
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
                 Registrar Profesional
               </v-btn>
