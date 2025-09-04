@@ -1,0 +1,166 @@
+{
+  "professions": [
+    {
+      "profession": "Médico",
+      "specialty": [
+        { "specialty-name": "Alergología" },
+        { "specialty-name": "Anestesiología y Reanimación" },
+        { "specialty-name": "Angiología y Cirugía Vascular" },
+        { "specialty-name": "Aparato Digestivo" },
+        { "specialty-name": "Cardiología" },
+        { "specialty-name": "Cirugía Cardiovascular" },
+        { "specialty-name": "Cirugía General y del Aparato Digestivo" },
+        { "specialty-name": "Cirugía Oral y Maxilofacial" },
+        { "specialty-name": "Cirugía Ortopédica y Traumatología" },
+        { "specialty-name": "Cirugía Pediátrica" },
+        { "specialty-name": "Cirugía Plástica, Estética y Reparadora" },
+        { "specialty-name": "Cirugía Torácica" },
+        { "specialty-name": "Dermatología Médico-Quirúrgica y Venereología" },
+        { "specialty-name": "Endocrinología y Nutrición" },
+        { "specialty-name": "Farmacología Clínica" },
+        { "specialty-name": "Geriatría" },
+        { "specialty-name": "Hematología y Hemoterapia" },
+        { "specialty-name": "Inmunología" },
+        { "specialty-name": "Medicina del Trabajo" },
+        { "specialty-name": "Medicina Familiar y Comunitaria" },
+        { "specialty-name": "Medicina Física y Rehabilitación" },
+        { "specialty-name": "Medicina Intensiva" },
+        { "specialty-name": "Medicina Interna" },
+        { "specialty-name": "Medicina Nuclear" },
+        { "specialty-name": "Medicina Preventiva y Salud Pública" },
+        { "specialty-name": "Nefrología" },
+        { "specialty-name": "Neumología" },
+        { "specialty-name": "Neurocirugía" },
+        { "specialty-name": "Neurología" },
+        { "specialty-name": "Obstetricia y Ginecología" },
+        { "specialty-name": "Oftalmología" },
+        { "specialty-name": "Oncología Médica" },
+        { "specialty-name": "Oncología Radioterápica" },
+        { "specialty-name": "Otorrinolaringología" },
+        { "specialty-name": "Pediatría y sus Áreas Específicas" },
+        { "specialty-name": "Psiquiatría" },
+        { "specialty-name": "Radiodiagnóstico" },
+        { "specialty-name": "Reumatología" },
+        { "specialty-name": "Urología" }
+      ]
+    },
+    {
+      "profession": "Farmacéutico",
+      "specialty": [
+        { "specialty-name": "Análisis Clínicos" },
+        { "specialty-name": "Bioquímica Clínica" },
+        { "specialty-name": "Farmacia Hospitalaria" },
+        { "specialty-name": "Microbiología y Parasitología" },
+        { "specialty-name": "Radiofarmacia" }
+      ]
+    },
+    {
+      "profession": "Dentista (Odontólogo)",
+      "specialty": [
+        { "specialty-name": "Odontología General" },
+        { "specialty-name": "Ortodoncia" },
+        { "specialty-name": "Odontopediatría" },
+        { "specialty-name": "Periodoncia" },
+        { "specialty-name": "Endodoncia" },
+        { "specialty-name": "Cirugía Bucal" },
+        { "specialty-name": "Prótesis Dentales" }
+      ]
+    },
+    {
+      "profession": "Enfermero (Enfermería)",
+      "specialty": [
+        { "specialty-name": "Enfermería Obstétrico-Ginecológica (Matrona)" },
+        { "specialty-name": "Enfermería de Salud Mental" },
+        { "specialty-name": "Enfermería del Trabajo" },
+        { "specialty-name": "Enfermería Pediátrica" },
+        { "specialty-name": "Enfermería Médico-Quirúrgica" },
+        { "specialty-name": "Enfermería Familiar y Comunitaria" },
+        { "specialty-name": "Enfermería Geriátrica" },
+        { "specialty-name": "Enfermería en Cuidados Críticos y Urgencias" }
+      ]
+    },
+    {
+      "profession": "Fisioterapeuta",
+      "specialty": [
+        { "specialty-name": "Fisioterapia Traumatológica" },
+        { "specialty-name": "Fisioterapia Neurológica" },
+        { "specialty-name": "Fisioterapia Respiratoria" },
+        { "specialty-name": "Fisioterapia Pediátrica" },
+        { "specialty-name": "Fisioterapia Geriátrica" },
+        { "specialty-name": "Fisioterapia Deportiva" }
+      ]
+    },
+    {
+      "profession": "Terapeuta ocupacional",
+      "specialty": [
+        { "specialty-name": "Terapia Ocupacional en Salud Mental" },
+        { "specialty-name": "Terapia Ocupacional en Pediatría" },
+        { "specialty-name": "Terapia Ocupacional Geriátrica" },
+        { "specialty-name": "Terapia Ocupacional en Rehabilitación Física" }
+      ]
+    },
+    {
+      "profession": "Podólogo",
+      "specialty": [
+        { "specialty-name": "Podología General" },
+        { "specialty-name": "Podología Deportiva" },
+        { "specialty-name": "Podología Pediátrica" },
+        { "specialty-name": "Cirugía Podológica" }
+      ]
+    },
+    {
+      "profession": "Óptico-optometrista",
+      "specialty": [
+        { "specialty-name": "Optometría Clínica" },
+        { "specialty-name": "Optometría Pediátrica" },
+        { "specialty-name": "Contactología" },
+        { "specialty-name": "Baja Visión" }
+      ]
+    },
+    {
+      "profession": "Logopeda",
+      "specialty": [
+        { "specialty-name": "Logopedia Infantil" },
+        { "specialty-name": "Logopedia en Trastornos del Lenguaje" },
+        { "specialty-name": "Logopedia en Disfagia" },
+        { "specialty-name": "Logopedia en Voz y Foniatría" }
+      ]
+    },
+    {
+      "profession": "Dietista-nutricionista",
+      "specialty": [
+        { "specialty-name": "Nutrición Clínica" },
+        { "specialty-name": "Nutrición Comunitaria y Salud Pública" },
+        { "specialty-name": "Nutrición Deportiva" },
+        { "specialty-name": "Nutrición Pediátrica" },
+        { "specialty-name": "Nutrición Geriátrica" }
+      ]
+    },
+    {
+      "profession": "Especialista en Análisis Clínicos",
+      "specialty": [
+        { "specialty-name": "Hematología de Laboratorio" },
+        { "specialty-name": "Bioquímica Clínica" },
+        { "specialty-name": "Microbiología Clínica" },
+        { "specialty-name": "Inmunología Clínica" }
+      ]
+    },
+    {
+      "profession": "Especialista en Bioquímica Clínica",
+      "specialty": [
+        { "specialty-name": "Metabolismo y Nutrición" },
+        { "specialty-name": "Genética Bioquímica" },
+        { "specialty-name": "Bioquímica Molecular Clínica" }
+      ]
+    },
+    {
+      "profession": "Psicólogo general sanitario",
+      "specialty": [
+        { "specialty-name": "Psicología Clínica" },
+        { "specialty-name": "Psicología de la Salud" },
+        { "specialty-name": "Psicoterapia" },
+        { "specialty-name": "Neuropsicología" }
+      ]
+    }
+  ]
+}
