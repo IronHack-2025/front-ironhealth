@@ -115,9 +115,7 @@ const newPatient = async () => {
             alert.show = true
             alert.type = 'error'
             alert.message = errorData.error
-
         }
-
 
     } catch (error) {
         alert.show = true
