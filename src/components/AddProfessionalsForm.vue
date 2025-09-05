@@ -11,7 +11,7 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="form.firstName"
+                    v-model="form.name"
                     label="Nombre"
                     prepend-inner-icon="mdi-account"
                     :rules="[rules.required, rules.acceptedLength]"
@@ -35,6 +35,8 @@
                 label="Profesión"
                 prepend-inner-icon="mdi-briefcase"
                 :items="professionsList"
+                item-title="title"
+                item-value="value"
                 :rules="[rules.required]"
                 variant="outlined"
                 class="mt-2"
@@ -45,6 +47,8 @@
                 label="Especialidad (opcional)"
                 prepend-inner-icon="mdi-stethoscope"
                 :items="specialtiesList"
+                item-title="title"
+                item-value="value"
                 variant="outlined"
                 class="mt-2"
               />
@@ -58,7 +62,7 @@
                 class="mt-2"
               />
               <v-text-field
-                v-model="form.professionLicenseNumber"
+                v-model="form.professionLicenceNumber"
                 label="Número Colegiado (opcional)"
                 prepend-inner-icon="mdi-card-account-details"
                 variant="outlined"
@@ -87,21 +91,32 @@ import professionsData from '@/assets/data/professions.json'
 
 const formRef = ref(null)
 const isValid = ref(false)
-const selectedProfession = ref(null)
-const selectedSpecialty = ref('-- Sin especificar --')
+const selectedProfession = ref(null) // code
+const selectedSpecialty = ref("Sin especificar") // specialty-code
 
-const professionsList = professionsData.professions.map((p) => p.profession)
+// Lista de profesiones: muestra text, guarda code
+const professionsList = professionsData.professions.map((p) => ({
+  title: p.text,
+  value: p.code,
+}))
+
+// Lista de especialidades según profesión seleccionada
 const specialtiesList = computed(() => {
   if (!selectedProfession.value) return []
   const professionObj = professionsData.professions.find(
-    (p) => p.profession === selectedProfession.value,
+    (p) => p.code === selectedProfession.value,
   )
-  const specialties = professionObj ? professionObj.specialty.map((s) => s['specialty-name']) : []
-  return ['-- Sin especificar --', ...specialties]
+  if (!professionObj || !professionObj.specialty) return []
+  return [{title: "Sin especificar", value: ""},
+    ...professionObj.specialty.map((s) => ({
+      title: s['specialty-name'],
+      value: s['specialty-code'],
+    })),
+  ]
 })
 
 watch(selectedProfession, () => {
-  selectedSpecialty.value = '-- Sin especificar --'
+  selectedSpecialty.value = ""
 })
 
 const form = reactive({
@@ -126,10 +141,10 @@ const submitForm = async () => {
   }
 
   const formData = {
-    name: form.firstName,
+    name: form.name,
     surname: form.surname,
     profession: selectedProfession.value,
-    specialty: selectedSpecialty.value === '-- Sin especificar --' ? '' : selectedSpecialty.value,
+    specialty: selectedSpecialty.value,
     email: form.email,
     professionLicenceNumber: form.professionLicenceNumber,
   }
