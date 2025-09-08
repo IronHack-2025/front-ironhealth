@@ -152,7 +152,7 @@ const submitForm = async () => {
   console.log(formData)
 
   try {
-    const response = await fetch('http://localhost:4000/api/professionals', {
+    const response = await fetch('http://localhost:3000/api/professionals', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
