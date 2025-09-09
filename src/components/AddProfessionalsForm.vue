@@ -92,7 +92,7 @@ import professionsData from '@/assets/data/professions.json'
 const formRef = ref(null)
 const isValid = ref(false)
 const selectedProfession = ref(null) // code
-const selectedSpecialty = ref("Sin especificar") // specialty-code
+const selectedSpecialty = ref('Sin especificar') // specialty-code
 
 // Lista de profesiones: muestra text, guarda code
 const professionsList = professionsData.professions.map((p) => ({
@@ -103,11 +103,10 @@ const professionsList = professionsData.professions.map((p) => ({
 // Lista de especialidades según profesión seleccionada
 const specialtiesList = computed(() => {
   if (!selectedProfession.value) return []
-  const professionObj = professionsData.professions.find(
-    (p) => p.code === selectedProfession.value,
-  )
+  const professionObj = professionsData.professions.find((p) => p.code === selectedProfession.value)
   if (!professionObj || !professionObj.specialty) return []
-  return [{title: "Sin especificar", value: ""},
+  return [
+    { title: 'Sin especificar', value: '' },
     ...professionObj.specialty.map((s) => ({
       title: s['specialty-name'],
       value: s['specialty-code'],
@@ -116,7 +115,7 @@ const specialtiesList = computed(() => {
 })
 
 watch(selectedProfession, () => {
-  selectedSpecialty.value = ""
+  selectedSpecialty.value = ''
 })
 
 const form = reactive({
@@ -152,7 +151,8 @@ const submitForm = async () => {
   console.log(formData)
 
   try {
-    const response = await fetch('http://localhost:3000/api/professionals', {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+    const response = await fetch(`${apiBaseUrl}/professionals`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
