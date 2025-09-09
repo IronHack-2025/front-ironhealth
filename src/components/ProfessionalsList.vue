@@ -55,7 +55,6 @@ function getSpecialtyName(code) {
 }
 
 function getProfessionName(code) {
-    console.log("el codigo recibido es:", code, "---");
     for (const p of professionsData.professions) {
         if (p.code === code) return p.text;
     }
@@ -64,8 +63,8 @@ function getProfessionName(code) {
 
 
 const headers = [
-  { title: 'Nombre', key: 'name' },
-  { title: 'Apellidos', key: 'surname' },
+  { title: 'Nombre', key: 'firstName' },
+  { title: 'Apellidos', key: 'lastName' },
 {
     title: 'Profesión',
     key: 'professions',
