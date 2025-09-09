@@ -72,6 +72,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import Alert from './AlertMessage.vue'
+import { post } from '../services/api'
 
 const formRef = ref(null)
 const isValid = ref(false)
@@ -123,30 +124,16 @@ const newPatient = async () => {
     birthDate: form.birthDate,
   }
 
-  console.log(formData)
-
   try {
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-    const res = await fetch(`${apiBaseUrl}/patients`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    })
-    if (res.ok) {
-      formRef.value.reset()
-      alert.show = true
-      alert.type = 'success'
-      alert.message = 'Paciente registrado con éxito'
-    } else {
-      const errorData = await res.json()
-      alert.show = true
-      alert.type = 'error'
-      alert.message = errorData.error
-    }
+    await post('/patients', formData)
+    formRef.value.reset()
+    alert.show = true
+    alert.type = 'success'
+    alert.message = 'Paciente registrado con éxito'
   } catch (error) {
     alert.show = true
     alert.type = 'error'
-    alert.message = 'Error de conexión: ' + error.message
+    alert.message = 'Error de conexion: ' + error.message
   }
 }
 </script>
