@@ -21,7 +21,7 @@
 
       <v-data-table
         :headers="headers"
-        :items="professionals"
+        :items="patients"
         :loading="loading"
         :search="search"
         loading-text="Cargando pacientes..."
@@ -38,21 +38,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import professionsData from '@/assets/data/professions.json'
+import { ref, onMounted, computed } from 'vue'
 
-const professionals = ref([])
+const patients = ref([])
 const loading = ref(true)
 const error = ref('')
 const search = ref('')
 
-function getSpecialtyName(code) {
-  for (const p of professionsData.professions) {
-    const found = p.specialty?.find((s) => s['specialty-code'] === code)
-    if (found) return found['specialty-name']
-  }
-  return '—'
-}
+
 
 const headers = [
   { title: 'Nombre', key: 'firstName' },
@@ -62,12 +55,12 @@ const headers = [
   { title: 'Fecha de nacimiento', key: 'birthDate' },
 ]
 
-const fetchProfessionals = async () => {
+const fetchPatients = async () => {
   try {
     const res = await fetch('http://localhost:3000/api/patients')
     if (!res.ok) throw new Error('Error al cargar pacientes')
     const data = await res.json()
-    professionals.value = Array.isArray(data) ? data : []
+    patients.value = Array.isArray(data) ? data : []
     loading.value = false
   } catch (err) {
     // Componente Alert
@@ -75,5 +68,5 @@ const fetchProfessionals = async () => {
   }
 }
 
-onMounted(fetchProfessionals)
+onMounted(fetchPatients)
 </script>
