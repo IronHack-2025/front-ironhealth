@@ -54,10 +54,23 @@ function getSpecialtyName(code) {
   return '—'
 }
 
+function getProfessionName(code) {
+    console.log("el codigo recibido es:", code, "---");
+    for (const p of professionsData.professions) {
+        if (p.code === code) return p.text;
+    }
+    return '—';
+}
+
+
 const headers = [
   { title: 'Nombre', key: 'name' },
   { title: 'Apellidos', key: 'surname' },
-  { title: 'Profesión', key: 'profession' },
+{
+    title: 'Profesión',
+    key: 'professions',
+    value: (item) => getProfessionName(item.profession),
+},
   {
     title: 'Especialidad',
     key: 'specialty',
@@ -73,7 +86,6 @@ const fetchProfessionals = async () => {
     if (!res.ok) throw new Error('Error al cargar profesionales')
     const data = await res.json()
     professionals.value = Array.isArray(data) ? data : []
-    
   } catch (err) {
     // Componente Alert
     error.value = err.message
