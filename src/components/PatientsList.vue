@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card class="elevation-3 rounded-xl">
+    <v-card class="elevation-6 rounded-xl">
       <v-toolbar flat color="primary" class="rounded-t-xl">
         <v-toolbar-title class="text-white"> Pacientes </v-toolbar-title>
         <v-spacer />
@@ -38,7 +38,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+const props = defineProps({ refresh: Number })
 
 const patients = ref([])
 const loading = ref(true)
@@ -78,6 +79,10 @@ const fetchPatients = async () => {
     error.value = err.message
   }
 }
+
+watch(() => props.refresh, () => {
+})
+
 
 onMounted(fetchPatients)
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card class="elevation-3 rounded-xl">
+    <v-card class="elevation-6 rounded-xl">
       <v-toolbar flat color="primary" class="rounded-t-xl">
         <v-toolbar-title class="text-white"> Profesionales </v-toolbar-title>
         <v-spacer />
@@ -38,9 +38,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import professionsData from '@/assets/data/professions.json'
-
+const props = defineProps({ refresh: Number })
 const professionals = ref([])
 const loading = ref(true)
 const error = ref('')
@@ -92,6 +92,9 @@ const fetchProfessionals = async () => {
     loading.value = false
   }
 }
+
+watch(() => props.refresh, () => {
+})
 
 onMounted(fetchProfessionals)
 </script>

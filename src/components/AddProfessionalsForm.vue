@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row justify="center">
       <v-col cols="10">
-        <v-card class="pa-8" elevation="6" rounded="lg">
+        <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
             Registro de Profesional Médico
           </v-card-title>
@@ -85,10 +85,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, defineEmits } from 'vue'
 import Alert from './AlertMessage.vue'
 import professionsData from '@/assets/data/professions.json'
-
+const emit = defineEmits(['professional-added'])
 const formRef = ref(null)
 const isValid = ref(false)
 const selectedProfession = ref(null) // code
@@ -165,6 +165,7 @@ const submitForm = async () => {
       alert.message = 'La información se ha guardado correctamente.'
       alert.show = true
       formRef.value.reset()
+      emit('professional-added')
     } else {
       const errorData = await response.json()
       alert.type = 'error'

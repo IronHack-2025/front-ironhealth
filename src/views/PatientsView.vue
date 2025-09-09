@@ -3,21 +3,26 @@
 <template>
   <div class="container">
     <div class="left">
-    <AddPatient />
+<AddPatient @patient-added="handlePatientAdded" />
     </div>
     <div class="rigth">
-    <PatientsList/>
+    <PatientsList :key="refreshList"/>
     </div>
 
   </div>
 </template>
 
 
-
-
 <script setup>
+import { ref } from 'vue'
 import PatientsList from '@/components/PatientsList.vue';
 import AddPatient from '@/components/AddPatient.vue';
+
+const refreshList = ref(0)
+
+const handlePatientAdded = () => {
+  refreshList.value++
+}
 </script>
 
 

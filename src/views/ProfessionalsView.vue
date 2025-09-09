@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="left">
-    <AddProfessionalsForm/>
+<AddProfessionalsForm @professional-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
-    <ProfessionalsList/>
+    <ProfessionalsList :key="refreshList"/>
     </div>
 
   </div>
@@ -14,8 +14,15 @@
 
 
 <script setup>
+import { ref } from 'vue'
 import ProfessionalsList from '@/components/ProfessionalsList.vue';
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
+
+const refreshList = ref(0)
+
+const handleProfessionalAdded = () => {
+  refreshList.value++
+}
 </script>
 
 

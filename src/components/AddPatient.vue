@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row justify="center">
       <v-col cols="10">
-        <v-card class="pa-8" elevation="6" rounded="lg">
+        <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
             Registro de Pacientes
           </v-card-title>
@@ -51,9 +51,10 @@
 
 <script setup>
 
-import { ref, reactive } from "vue";
+import { ref, reactive, defineEmits } from "vue";
 import Alert from './AlertMessage.vue'
 
+const emit = defineEmits(['patient-added'])
 
 const formRef = ref(null)
 const isValid = ref(false)
@@ -115,6 +116,7 @@ const newPatient = async () => {
         });
         if (res.ok) {
             formRef.value.reset()
+            emit('patient-added')
             alert.show = true
             alert.type = 'success'
             alert.message = 'Paciente registrado con éxito'
