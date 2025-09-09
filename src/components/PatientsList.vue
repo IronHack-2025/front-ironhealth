@@ -2,7 +2,7 @@
   <v-container>
     <v-card class="elevation-3 rounded-xl">
       <v-toolbar flat color="primary" class="rounded-t-xl">
-        <v-toolbar-title class="text-white"> Patients </v-toolbar-title>
+        <v-toolbar-title class="text-white"> Pacientes </v-toolbar-title>
         <v-spacer />
         <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
           <v-text-field
@@ -52,7 +52,18 @@ const headers = [
   { title: 'Apellidos', key: 'lastName' },
   { title: 'Email', key: 'email' },
   { title: 'Telefono', key: 'phone' },
-  { title: 'Fecha de nacimiento', key: 'birthDate' },
+  { 
+    title: 'Fecha de nacimiento', 
+    key: 'birthDate',
+    value: (item) => {
+      if (!item.birthDate) return ''
+      const date = new Date(item.birthDate)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return `${day}/${month}/${year}`
+    }
+  },
 ]
 
 const fetchPatients = async () => {

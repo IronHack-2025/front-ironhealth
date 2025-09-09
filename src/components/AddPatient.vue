@@ -1,9 +1,12 @@
 <template>
-    <v-card class="pa-8" elevation="6" rounded="lg">
-        <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            Registro de Paciente
-        </v-card-title>
-        <v-card-text>
+  <v-container fluid>
+    <v-row justify="center">
+      <v-col cols="10">
+        <v-card class="pa-8" elevation="6" rounded="lg">
+          <v-card-title class="text-h5 font-weight-bold text-center mb-4">
+            Registro de Pacientes
+          </v-card-title>
+          <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
                 <v-row>
                     <v-col cols="12" md="6">
@@ -39,8 +42,11 @@
             <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
 
 
-        </v-card-text>
-    </v-card>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
