@@ -14,7 +14,6 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
-
 const vuetify = createVuetify({
   components: {
     ...components,
