@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-card class="pa-4">
-            <FullCalendar :options="calendarOptions" style="max-width: 100%;" />
+            <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%;" />
         </v-card>
         <v-dialog v-model="dialog" max-width="500">
             <v-card>
@@ -17,37 +17,37 @@
                     <v-select v-model="selectedProfessional" :items="professionals" item-value="_id"
                         :item-title="item => `${item.lastName}, ${item.firstName}`" label="Professionals" outlined
                         dense></v-select>
-                    <v-text-field v-model="form.notes" label="Notes" outlined dense />
+                    <v-text-field v-model="form.notes" label="Notes" outlined dense maxlength="500"/>
 
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn color="red" variant="tonal" @click="dialog = false">Cancelar</v-btn>
-                    <v-btn color="primary" @click="saveAppointment">Guardar</v-btn>
+                    <v-btn color="red" variant="tonal" @click="dialog = false">Close</v-btn>
+                    <v-btn color="primary" @click="saveAppointment">Save</v-btn>
                 </v-card-actions>
-
+                 <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
             </v-card>
         </v-dialog>
 
         <v-dialog v-model="showEventDialog" max-width="500">
             <v-card>
-                <v-card-title>Detalles de la cita</v-card-title>
+                <v-card-title>Appointment details</v-card-title>
                 <v-card-text v-if="selectedEvent">
-                    <div><strong>Paciente:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
-                        selectedEvent.extendedProps.patientId : '' }}</div>
-                    <div><strong>Profesional:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
-                        selectedEvent.extendedProps.professionalId : '' }}</div>
-                    <div><strong>Inicio:</strong> {{ selectedEvent && selectedEvent.start ? selectedEvent.start : '' }}
-                    </div>
-                    <div><strong>Fin:</strong> {{ selectedEvent && selectedEvent.end ? selectedEvent.end : '' }}</div>
-                    <div><strong>Notas:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
+                    <div><strong>Patient:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
+                        `${selectedEvent.extendedProps.patientLastName}, ${selectedEvent.extendedProps.patientFirstName}` : '' }}</div>
+                    <div><strong>Professional:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
+                        `${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}` : '' }}</div>
+                    <div><strong>Start time:</strong> {{ selectedEvent && selectedEvent.start ? formatDate(selectedEvent.start) : '' }}</div>
+                    <div><strong>End time:</strong> {{ selectedEvent && selectedEvent.end ? formatDate(selectedEvent.end) : '' }}</div>
+                    <div><strong>Notes:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
                         selectedEvent.extendedProps.notes : '' }}</div>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
                     <v-btn color="red" variant="tonal" @click="cancelAppointment">Cancelar cita</v-btn>
-                    <v-btn color="grey" variant="tonal" @click="showEventDialog = false">Cerrar</v-btn>
+                    <v-btn color="primary" variant="tonal" @click="showEventDialog = false">Cerrar</v-btn>
                 </v-card-actions>
+                 <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
             </v-card>
         </v-dialog>
 
@@ -55,12 +55,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, reactive } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
+import Alert from './AlertMessage.vue'
 
 const patients = ref([])
 const professionals = ref([])
@@ -68,7 +69,13 @@ const selectedPatient = ref(null)
 const selectedProfessional = ref(null)
 const selectedEvent = ref(null)
 const showEventDialog = ref(false)
+const calendarRef = ref(null)
 
+const alert = reactive({
+  show: false,
+  message: '',
+  type: 'success',
+})
 // Sincroniza la selección del v-select con el formulario
 watch(selectedPatient, (newVal) => {
     form.value.patientId = newVal
@@ -98,12 +105,25 @@ const calendarOptions = ref({
             const res = await fetch("http://localhost:3000/api/appointment");
             const data = await res.json();
             // Transforma los datos al formato que FullCalendar espera
-            const events = data.map(event => ({
-                id: event._id,
-                start: event.startDate,
-                end: event.endDate,
-
-            }));
+            const filtered = data.filter(ev =>!ev.status.cancelled)
+                const events = filtered.map(event => {
+                    const patient = patients.value.find(p => p._id === event.patientId) || {};
+                    const professional = professionals.value.find(p => p._id === event.professionalId) || {};
+                    return {
+                        id: event._id,
+                        start: event.startDate,
+                        end: event.endDate,
+                        extendedProps: {
+                            patientId: event.patientId,
+                            patientFirstName: patient.firstName || '',
+                            patientLastName: patient.lastName || '',
+                            professionalId: event.professionalId,
+                            professionalFirstName: professional.firstName || '',
+                            professionalLastName: professional.lastName || '',
+                            notes: event.notes
+                        }
+                    };
+                });
             successCallback(events);
         } catch (error) {
             failureCallback(error);
@@ -123,15 +143,7 @@ const calendarOptions = ref({
     eventClick: async (info) => {
         selectedEvent.value = info.event
         showEventDialog.value = true
-
-        // Mostrar confirmación y borrar
-        // if (confirm('¿Quieres cancelar esta cita?')) {
-        //     await fetch(`http://localhost:3000/api/appointment/${info.event.id}`, {
-        //         method: 'PUT'
-        //     });
-        //     info.event.remove(); // Elimina del calendario
-        // }
-    },
+ },
 })
 
 const cancelAppointment = async () => {
@@ -140,28 +152,58 @@ const cancelAppointment = async () => {
             cancelled: true,
             timestamp: new Date()
         }
-     }
-    await fetch(`http://localhost:3000/api/appointment/${info.event.id}`), {
+    }
+    try {  const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cancelledEvent),
+    }) 
+     if (response.status === 201) {
+      alert.type = 'success'
+      alert.message = 'La cita se ha cancelado correctamente.'
+      alert.show = true
+     cancelledEvent.value.reset()
+    } else {
+      const errorData = await response.json()
+      alert.type = 'error'
+      alert.message = errorData.error || 'Se ha producido un error.'
+      alert.show = true
     }
+   } catch {
+    console.error('Error de conexión al cancelar la cita');
+    alert.type = 'error'
+    alert.message = 'Error de conexión al cancelar la cita'
+    alert.show = true
+   }
+    
+    calendarRef.value.getApi().refetchEvents();
+    
 
 }
+
+const formatDate = (date) => {
+    if (!date) return '';
+    const d = new Date(date);
+    // Día y hora (ejemplo: "lun, 10:30")
+    const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' };
+    return d.toLocaleString('es-ES', options);
+};
 
 
 onMounted(async () => {
     try {
         const patientsRes = await fetch(`http://localhost:3000/api/patients`)
-        const professionalsRes = await fetch('http://localhost:3000/api/professionals')
-
         if (patientsRes.ok) {
             patients.value = await patientsRes.json()
         }
+        const professionalsRes = await fetch('http://localhost:3000/api/professionals')
         if (professionalsRes.ok) {
             professionals.value = await professionalsRes.json()
         }
-
+        // Refresca eventos del calendario solo después de cargar ambos arrays
+        if (calendarRef.value) {
+            calendarRef.value.getApi().refetchEvents();
+        }
     } catch (error) {
         console.error({ message: 'error fetching data' }, error)
     }
@@ -178,28 +220,45 @@ const saveAppointment = async () => {
         professionalId: form.value.professionalId,
         notes: form.value.notes
     }
-
+ try {const response =  
     await fetch("http://localhost:3000/api/appointment", {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEvent),
+     method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newEvent)
     })
+    console.log(newEvent) 
+
+    if (response.status === 201) {
+      alert.type = 'success'
+      alert.message = 'La cita se ha guardado correctamente.'
+      alert.show = true
+    } else {
+      const errorData = await response.json()
+      alert.type = 'error'
+      alert.message = errorData.error || 'Se ha producido un error.'
+      alert.show = true
+    }
+  } catch (error) {
+    console.error('Error de conexión:', error.message)
+    alert.type = 'error'
+    alert.message = 'Error de conexión: ' + error.message
+    alert.show = true
+  }
+
     // Resetear formulario
-    form.value = { paciente: "", profesional: "", start: null, end: null };
-
+    form.value = { selectedPatient: "", selectedProfessional: "", start: null, end: null };
+    selectedPatient.value = null;
+    selectedProfessional.value = null;
     //  dialog.value = false;
-
+  
     // Refrescar eventos
-
+    calendarRef.value.getApi().refetchEvents();
 
 
 }
 
-
-
-// Events -> fetch appointments MongoDB
-// Professionals -> fetch professionals
-// Patients -> fetch patients
 
 </script>
 
