@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, defineEmits } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import Alert from './AlertMessage.vue'
 import professionsData from '@/assets/data/professions.json'
 const emit = defineEmits(['professional-added'])

@@ -11,8 +11,6 @@
 </template>
 
 
-
-
 <script setup>
 import { ref } from 'vue'
 import ProfessionalsList from '@/components/ProfessionalsList.vue';

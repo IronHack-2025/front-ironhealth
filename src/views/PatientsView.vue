@@ -21,7 +21,7 @@ import AddPatient from '@/components/AddPatient.vue';
 const refreshList = ref(0)
 
 const handlePatientAdded = () => {
-  refreshList.value++
+  refreshList.value++ //Forzamos un cambio en la variable reactiva para destruir y volver a crear el componente
 }
 </script>
 
