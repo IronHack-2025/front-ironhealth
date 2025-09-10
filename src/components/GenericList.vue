@@ -21,9 +21,7 @@
             </v-col>
           </v-toolbar>
 
-          <v-alert v-if="error" type="error" variant="tonal" class="mx-4 mt-4">
-            {{ error }}
-          </v-alert>
+            <AlertMessage v-if="error" :type="'error'" :message="error" class="mx-4 mt-4" />
 
           <v-data-table
             :headers="headers"
