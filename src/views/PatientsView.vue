@@ -2,11 +2,11 @@
 <template>
   <div class="container">
     <div class="left">
-      <AddPatient @professional-added="handleProfessionalAdded" />
+      <AddPatient @patient-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
       <GenericList
-        :items="professionals"
+        :items="patients"
         :headers="headers"
         :loading="loading"
         :error="error"
@@ -21,7 +21,7 @@ import { ref, onMounted } from 'vue'
 import GenericList from '@/components/GenericList.vue'
 import AddPatient from '@/components/AddPatient.vue'
 
-const professionals = ref([])
+const patients = ref([])
 const loading = ref(false)
 const error = ref('')
 
@@ -40,9 +40,9 @@ const fetchPatients = async () => {
     const response = await fetch('http://localhost:3000/api/patients')
     if (!response.ok) throw new Error('Error al obtener pacientes')
     const data = await response.json()
-    professionals.value = Array.isArray(data) ? data : []
+    patients.value = Array.isArray(data) ? data : []
   } catch (err) {
-    professionals.value = []
+    patients.value = []
     error.value = err.message || 'Error desconocido'
   } finally {
     loading.value = false
