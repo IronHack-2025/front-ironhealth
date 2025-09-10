@@ -84,10 +84,11 @@ import { ref, reactive } from 'vue'
 import Alert from './AlertMessage.vue'
 
 const emit = defineEmits(['patient-added'])
+import { post } from '../services/api'
 
 const formRef = ref(null)
 const isValid = ref(false)
-const dateActive = ref(false)
+// const dateActive = ref(false)
 
 const rules = {
   required: (value) => !!value || 'Este campo es obligatorio',
@@ -135,30 +136,17 @@ const newPatient = async () => {
     birthDate: form.birthDate,
   }
 
-  console.log(formData)
-
   try {
-    const res = await fetch('http://localhost:3000/api/patients', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    })
-    if (res.ok) {
-      formRef.value.reset()
-      emit('patient-added')
-      alert.show = true
-      alert.type = 'success'
-      alert.message = 'Paciente registrado con éxito'
-    } else {
-      const errorData = await res.json()
-      alert.show = true
-      alert.type = 'error'
-      alert.message = errorData.error
-    }
+    await post('/patients', formData)
+    formRef.value.reset()
+    emit('patient-added')
+    alert.show = true
+    alert.type = 'success'
+    alert.message = 'Paciente registrado con éxito'
   } catch (error) {
     alert.show = true
     alert.type = 'error'
-    alert.message = 'Error de conexión: ' + error.message
+    alert.message = 'Error de conexion: ' + error.message
   }
 }
 </script>

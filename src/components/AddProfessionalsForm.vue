@@ -85,6 +85,7 @@
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
 import Alert from './AlertMessage.vue'
+import { post } from '../services/api'
 import professionsData from '@/assets/data/professions.json'
 const emit = defineEmits(['professional-added'])
 const formRef = ref(null)
@@ -134,6 +135,7 @@ const alert = reactive({
 const submitForm = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) {
+    alert.message = 'Revisa los campos del formulario'
     return
   }
 
@@ -143,37 +145,21 @@ const submitForm = async () => {
     profession: selectedProfession.value,
     specialty: selectedSpecialty.value,
     email: form.email,
-    professionLicenceNumber: form.professionLicenceNumber,
+    specialization: selectedSpecialty.value,
+    licenseNumber: form.professionLicenceNumber,
   }
 
-  console.log(formData)
-
   try {
-    const response = await fetch('http://localhost:3000/api/professionals', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-
-    if (response.status === 201) {
-      alert.type = 'success'
-      alert.message = 'La información se ha guardado correctamente.'
-      alert.show = true
-      formRef.value.reset()
-      emit('professional-added')
-    } else {
-      const errorData = await response.json()
-      alert.type = 'error'
-      alert.message = errorData.error || 'Se ha producido un error.'
-      alert.show = true
-    }
-  } catch (error) {
-    console.error('Error de conexión:', error.message)
-    alert.type = 'error'
-    alert.message = 'Error de conexión: ' + error.message
+    await post('/professionals', formData)
+    formRef.value.reset()
+    emit('professional-added')
     alert.show = true
+    alert.type = 'success'
+    alert.message = 'Profesional registrado con éxito'
+  } catch (error) {
+    alert.show = true
+    alert.type = 'error'
+    alert.message = error.message
   }
 }
 
