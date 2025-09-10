@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center">
-      <v-col cols="10">
+      <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
             Registro de Profesional Médico
@@ -74,9 +74,6 @@
                 Registrar Profesional
               </v-btn>
             </v-form>
-            <!-- <v-alert v-if="alert.show" :type="alert.type" variant="tonal" border="start" prominent class="mt-4">
-              {{ alert.message }}
-            </v-alert> -->
             <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
           </v-card-text>
         </v-card>

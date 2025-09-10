@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center">
-      <v-col cols="10">
+      <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
             Registro de Pacientes
@@ -49,13 +49,6 @@
                 class="mt-2"
                 maxlength="9"
               />
-
-              <!-- <v-btn color="dark" class="mt-2" size="large" @click="dateActive = !dateActive" cursor="pointer">Fecha
-                    de nacimiento</v-btn>
-
-                <v-date-picker v-if="dateActive" v-model="form.birthDate" label="Fecha de nacimiento"
-                    prepend-inner-icon="mdi-calendar-account-outline" :rules="[rules.required]" variant="outlined"
-                    class="mt-2"></v-date-picker> -->
 
               <v-date-input
                 v-model="form.birthDate"

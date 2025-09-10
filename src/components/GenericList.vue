@@ -1,15 +1,15 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="elevation-6 rounded-xl">
           <v-toolbar flat color="primary" class="rounded-t-xl">
-            <v-toolbar-title class="text-white"> Profesionales </v-toolbar-title>
+            <v-toolbar-title class="text-white">{{ title }}</v-toolbar-title>
             <v-spacer />
             <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
               <v-text-field
                 v-model="search"
-                placeholder="Buscar..."
+                :placeholder="searchPlaceholder"
                 prepend-inner-icon="mdi-magnify"
                 variant="solo-filled"
                 hide-details
@@ -21,13 +21,17 @@
             </v-col>
           </v-toolbar>
 
+          <v-alert v-if="error" type="error" variant="tonal" class="mx-4 mt-4">
+            {{ error }}
+          </v-alert>
+
           <v-data-table
             :headers="headers"
             :items="items"
             :loading="loading"
             :search="search"
-            loading-text="Cargando..."
-            no-data-text="No se encontraron resultados"
+            :loading-text="loadingText"
+            :no-data-text="noDataText"
             class="rounded-b-xl"
             hover
             density="comfortable"
@@ -44,22 +48,14 @@
 <script setup>
 import { ref } from 'vue'
 const props = defineProps({
-  items: {
-    type: Array,
-    required: true
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  error: {
-    type: String,
-    default: ''
-  },
-  headers: {
-    type: Array,
-    required: true
-  }
+  title: { type: String, default: 'Listado' },
+  items: { type: Array, required: true },
+  loading: { type: Boolean, default: false },
+  error: { type: String, default: '' },
+  headers: { type: Array, required: true },
+  loadingText: { type: String, default: 'Cargando...' },
+  noDataText: { type: String, default: 'No se encontraron resultados' },
+  searchPlaceholder: { type: String, default: 'Buscar...' }
 })
 const search = ref('')
 

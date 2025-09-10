@@ -1,28 +1,61 @@
 
-
 <template>
   <div class="container">
     <div class="left">
-<AddPatient @patient-added="handlePatientAdded" />
+      <AddPatient @professional-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
-    <PatientsList :key="refreshList"/>
+      <GenericList
+        :items="professionals"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+      />
     </div>
-
   </div>
 </template>
 
 
 <script setup>
-import { ref } from 'vue'
-import PatientsList from '@/components/PatientsList.vue';
-import AddPatient from '@/components/AddPatient.vue';
+import { ref, onMounted } from 'vue'
+import GenericList from '@/components/GenericList.vue'
+import AddPatient from '@/components/AddPatient.vue'
 
-const refreshList = ref(0)
+const professionals = ref([])
+const loading = ref(false)
+const error = ref('')
 
-const handlePatientAdded = () => {
-  refreshList.value++ //Forzamos un cambio en la variable reactiva para destruir y volver a crear el componente
+
+const headers = [
+  { title: 'Nombre', key: 'firstName' },
+  { title: 'Apellidos', key: 'lastName' },
+  { title: 'Email', key: 'email' },
+  { title: 'Telefono', key: 'phone' },
+]
+
+const fetchPatients = async () => {
+  loading.value = true
+  error.value = ''
+  try {
+    const response = await fetch('http://localhost:3000/api/patients')
+    if (!response.ok) throw new Error('Error al obtener pacientes')
+    const data = await response.json()
+    professionals.value = Array.isArray(data) ? data : []
+  } catch (err) {
+    professionals.value = []
+    error.value = err.message || 'Error desconocido'
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(fetchPatients)
+
+const handleProfessionalAdded = () => {
+  fetchPatients()
+}
+
+
 </script>
 
 

@@ -4,7 +4,7 @@
       <AddProfessionalsForm @professional-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
-      <ProfessionalsList
+      <GenericList
         :items="professionals"
         :headers="headers"
         :loading="loading"
@@ -16,7 +16,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import ProfessionalsList from '@/components/ProfessionalsList.vue'
+import GenericList from '@/components/GenericList.vue'
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import professionsData from '@/assets/data/professions.json'
 
