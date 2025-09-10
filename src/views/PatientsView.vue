@@ -26,7 +26,7 @@ const handlePatientAdded = () => {
 </script>
 
 
-<style scoped>
+<!-- <style scoped>
 .container{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -38,4 +38,4 @@ const handlePatientAdded = () => {
   overflow-y: auto
 }
 
-</style>
+</style> -->

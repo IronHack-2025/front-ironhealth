@@ -1,39 +1,43 @@
 <template>
   <v-container>
-    <v-card class="elevation-6 rounded-xl">
-      <v-toolbar flat color="primary" class="rounded-t-xl">
-        <v-toolbar-title class="text-white"> Pacientes </v-toolbar-title>
-        <v-spacer />
-        <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
-          <v-text-field
-            v-model="search"
-            placeholder="Buscar..."
-            prepend-inner-icon="mdi-magnify"
-            variant="solo-filled"
-            hide-details
-            clearable
-            density="compact"
-            class="bg-white rounded-lg"
-            maxlength="50"
-          />
-        </v-col>
-      </v-toolbar>
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-card class="elevation-6 rounded-xl">
+          <v-toolbar flat color="primary" class="rounded-t-xl">
+            <v-toolbar-title class="text-white"> Pacientes </v-toolbar-title>
+            <v-spacer />
+            <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
+              <v-text-field
+                v-model="search"
+                placeholder="Buscar..."
+                prepend-inner-icon="mdi-magnify"
+                variant="solo-filled"
+                hide-details
+                clearable
+                density="compact"
+                class="bg-white rounded-lg"
+                maxlength="50"
+              />
+            </v-col>
+          </v-toolbar>
 
-      <v-data-table
-        :headers="headers"
-        :items="patients"
-        :loading="loading"
-        :search="search"
-        loading-text="Cargando pacientes..."
-        no-data-text="No se encontraron pacientes"
-        class="rounded-b-xl"
-        hover
-        density="comfortable"
-        fixed-header
-        height="500px"
-      >
-      </v-data-table>
-    </v-card>
+          <v-data-table
+            :headers="headers"
+            :items="patients"
+            :loading="loading"
+            :search="search"
+            loading-text="Cargando pacientes..."
+            no-data-text="No se encontraron pacientes"
+            class="rounded-b-xl"
+            hover
+            density="comfortable"
+            fixed-header
+            height="500px"
+          >
+          </v-data-table>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -46,25 +50,23 @@ const loading = ref(true)
 const error = ref('')
 const search = ref('')
 
-
-
 const headers = [
   { title: 'Nombre', key: 'firstName' },
   { title: 'Apellidos', key: 'lastName' },
   { title: 'Email', key: 'email' },
   { title: 'Telefono', key: 'phone' },
-  { 
-    title: 'Fecha de nacimiento', 
-    key: 'birthDate',
-    value: (item) => {
-      if (!item.birthDate) return ''
-      const date = new Date(item.birthDate)
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const year = date.getFullYear()
-      return `${day}/${month}/${year}`
-    }
-  },
+  // {
+  //   title: 'Fecha de nacimiento',
+  //   key: 'birthDate',
+  //   value: (item) => {
+  //     if (!item.birthDate) return ''
+  //     const date = new Date(item.birthDate)
+  //     const day = String(date.getDate()).padStart(2, '0')
+  //     const month = String(date.getMonth() + 1).padStart(2, '0')
+  //     const year = date.getFullYear()
+  //     return `${day}/${month}/${year}`
+  //   }
+  // },
 ]
 
 const fetchPatients = async () => {
@@ -80,9 +82,10 @@ const fetchPatients = async () => {
   }
 }
 
-watch(() => props.refresh, () => {
-})
-
+watch(
+  () => props.refresh,
+  () => {},
+)
 
 onMounted(fetchPatients)
 </script>
