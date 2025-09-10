@@ -11,7 +11,7 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="form.name"
+                    v-model="form.firstName"
                     label="Nombre"
                     prepend-inner-icon="mdi-account"
                     :rules="[rules.required, rules.acceptedLength]"
@@ -21,7 +21,7 @@
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="form.surname"
+                    v-model="form.lastName"
                     label="Apellidos"
                     prepend-inner-icon="mdi-account-details"
                     :rules="[rules.required, rules.acceptedLength]"
@@ -109,7 +109,7 @@ const specialtiesList = computed(() => {
   if (!professionObj || !professionObj.specialty) return []
   return [{title: "Sin especificar", value: ""},
     ...professionObj.specialty.map((s) => ({
-      title: s['specialty-name'],
+      title: s['specialty-firstName'],
       value: s['specialty-code'],
     })),
   ]
@@ -120,8 +120,8 @@ watch(selectedProfession, () => {
 })
 
 const form = reactive({
-  name: '',
-  surname: '',
+  firstName: '',
+  lastName: '',
   email: '',
   profession: '',
   specialty: '',
@@ -141,8 +141,8 @@ const submitForm = async () => {
   }
 
   const formData = {
-    name: form.name,
-    surname: form.surname,
+    firstName: form.firstName,
+    lastName: form.lastName,
     profession: selectedProfession.value,
     specialty: selectedSpecialty.value,
     email: form.email,

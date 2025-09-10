@@ -5,18 +5,18 @@
         </v-card>
         <v-dialog v-model="dialog" max-width="500">
             <v-card>
-                <v-card-title>📅 Nueva Cita</v-card-title>
+                <v-card-title>📅 New appointment</v-card-title>
                 <v-card-text>
-                    <v-text-field v-model="form.patientId" label="Paciente" outlined dense required />
+                    <v-text-field v-model="form.patientId" label="Patient" outlined dense required />
 
-                    <v-text-field v-model="form.professionalId" label="Profesional" outlined dense required />
+                    <v-text-field v-model="form.professionalId" label="Professional" outlined dense required />
 
                             <v-select
                                 v-model="selectedPatient"
                                 :items="patients"
                                 item-value="_id"
                                 :item-title="item => `${item.lastName}, ${item.firstName}`"
-                                label="Paciente"
+                                label="Patients"
                                 outlined
                                 dense
                             ></v-select>
@@ -25,10 +25,11 @@
                                 :items="professionals"
                                 item-value="_id"
                                 :item-title="item => `${item.lastName}, ${item.firstName}`"
-                                label="Profesional"
+                                label="Professionals"
                                 outlined
                                 dense
                             ></v-select>
+                    <v-text-field v-model="form.notes" label="Notes" outlined dense />
                       
                 </v-card-text>
                 <v-card-actions>
@@ -44,15 +45,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import listPlugin from '@fullcalendar/list'
+
 const patients = ref([])
 const professionals = ref([])
-const selectedPatient = ('')
-const selectedProfessional = ('')
+const selectedPatient = ref(null)
+const selectedProfessional = ref(null)
+
+// Sincroniza la selección del v-select con el formulario
+watch(selectedPatient, (newVal) => {
+    form.value.patientId = newVal
+})
+watch(selectedProfessional, (newVal) => {
+    form.value.professionalId = newVal
+})
 
 const dialog = ref(false)
 
@@ -61,15 +72,31 @@ const form = ref({
     professionalId: "",
     start: null,
     end: null,
+    notes: ""
 })
 
 const calendarOptions = ref({
-    plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
+    plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
     initialView: 'timeGridWeek',
     selectable: true,
     editable: true,
     selectMirror: true,
-    events: "http://localhost:3000/api/appointment",
+    events: async (fetchInfo, successCallback, failureCallback) => {
+        try {
+            const res = await fetch("http://localhost:3000/api/appointment");
+            const data = await res.json();
+            // Transforma los datos al formato que FullCalendar espera
+            const events = data.map(event => ({
+                id: event._id,
+                start: event.startDate,
+                end: event.endDate,
+
+            }));
+            successCallback(events);
+        } catch (error) {
+            failureCallback(error);
+        }
+    },
     select: (info) => {
         form.value.start = info.startStr
         form.value.end = info.endStr
@@ -79,8 +106,17 @@ const calendarOptions = ref({
     headerToolbar: {
         left: 'prev,today,next',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+    },
+    eventClick: async (info) => {
+    // Mostrar confirmación y borrar
+    if (confirm('¿Eliminar esta cita?')) {
+      await fetch(`http://localhost:3000/api/appointment/${info.event.id}`, {
+        method: 'DELETE'
+      });
+      info.event.remove(); // Elimina del calendario
     }
+  },
 })
 
 
@@ -110,13 +146,24 @@ const saveAppointment = async () => {
         endDate: form.value.end,
         patientId: form.value.patientId,
         professionalId: form.value.professionalId,
+        notes: form.value.notes
     }
 
     await fetch("http://localhost:3000/api/appointment", {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newEvent),
-})}
+})
+// Resetear formulario
+  form.value = { paciente: "", profesional: "", start: null, end: null };
+
+//  dialog.value = false;
+
+  // Refrescar eventos
+
+
+
+}
 
 
 
