@@ -129,7 +129,7 @@ const calendarOptions = ref({
             failureCallback(error);
         }
     },
-    select: (info) => {
+    select: (info) => {resetAlert()
         form.value.start = info.startStr
         form.value.end = info.endStr
         dialog.value = true;
@@ -140,44 +140,50 @@ const calendarOptions = ref({
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
     },
-    eventClick: async (info) => {
+    eventClick: async (info) => { resetAlert()
         selectedEvent.value = info.event
         showEventDialog.value = true
  },
 })
+// Función para resetear la alerta
+const resetAlert = () => {
+  alert.show = false
+  alert.message = ''
+  alert.type = 'success'
+}
 
 const cancelAppointment = async () => {
-    const cancelledEvent = { 
-        status: {
-            cancelled: true,
-            timestamp: new Date()
+    try {  
+        const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                status: {
+                    cancelled: true,
+                    timestamp: new Date()
+                }
+            }),
+        }) 
+        
+        if (response.status === 200) {
+            alert.type = 'success'
+            alert.message = 'La cita se ha cancelado correctamente.'
+            alert.show = true
+           
+        } else {
+            const errorData = await response.json()
+            alert.type = 'error'
+            alert.message = errorData.error || 'Se ha producido un error.'
+            alert.show = true
         }
+    } catch (error) { // Añadir parámetro error
+        console.error('Error de conexión al cancelar la cita:', error);
+        alert.type = 'error'
+        alert.message = 'Error de conexión al cancelar la cita'
+        alert.show = true
     }
-    try {  const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cancelledEvent),
-    }) 
-     if (response.status === 201) {
-      alert.type = 'success'
-      alert.message = 'La cita se ha cancelado correctamente.'
-      alert.show = true
-     cancelledEvent.value.reset()
-    } else {
-      const errorData = await response.json()
-      alert.type = 'error'
-      alert.message = errorData.error || 'Se ha producido un error.'
-      alert.show = true
-    }
-   } catch {
-    console.error('Error de conexión al cancelar la cita');
-    alert.type = 'error'
-    alert.message = 'Error de conexión al cancelar la cita'
-    alert.show = true
-   }
     
     calendarRef.value.getApi().refetchEvents();
-    
 
 }
 
