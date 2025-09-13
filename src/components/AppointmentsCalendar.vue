@@ -98,6 +98,55 @@ const form = ref({
     notes: ""
 })
 
+const cancelAppointmentById = async (id) => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/appointment/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                status: { cancelled: true, timestamp: new Date() }
+            }),
+        });
+        if (!response.ok) throw new Error("Error al cancelar cita");
+    } catch (error) {
+        console.error("Error cancelando cita:", error);
+        throw error;
+    }
+};
+
+const handleEventDrop = async (info) => {
+    const oldEvent = info.oldEvent
+    const newEvent = info.event
+
+    const originalStart = oldEvent.start;
+    const originalEnd = oldEvent.end;
+
+
+    try {
+
+        info.event.setStart(newEvent.start);
+        info.event.setEnd(newEvent.end);
+
+        await cancelAppointmentById(oldEvent.id)
+
+        const newAppointment = await saveAppointment({
+            title: `Cita con ${newEvent.professionalId}`,
+            startDate: newEvent.start,
+            endDate: newEvent.end,
+            patientId: newEvent.extendedProps.patientId,
+            professionalId: newEvent.extendedProps.professionalId,
+            notes: newEvent.extendedProps.notes
+        })
+
+        console.log("Reprogramación exitosa");
+
+    } catch (error) {
+        console.error("Error al reprogramar:", error);
+        info.event.setStart(originalStart);
+        info.event.setEnd(originalEnd);
+        info.revert();
+    }
+}
 const calendarOptions = ref({
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
     initialView: 'timeGridWeek',
@@ -152,9 +201,7 @@ const calendarOptions = ref({
         selectedEvent.value = info.event
         showEventDialog.value = true
     },
-    eventDrop: async (info) => {
-        
-    }
+    eventDrop: handleEventDrop,
 })
 // Función para resetear la alerta
 const resetAlert = () => {
