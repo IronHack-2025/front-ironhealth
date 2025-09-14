@@ -11,11 +11,16 @@
             <v-card>
                 <v-card-title>📅 New appointment</v-card-title>
                 <v-card-text>
-                    <v-text-field v-model="form.patientId" label="Patient" outlined dense required />
-
-                    <v-text-field v-model="form.professionalId" label="Professional" outlined dense required />
-
-                    <v-select v-model="selectedPatient" :items="patients" item-value="_id"
+                    <v-text-field
+                        v-model="form.start"
+                        :value="form.start && form.end ? `${formatDate(form.start)} - ${formatDate(form.end)}` : ''"
+                        label="Time:"
+                        outlined
+                        dense
+                        required
+                        readonly
+                    />
+                     <v-select v-model="selectedPatient" :items="patients" item-value="_id"
                         :item-title="item => `${item.lastName}, ${item.firstName}`" label="Patients" outlined
                         dense></v-select>
                     <v-select v-model="selectedProfessional" :items="professionals" item-value="_id"
