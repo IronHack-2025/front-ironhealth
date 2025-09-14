@@ -23,8 +23,11 @@
                      <v-select v-model="selectedPatient" :items="patients" item-value="_id"
                         :item-title="item => `${item.lastName}, ${item.firstName}`" label="Patients" outlined
                         dense></v-select>
-                    <v-select v-model="selectedProfessional" :items="professionals" item-value="_id"
-                        :item-title="item => `${item.lastName}, ${item.firstName}`" label="Professionals" outlined
+                    <v-select v-model="selectedProfessional" :items="availableProfessionals"
+                        item-value="_id"
+                        :item-title="item => `${item.lastName}, ${item.firstName}`"
+                        item-disabled="disabled"
+                        label="Available Professionals" outlined
                         dense></v-select>
                     <v-text-field v-model="form.notes" label="Notes" outlined dense maxlength="500" />
 
@@ -68,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, reactive } from 'vue'
+import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -83,6 +86,49 @@ const selectedProfessional = ref(null)
 const selectedEvent = ref(null)
 const showEventDialog = ref(false)
 const calendarRef = ref(null)
+const appointments = ref([])
+const availableProfessionals = computed(() => {
+    if (!form.value.start || !form.value.end) {
+        return professionals.value.map(pro => ({ ...pro, disabled: false }));
+    }
+    
+    // Convertir las fechas del formulario a timestamps para comparación más robusta
+    const formStart = new Date(form.value.start).getTime();
+    const formEnd = new Date(form.value.end).getTime();
+
+    // Filtrar para mostrar solo profesionales disponibles
+    const availableProfessionals = professionals.value.filter(pro => {
+        // Buscar conflictos para este profesional
+        const conflicts = appointments.value.filter(appointment => {
+            if (appointment.status?.cancelled) return false;
+            if (appointment.professionalId !== pro._id) return false;
+            
+            const appointmentStart = new Date(appointment.startDate).getTime();
+            const appointmentEnd = new Date(appointment.endDate).getTime();
+            
+            // Detectar solapamiento: nuevo inicio < cita fin Y nuevo fin > cita inicio
+            const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart;
+            
+            return hasOverlap;
+        });
+        
+        const isAvailable = conflicts.length === 0;
+        
+        return isAvailable; // Solo devolver profesionales SIN conflictos
+    });
+    
+    // Si no hay profesionales disponibles, mostrar mensaje
+    if (availableProfessionals.length === 0) {
+        return [{
+            _id: null,
+            firstName: 'try different time.',
+            lastName: 'No available professionals',
+            disabled: true
+        }];
+    }
+    
+    return availableProfessionals;
+});
 
 const alert = reactive({
     show: false,
@@ -212,10 +258,11 @@ const calendarOptions = ref({
             failureCallback(error);
         }
     },
-    select: (info) => {
+    select: async (info) => {
         resetAlert()
         form.value.start = info.startStr
         form.value.end = info.endStr
+        await fetchAppointments();
         dialog.value = true;
     },
     firstDay: 1,
@@ -271,6 +318,7 @@ const cancelAppointment = async () => {
         alert.show = true
     }
 
+    await fetchAppointments();
     calendarRef.value.getApi().refetchEvents();
 
 }
@@ -294,6 +342,11 @@ onMounted(async () => {
         if (professionalsRes.ok) {
             professionals.value = await professionalsRes.json()
         }
+        const appointmentsRes = await fetch('http://localhost:3000/api/appointment')
+        if (appointmentsRes.ok) {
+            appointments.value = await appointmentsRes.json()
+        }
+        
         // Refresca eventos del calendario solo después de cargar ambos arrays
         if (calendarRef.value) {
             calendarRef.value.getApi().refetchEvents();
@@ -302,6 +355,17 @@ onMounted(async () => {
         console.error({ message: 'error fetching data' }, error)
     }
 })
+
+const fetchAppointments = async () => {
+    try {
+        const appointmentsRes = await fetch('http://localhost:3000/api/appointment')
+        if (appointmentsRes.ok) {
+            appointments.value = await appointmentsRes.json()
+        }
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+    }
+}
 
 const saveAppointment = async () => {
     if (!form.value.patientId || !form.value.professionalId) return
@@ -342,10 +406,12 @@ const saveAppointment = async () => {
     }
 
     // Resetear formulario
-    form.value = { selectedPatient: "", selectedProfessional: "", start: null, end: null };
+    form.value = { selectedPatient: "", selectedProfessional: "", start: null, end: null, notes: "" };
     selectedPatient.value = null;
     selectedProfessional.value = null;
-    //  dialog.value = false;
+    dialog.value = false;
+
+    await fetchAppointments(); // <-- Actualiza citas después de guardar
 
     // Refrescar eventos
     calendarRef.value.getApi().refetchEvents();
