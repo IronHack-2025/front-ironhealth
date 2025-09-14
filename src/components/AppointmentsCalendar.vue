@@ -1,7 +1,11 @@
 <template>
     <v-container>
         <v-card class="pa-4">
-            <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%;" />
+            <FullCalendar
+                ref="calendarRef"
+                :options="calendarOptions"
+                style="max-width: 100%;"
+            />
         </v-card>
         <v-dialog v-model="dialog" max-width="500">
             <v-card>
@@ -115,35 +119,52 @@ const cancelAppointmentById = async (id) => {
 };
 
 const handleEventDrop = async (info) => {
-    const oldEvent = info.oldEvent
-    const newEvent = info.event
+    const event = info.event;
 
-    const originalStart = oldEvent.start;
-    const originalEnd = oldEvent.end;
+    // Log para depuración
+  console.log("Evento arrastrado:", event);
+
+    const originalStart = event.start;
+  const originalEnd = event.end;
 
 
     try {
 
-        info.event.setStart(newEvent.start);
-        info.event.setEnd(newEvent.end);
+        await cancelAppointmentById(event.id)
+         console.log("La cita antigua fue cancela con éxito");
 
-        await cancelAppointmentById(oldEvent.id)
+        // Crear nueva cita directamente con fetch API
+        const newAppointmentData = {
+            startDate: event.start,
+            endDate: event.end,
+            patientId: event.extendedProps.patientId,
+            professionalId: event.extendedProps.professionalId,
+            notes: event.extendedProps.notes
+        };
 
-        const newAppointment = await saveAppointment({
-            title: `Cita con ${newEvent.professionalId}`,
-            startDate: newEvent.start,
-            endDate: newEvent.end,
-            patientId: newEvent.extendedProps.patientId,
-            professionalId: newEvent.extendedProps.professionalId,
-            notes: newEvent.extendedProps.notes
-        })
+        const response = await fetch("http://localhost:3000/api/appointment", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newAppointmentData)
+        });
 
-        console.log("Reprogramación exitosa");
+        if (!response.ok) {
+            throw new Error("Error al crear la nueva cita");
+        }
+
+        const newAppointment = await response.json();
+        console.log("Reprogramación exitosa", newAppointment);
+
+        // Actualizar el ID del evento en el calendario
+        event.setProp("id", newAppointment._id);
+
+        // Refrescar eventos del calendario
+        calendarRef.value.getApi().refetchEvents();
 
     } catch (error) {
         console.error("Error al reprogramar:", error);
-        info.event.setStart(originalStart);
-        info.event.setEnd(originalEnd);
         info.revert();
     }
 }
@@ -153,6 +174,9 @@ const calendarOptions = ref({
     selectable: true,
     editable: true,
     selectMirror: true,
+      expandRows: false, 
+       height: 'auto',  
+
     events: async (fetchInfo, successCallback, failureCallback) => {
         try {
             const res = await fetch("http://localhost:3000/api/appointment");
@@ -163,6 +187,7 @@ const calendarOptions = ref({
                 const patient = patients.value.find(p => p._id === event.patientId) || {};
                 const professional = professionals.value.find(p => p._id === event.professionalId) || {};
                 return {
+                    title: `${patient.lastName}, ${patient.firstName} - Dr. ${professional.lastName}`,
                     id: event._id,
                     start: event.startDate,
                     end: event.endDate,
@@ -194,8 +219,8 @@ const calendarOptions = ref({
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
     },
-    slotMinTime: '08:00:00',
-    slotMaxTime: '20:00:00',
+    slotMinTime: '07:00:00',
+    slotMaxTime: '22:00:00',
     eventClick: async (info) => {
         resetAlert()
         selectedEvent.value = info.event
@@ -245,34 +270,6 @@ const cancelAppointment = async () => {
 
 }
 
-// const updateAppointment = async (id, payload) => {
-//     try {
-//         const response = await fetch(`http://localhost:3000/api/appointment/${id}`, {
-//             method: "PUT",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(payload)
-//         });
-//         console.log(`Cita con id ${id} actualizada correctamente`)
-//         if (response.status === 200) {
-//             alert.type = 'success'
-//             alert.message = 'La cita se ha reprogramado correctamente.'
-//             alert.show = true
-
-//         } else {
-//             const errorData = await response.json()
-//             alert.type = 'error'
-//             alert.message = errorData.error || 'Se ha producido un error.'
-//             alert.show = true
-//         }
-//     } catch (error) {
-//         console.error(`Error al actualizar la cita, ${error}`)
-//         alert.type = 'error'
-//         alert.message = 'Error de conexión al reprogramar la cita'
-//         alert.show = true
-//         throw error
-//     }
-// }
-
 const formatDate = (date) => {
     if (!date) return '';
     const d = new Date(date);
@@ -304,8 +301,7 @@ onMounted(async () => {
 const saveAppointment = async () => {
     if (!form.value.patientId || !form.value.professionalId) return
 
-    const newEvent = {
-        title: `Cita con ${form.value.professionalId}`,
+    const event = {
         startDate: form.value.start,
         endDate: form.value.end,
         patientId: form.value.patientId,
@@ -319,9 +315,9 @@ const saveAppointment = async () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newEvent)
+                body: JSON.stringify(event)
             })
-        console.log(newEvent)
+        console.log(event)
 
         if (response.status === 201) {
             alert.type = 'success'
@@ -355,4 +351,9 @@ const saveAppointment = async () => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Igualar la altura de todas las filas de slots en FullCalendar */
+.equal-slot-height .fc-timegrid-slot {
+  height: 40px !important; /* Ajusta el valor según lo que necesites */
+}
+</style>
