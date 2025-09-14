@@ -20,7 +20,9 @@
                         required
                         readonly
                     />
-                     <v-select v-model="selectedPatient" :items="patients" item-value="_id"
+                     <v-select v-model="selectedPatient" 
+                     :items="availablePatients" 
+                     item-value="_id"
                         :item-title="item => `${item.lastName}, ${item.firstName}`" label="Patients" outlined
                         dense></v-select>
                     <v-select v-model="selectedProfessional" :items="availableProfessionals"
@@ -128,6 +130,39 @@ const availableProfessionals = computed(() => {
     }
     
     return availableProfessionals;
+});
+
+const availablePatients = computed(() => {
+    if (!form.value.start || !form.value.end) {
+        return patients.value.map(pro => ({ ...pat, disabled: false }));
+    }
+    
+    // Convertir las fechas del formulario a timestamps para comparación más robusta
+    const formStart = new Date(form.value.start).getTime();
+    const formEnd = new Date(form.value.end).getTime();
+
+    // Filtrar para mostrar solo pacuientes disponibles
+    const availablePatients = patients.value.filter(pat => {
+        // Buscar conflictos para este pacientes
+        const conflicts = appointments.value.filter(appointment => {
+            if (appointment.status?.cancelled) return false;
+            if (appointment.patientId !== pat._id) return false;
+            
+            const appointmentStart = new Date(appointment.startDate).getTime();
+            const appointmentEnd = new Date(appointment.endDate).getTime();
+            
+            // Detectar solapamiento: nuevo inicio < cita fin Y nuevo fin > cita inicio
+            const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart;
+            
+            return hasOverlap;
+        });
+        
+        const isAvailable = conflicts.length === 0;
+        
+        return isAvailable; // Solo devolver profesionales SIN conflictos
+    });
+    
+    return availablePatients;
 });
 
 const alert = reactive({
