@@ -19,7 +19,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import GenericList from '@/components/GenericList.vue'
-import AddPatient from '@/components/AddPatient.vue'
+import AddPatient from '@/components/AddPatientForm.vue'
 
 const patients = ref([])
 const loading = ref(false)

@@ -85,6 +85,7 @@
 </template>
 
 <script setup>
+import { post } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -241,19 +242,8 @@ const handleEventDrop = async (info) => {
             notes: event.extendedProps.notes
         };
 
-        const response = await fetch("http://localhost:3000/api/appointment", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newAppointmentData)
-        });
+        const newAppointment = await post ('/appointment' , newAppointmentData)
 
-        if (!response.ok) {
-            throw new Error("Error al crear la nueva cita");
-        }
-
-        const newAppointment = await response.json();
         console.log("Reprogramación exitosa", newAppointment);
 
         // Actualizar el ID del evento en el calendario
@@ -320,15 +310,9 @@ const saveAppointment = async () => {
         notes: form.value.notes
     }
     try {
-        const response = await fetch("http://localhost:3000/api/appointment", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(event)
-        })
+        await post ('/appointment', event)
 
-        if (response.status === 201) {
+      
             alert.type = 'success'
             alert.message = 'La cita se ha guardado correctamente.'
             alert.show = true
@@ -338,20 +322,14 @@ const saveAppointment = async () => {
             selectedPatient.value = null;
             selectedProfessional.value = null;
             dialog.value = false;
-            
-            await fetchAppointments();
+             await fetchAppointments();
             calendarRef.value.getApi().refetchEvents();
-        } else {
-            const errorData = await response.json()
-            console.error('Error del servidor:', errorData);
-            alert.type = 'error'
-            alert.message = errorData.error || 'Se ha producido un error.'
-            alert.show = true
         }
-    } catch (error) {
-        console.error('Error de conexión:', error.message)
+        
+        catch (error) {
+        console.error('Error:', error.message)
         alert.type = 'error'
-        alert.message = 'Error de conexión: ' + error.message
+        alert.message = 'Error: ' + error.message
         alert.show = true
     }
 }

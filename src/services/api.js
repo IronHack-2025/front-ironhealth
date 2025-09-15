@@ -2,7 +2,7 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 async function handleResponse(response) {
   if (response.ok) {
-    if (response.status === 204 || response.headers.get('Content-Length') === '0') {
+    if (response.status === 204 || response.status === 201 || response.headers.get('Content-Length') === '0') {
       return { success: true }
     }
     return response.json()
