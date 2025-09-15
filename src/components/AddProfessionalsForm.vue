@@ -107,7 +107,7 @@ const specialtiesList = computed(() => {
   return [
     { title: 'Sin especificar', value: '' },
     ...professionObj.specialty.map((s) => ({
-      title: s['specialty-name'],
+      title: s['specialty-firstName'],
       value: s['specialty-code'],
     })),
   ]

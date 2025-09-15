@@ -17,8 +17,9 @@ import { RouterView } from 'vue-router'
           <v-list-item
             to="/professionals"
             prepend-icon="mdi-doctor"
-            title="Proffesionals"
+            title="Professionals"
           ></v-list-item>
+          <v-list-item to="/appointments" prepend-icon="mdi-calendar-blank" title="Appointments"></v-list-item>
         </v-list>
       </v-navigation-drawer>
 
