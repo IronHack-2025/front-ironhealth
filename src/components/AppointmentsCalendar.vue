@@ -46,23 +46,35 @@
         <v-dialog v-model="showEventDialog" max-width="500">
             <v-card>
                 <v-card-title>Appointment details</v-card-title>
-                <v-card-text v-if="selectedEvent">
-                    <div><strong>Patient:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
-                        `${selectedEvent.extendedProps.patientLastName},
-                        ${selectedEvent.extendedProps.patientFirstName}` : '' }}</div>
-                    <div><strong>Professional:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
-                        `${selectedEvent.extendedProps.professionalLastName},
-                        ${selectedEvent.extendedProps.professionalFirstName}` : '' }}</div>
-                    <div><strong>Start time:</strong> {{ selectedEvent && selectedEvent.start ?
-                        formatDate(selectedEvent.start) : '' }}</div>
-                    <div><strong>End time:</strong> {{ selectedEvent && selectedEvent.end ?
-                        formatDate(selectedEvent.end) : '' }}</div>
-                    <div><strong>Notes:</strong> {{ selectedEvent && selectedEvent.extendedProps ?
-                        selectedEvent.extendedProps.notes : '' }}</div>
+                <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
+                    <div><strong>Patient:</strong> {{ 
+                        `${selectedEvent.extendedProps.patientLastName}, ${selectedEvent.extendedProps.patientFirstName}` 
+                    }}</div>
+                    <div><strong>Professional:</strong> {{ 
+                        `${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}` 
+                    }}</div>
+                    <div><strong>Start time:</strong> {{ formatDate(selectedEvent.start) }}</div>
+                    <div><strong>End time:</strong> {{ formatDate(selectedEvent.end) }}</div>
+                    <div class="mt-4">
+                        <strong>Notes:</strong>
+                        <v-textarea 
+                            v-model="editableNotes"
+                            outlined
+                            dense
+                            rows="3"
+                            maxlength="500"
+                            counter
+                            class="mt-2"
+                        />
+                    </div>
+                </v-card-text>
+                <v-card-text v-else>
+                    <div>Error loading appointment details</div>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
                     <v-btn color="red" variant="tonal" @click="cancelAppointment">Cancelar cita</v-btn>
+                    <v-btn color="blue" variant="tonal" @click="updateNotes">Guardar notas</v-btn>
                     <v-btn color="primary" variant="tonal" @click="showEventDialog = false">Cerrar</v-btn>
                 </v-card-actions>
                 <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
@@ -134,7 +146,7 @@ const availableProfessionals = computed(() => {
 
 const availablePatients = computed(() => {
     if (!form.value.start || !form.value.end) {
-        return patients.value.map(pro => ({ ...pat, disabled: false }));
+        return patients.value.map(pat => ({ ...pat, disabled: false }));
     }
     
     // Convertir las fechas del formulario a timestamps para comparación más robusta
@@ -180,6 +192,8 @@ watch(selectedProfessional, (newVal) => {
 
 const dialog = ref(false)
 
+const editableNotes = ref('')
+
 const form = ref({
     patientId: "",
     professionalId: "",
@@ -212,7 +226,6 @@ const handleEventDrop = async (info) => {
 
     const originalStart = event.start;
   const originalEnd = event.end;
-
 
     try {
 
@@ -254,6 +267,137 @@ const handleEventDrop = async (info) => {
         info.revert();
     }
 }
+
+const resetAlert = () => {
+    alert.show = false
+    alert.message = ''
+    alert.type = 'success'
+}
+
+const cancelAppointment = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                status: {
+                    cancelled: true,
+                    timestamp: new Date()
+                }
+            }),
+        })
+
+        if (response.status === 200) {
+            alert.type = 'success'
+            alert.message = 'La cita se ha cancelado correctamente.'
+            alert.show = true
+
+        } else {
+            const errorData = await response.json()
+            alert.type = 'error'
+            alert.message = errorData.error || 'Se ha producido un error.'
+            alert.show = true
+        }
+    } catch (error) { 
+        console.error('Error de conexión al cancelar la cita:', error);
+        alert.type = 'error'
+        alert.message = 'Error de conexión al cancelar la cita'
+        alert.show = true
+    }
+
+    await fetchAppointments();
+    calendarRef.value.getApi().refetchEvents();
+
+}
+const saveAppointment = async () => {
+    if (!form.value.patientId || !form.value.professionalId) return
+
+    const event = {
+        startDate: form.value.start,
+        endDate: form.value.end,
+        patientId: form.value.patientId,
+        professionalId: form.value.professionalId,
+        notes: form.value.notes
+    }
+    try {
+        const response = await fetch("http://localhost:3000/api/appointment", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(event)
+        })
+
+        if (response.status === 201) {
+            alert.type = 'success'
+            alert.message = 'La cita se ha guardado correctamente.'
+            alert.show = true
+            
+            // Solo resetear si fue exitoso
+            form.value = { patientId: "", professionalId: "", start: null, end: null, notes: "" };
+            selectedPatient.value = null;
+            selectedProfessional.value = null;
+            dialog.value = false;
+            
+            await fetchAppointments();
+            calendarRef.value.getApi().refetchEvents();
+        } else {
+            const errorData = await response.json()
+            console.error('Error del servidor:', errorData);
+            alert.type = 'error'
+            alert.message = errorData.error || 'Se ha producido un error.'
+            alert.show = true
+        }
+    } catch (error) {
+        console.error('Error de conexión:', error.message)
+        alert.type = 'error'
+        alert.message = 'Error de conexión: ' + error.message
+        alert.show = true
+    }
+}
+
+const updateNotes = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}/notes`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                notes: editableNotes.value
+            }),
+        })
+
+        if (response.ok) {
+            alert.type = 'success'
+            alert.message = 'Las notas se han actualizado correctamente.'
+            alert.show = true
+            
+            // Actualizar las notas en el evento seleccionado
+            selectedEvent.value.setExtendedProp('notes', editableNotes.value)
+            
+            // Refrescar eventos del calendario
+            calendarRef.value.getApi().refetchEvents()
+        } else {
+            const errorData = await response.json()
+            alert.type = 'error'
+            alert.message = errorData.error || 'Error al actualizar las notas.'
+            alert.show = true
+        }
+    } catch (error) {
+        console.error('Error al actualizar notas:', error)
+        alert.type = 'error'
+        alert.message = 'Error de conexión al actualizar las notas'
+        alert.show = true
+    }
+}
+
+const formatDate = (date) => {
+    if (!date) return '';
+    const d = new Date(date);
+    // Día y hora (ejemplo: "lun, 10:30")
+    const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' };
+    return d.toLocaleString('es-ES', options);
+};
+
 const calendarOptions = ref({
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
     initialView: 'timeGridWeek',
@@ -311,61 +455,11 @@ const calendarOptions = ref({
     eventClick: async (info) => {
         resetAlert()
         selectedEvent.value = info.event
+        editableNotes.value = info.event.extendedProps.notes || ''
         showEventDialog.value = true
     },
     eventDrop: handleEventDrop,
 })
-// Función para resetear la alerta
-const resetAlert = () => {
-    alert.show = false
-    alert.message = ''
-    alert.type = 'success'
-}
-
-const cancelAppointment = async () => {
-    try {
-        const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                status: {
-                    cancelled: true,
-                    timestamp: new Date()
-                }
-            }),
-        })
-
-        if (response.status === 200) {
-            alert.type = 'success'
-            alert.message = 'La cita se ha cancelado correctamente.'
-            alert.show = true
-
-        } else {
-            const errorData = await response.json()
-            alert.type = 'error'
-            alert.message = errorData.error || 'Se ha producido un error.'
-            alert.show = true
-        }
-    } catch (error) { // Añadir parámetro error
-        console.error('Error de conexión al cancelar la cita:', error);
-        alert.type = 'error'
-        alert.message = 'Error de conexión al cancelar la cita'
-        alert.show = true
-    }
-
-    await fetchAppointments();
-    calendarRef.value.getApi().refetchEvents();
-
-}
-
-const formatDate = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    // Día y hora (ejemplo: "lun, 10:30")
-    const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' };
-    return d.toLocaleString('es-ES', options);
-};
-
 
 onMounted(async () => {
     try {
@@ -401,59 +495,6 @@ const fetchAppointments = async () => {
         console.error('Error fetching appointments:', error);
     }
 }
-
-const saveAppointment = async () => {
-    if (!form.value.patientId || !form.value.professionalId) return
-
-    const event = {
-        startDate: form.value.start,
-        endDate: form.value.end,
-        patientId: form.value.patientId,
-        professionalId: form.value.professionalId,
-        notes: form.value.notes
-    }
-    try {
-        const response =
-            await fetch("http://localhost:3000/api/appointment", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(event)
-            })
-        console.log(event)
-
-        if (response.status === 201) {
-            alert.type = 'success'
-            alert.message = 'La cita se ha guardado correctamente.'
-            alert.show = true
-        } else {
-            const errorData = await response.json()
-            alert.type = 'error'
-            alert.message = errorData.error || 'Se ha producido un error.'
-            alert.show = true
-        }
-    } catch (error) {
-        console.error('Error de conexión:', error.message)
-        alert.type = 'error'
-        alert.message = 'Error de conexión: ' + error.message
-        alert.show = true
-    }
-
-    // Resetear formulario
-    form.value = { selectedPatient: "", selectedProfessional: "", start: null, end: null, notes: "" };
-    selectedPatient.value = null;
-    selectedProfessional.value = null;
-    dialog.value = false;
-
-    await fetchAppointments(); // <-- Actualiza citas después de guardar
-
-    // Refrescar eventos
-    calendarRef.value.getApi().refetchEvents();
-
-
-}
-
 
 </script>
 
