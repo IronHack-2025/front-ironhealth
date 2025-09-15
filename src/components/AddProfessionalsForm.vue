@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <v-row justify="center">
-      <v-col cols="10">
-        <v-card class="pa-8" elevation="6" rounded="lg">
+      <v-col cols="12">
+        <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
             Registro de Profesional Médico
           </v-card-title>
@@ -11,7 +11,7 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="form.name"
+                    v-model="form.firstName"
                     label="Nombre"
                     prepend-inner-icon="mdi-account"
                     :rules="[rules.required, rules.acceptedLength]"
@@ -21,7 +21,7 @@
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="form.surname"
+                    v-model="form.lastName"
                     label="Apellidos"
                     prepend-inner-icon="mdi-account-details"
                     :rules="[rules.required, rules.acceptedLength]"
@@ -60,6 +60,7 @@
                 :rules="[rules.required, rules.email, rules.acceptedLength]"
                 variant="outlined"
                 class="mt-2"
+                maxlength="50"
               />
               <v-text-field
                 v-model="form.professionLicenceNumber"
@@ -73,9 +74,6 @@
                 Registrar Profesional
               </v-btn>
             </v-form>
-            <!-- <v-alert v-if="alert.show" :type="alert.type" variant="tonal" border="start" prominent class="mt-4">
-              {{ alert.message }}
-            </v-alert> -->
             <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
           </v-card-text>
         </v-card>
@@ -89,7 +87,7 @@ import { ref, reactive, computed, watch } from 'vue'
 import Alert from './AlertMessage.vue'
 import { post } from '../services/api'
 import professionsData from '@/assets/data/professions.json'
-
+const emit = defineEmits(['professional-added'])
 const formRef = ref(null)
 const isValid = ref(false)
 const selectedProfession = ref(null) // code
@@ -120,8 +118,8 @@ watch(selectedProfession, () => {
 })
 
 const form = reactive({
-  name: '',
-  surname: '',
+  firstName: '',
+  lastName: '',
   email: '',
   profession: '',
   specialty: '',
@@ -142,8 +140,10 @@ const submitForm = async () => {
   }
 
   const formData = {
-    firstName: form.name,
-    lastName: form.surname,
+    firstName: form.firstName,
+    lastName: form.lastName,
+    profession: selectedProfession.value,
+    specialty: selectedSpecialty.value,
     email: form.email,
     specialization: selectedSpecialty.value,
     licenseNumber: form.professionLicenceNumber,
@@ -152,6 +152,7 @@ const submitForm = async () => {
   try {
     await post('/professionals', formData)
     formRef.value.reset()
+    emit('professional-added')
     alert.show = true
     alert.type = 'success'
     alert.message = 'Profesional registrado con éxito'
@@ -171,7 +172,7 @@ const rules = {
 
   acceptedLength: (value) => {
     const lengthMax = 50
-    const lengthMin = 2
+    const lengthMin = 3
     return (
       (value.length <= lengthMax && value.length >= lengthMin) ||
       `El campo debe tener entre ${lengthMin} y ${lengthMax} caracteres.`
