@@ -14,7 +14,7 @@
                     v-model="form.firstName"
                     label="Nombre"
                     prepend-inner-icon="mdi-account"
-                    :rules="[rules.required]"
+                    :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
                     maxlength="50"
                   />
@@ -24,7 +24,7 @@
                     v-model="form.lastName"
                     label="Apellidos"
                     prepend-inner-icon="mdi-account-details"
-                    :rules="[rules.required]"
+                    :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
                     maxlength="50"
                   />
@@ -102,6 +102,14 @@ const rules = {
     if (!value) return 'Este campo es obligatorio'
     const pattern = /^\+?\d{7,15}$/
     return pattern.test(value) || 'Número de teléfono inválido'
+  },
+    acceptedLength: (value) => {
+    const lengthMax = 50
+    const lengthMin = 3
+    return (
+      (value.length <= lengthMax && value.length >= lengthMin) ||
+      `El campo debe tener entre ${lengthMin} y ${lengthMax} caracteres.`
+    )
   },
 }
 

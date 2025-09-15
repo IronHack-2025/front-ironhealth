@@ -172,7 +172,7 @@ const rules = {
 
   acceptedLength: (value) => {
     const lengthMax = 50
-    const lengthMin = 2
+    const lengthMin = 3
     return (
       (value.length <= lengthMax && value.length >= lengthMin) ||
       `El campo debe tener entre ${lengthMin} y ${lengthMax} caracteres.`
