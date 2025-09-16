@@ -1,0 +1,53 @@
+{
+  "navbar": {
+    "patients": "Pacientes",
+    "professionals": "Profesionales",
+    "appointments": "Citas",
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "pages": {
+    "patients": {
+      "title": "Patient Management",
+      "subtitle": "Manage all patient records",
+      "actions": {
+        "add": "Add Patient",
+        "edit": "Edit Patient",
+        "delete": "Delete Patient"
+      }
+    },
+    "professionals": {
+      "title": "Healthcare Professionals",
+      "subtitle": "Manage medical staff",
+      "actions": {
+        "add": "Add Professional",
+        "edit": "Edit Professional",
+        "delete": "Delete Professional"
+      }
+},
+    "appointments": {
+      "title": "Appointment Scheduling",
+      "subtitle": "Schedule and manage appointments",
+      "actions": {
+        "schedule": "Schedule Appointment",
+        "reschedule": "Reschedule",
+        "cancel": "Cancel Appointment"
+      }
+    }
+  },
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View Details"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "success": "Operation completed successfully"
+    }
+  }
+}

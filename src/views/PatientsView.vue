@@ -6,10 +6,12 @@
     </div>
     <div class="rigth">
       <GenericList
+        :title="$t('views.patients.listTitle')"
         :items="patients"
         :headers="headers"
         :loading="loading"
         :error="error"
+        :search-placeholder="$t('common.forms.search')"
       />
     </div>
   </div>
@@ -20,17 +22,19 @@
 import { ref, onMounted } from 'vue'
 import GenericList from '@/components/GenericList.vue'
 import AddPatient from '@/components/AddPatientForm.vue'
+import { useI18n } from 'vue-i18n'
+
 
 const patients = ref([])
 const loading = ref(false)
 const error = ref('')
-
+const { t } = useI18n()
 
 const headers = [
-  { title: 'Nombre', key: 'firstName' },
-  { title: 'Apellidos', key: 'lastName' },
-  { title: 'Email', key: 'email' },
-  { title: 'Telefono', key: 'phone' },
+  { title: t('common.forms.firstName'), key: 'firstName' },
+  { title: t('common.forms.lastName'), key: 'lastName' },
+  { title: t('common.forms.email'), key: 'email' },
+  { title: t('common.forms.phone'), key: 'phone' },
 ]
 
 const fetchPatients = async () => {

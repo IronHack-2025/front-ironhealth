@@ -46,7 +46,7 @@
 <script setup>
 import { ref } from 'vue'
 const props = defineProps({
-  title: { type: String, default: 'Listado' },
+  title: { type: String, default: 'Lista de pacientes' },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
   error: { type: String, default: '' },

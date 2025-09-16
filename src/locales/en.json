@@ -1,0 +1,65 @@
+{
+  "navbar": {
+    "patients": "Patients",
+    "professionals": "Professionals",
+    "appointments": "Appointments",
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "views": {
+    "patients": {
+      "title": "Add new Patient",
+      "listTitle": "Patient List",
+      "actions": {
+        "add": "Add Patient",
+        "edit": "Edit Patient",
+        "delete": "Delete Patient"
+      }
+    },
+    "professionals": {
+      "title": "Healthcare Professionals",
+      "subtitle": "Manage medical staff",
+      "actions": {
+        "add": "Add Professional",
+        "edit": "Edit Professional",
+        "delete": "Delete Professional"
+      }
+},
+    "appointments": {
+      "title": "Appointment Scheduling",
+      "subtitle": "Schedule and manage appointments",
+      "actions": {
+        "schedule": "Schedule Appointment",
+        "reschedule": "Reschedule",
+        "cancel": "Cancel Appointment"
+      }
+    }
+  },
+
+  "common": {
+    "forms": { 
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "dateOfBirth": "Date of Birth",
+      "email": "Email",
+      "phone": "Phone Number",
+      "profession": "Profession",
+      "specialty": "Specialty",
+      "professionalLicenseNumber": "Professional license Number",
+      "search": "Search..."
+     },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View Details"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "success": "Operation completed successfully"
+    }
+  }
+}

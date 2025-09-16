@@ -12,14 +12,16 @@ import { RouterView } from 'vue-router'
           <v-list-item
             to="/patients"
             prepend-icon="mdi-account-multiple"
-            title="Patients"
+            :title="$t('navbar.patients')"
           ></v-list-item>
           <v-list-item
             to="/professionals"
             prepend-icon="mdi-doctor"
-            title="Professionals"
+            :title="$t('navbar.professionals')"
           ></v-list-item>
-          <v-list-item to="/appointments" prepend-icon="mdi-calendar-blank" title="Appointments"></v-list-item>
+          <v-list-item to="/appointments" prepend-icon="mdi-calendar-blank" :title="$t('navbar.appointments')">
+
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
 

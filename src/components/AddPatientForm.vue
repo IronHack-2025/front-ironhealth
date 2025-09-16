@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            Registro de Pacientes
+            {{$t('views.patients.title')}}
           </v-card-title>
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
@@ -12,7 +12,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.firstName"
-                    label="Nombre"
+                    :label="$t('common.forms.firstName')"
                     prepend-inner-icon="mdi-account"
                     :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
@@ -22,7 +22,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.lastName"
-                    label="Apellidos"
+                    :label="$t('common.forms.lastName')"
                     prepend-inner-icon="mdi-account-details"
                     :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
@@ -32,7 +32,7 @@
               </v-row>
               <v-text-field
                 v-model="form.email"
-                label="Correo electrónico"
+                :label="$t('common.forms.email')"
                 prepend-inner-icon="mdi-email"
                 :rules="[rules.required, rules.email]"
                 variant="outlined"
@@ -42,7 +42,7 @@
 
               <v-text-field
                 v-model="form.phone"
-                label="Número de teléfono"
+                :label="$t('common.forms.phone')"
                 prepend-inner-icon="mdi-phone"
                 :rules="[rules.required, rules.phone]"
                 variant="outlined"
@@ -52,7 +52,7 @@
 
               <v-date-input
                 v-model="form.birthDate"
-                label="Fecha de nacimiento"
+                :label="$t('common.forms.dateOfBirth')"
                 prepend-inner-icon="mdi-calendar-account-outline"
                 prepend-icon=""
                 :rules="[rules.required]"
