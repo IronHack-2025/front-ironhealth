@@ -39,7 +39,7 @@
            <!-- Slot para renderizar la imagen -->
             <template v-slot:item.image="{ item }">
               <v-avatar size="60">
-                <img v-if="item.image" :src="item.image" alt="Foto paciente" />
+                <img v-if="item.image" :src="item.image" alt="Foto paciente" class="w-100 h-100 object-cover" />
                 <v-icon v-else>mdi-account</v-icon>
               </v-avatar>
             </template>
