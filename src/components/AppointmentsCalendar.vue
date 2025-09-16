@@ -399,6 +399,7 @@ const calendarOptions = ref({
                     id: event._id,
                     start: event.startDate,
                     end: event.endDate,
+                    backgroundColor: professional.color || '',
                     extendedProps: {
                         patientId: event.patientId,
                         patientFirstName: patient.firstName || '',
