@@ -59,6 +59,16 @@
                 variant="outlined"
                 class="mt-2"
               />
+
+              <v-file-input
+                v-model="form.image"
+                label="Fotografía del paciente"
+                prepend-inner-icon="mdi-camera"
+                accept="image/*"
+                variant="outlined"
+                class="mt-2"
+              />
+
               <v-btn
                 block
                 color="primary"
@@ -103,7 +113,7 @@ const rules = {
     const pattern = /^\+?\d{7,15}$/
     return pattern.test(value) || 'Número de teléfono inválido'
   },
-    acceptedLength: (value) => {
+  acceptedLength: (value) => {
     const lengthMax = 50
     const lengthMin = 3
     return (
@@ -119,6 +129,7 @@ const form = reactive({
   email: '',
   phone: '',
   birthDate: '',
+  image: null,
 })
 
 const alert = reactive({
@@ -142,6 +153,7 @@ const newPatient = async () => {
     email: form.email,
     phone: form.phone,
     birthDate: form.birthDate,
+    image: form.image,
   }
 
   try {

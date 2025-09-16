@@ -27,6 +27,7 @@ const error = ref('')
 
 
 const headers = [
+  {title: 'Foto', key: 'image'},
   { title: 'Nombre', key: 'firstName' },
   { title: 'Apellidos', key: 'lastName' },
   { title: 'Email', key: 'email' },
