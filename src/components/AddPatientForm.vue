@@ -18,52 +18,19 @@
                     :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
                 </v-col>
               </v-row>
-              <v-text-field
-                v-model="form.email"
-                label="Correo electrónico"
-                prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email]"
-                variant="outlined"
-                class="mt-2"
-                maxlength="50"
-              />
+              <v-text-field v-model="form.email" label="Correo electrónico" prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email]" variant="outlined" class="mt-2" maxlength="50" />
 
-              <v-text-field
-                v-model="form.phone"
-                label="Número de teléfono"
-                prepend-inner-icon="mdi-phone"
-                :rules="[rules.required, rules.phone]"
-                variant="outlined"
-                class="mt-2"
-                maxlength="9"
-              />
+              <v-text-field v-model="form.phone" label="Número de teléfono" prepend-inner-icon="mdi-phone"
+                :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" maxlength="9" />
 
-              <v-date-input
-                v-model="form.birthDate"
-                label="Fecha de nacimiento"
-                prepend-inner-icon="mdi-calendar-account-outline"
-                prepend-icon=""
-                :rules="[rules.required]"
-                variant="outlined"
-                class="mt-2"
-              />
-              <v-file-input
-                v-model="form.image"
-                label="Fotografía del paciente"
-                prepend-inner-icon="mdi-camera"
-                accept="image/*"
-                variant="outlined"
-                class="mt-2"
-              />
-
-              <v-btn
-                block
-                color="primary"
-                class="mt-6"
-                size="large"
-                @click="newPatient"
-                cursor="pointer"
-              >
+              <v-date-input v-model="form.birthDate" label="Fecha de nacimiento"
+                prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
+                variant="outlined" class="mt-2" />
+              <CloudinaryUpload preset="signed_preset" folder="patients" buttonText="Subir foto del paciente"
+                api-url="http://localhost:3000/api/signature" @uploaded="form.imageUrl = $event"
+                @cleared="form.imageUrl = ''"  />
+              <v-btn block color="primary" class="mt-6" size="large" @click="newPatient" cursor="pointer">
                 Registrar Paciente
               </v-btn>
             </v-form>
@@ -168,6 +135,8 @@ onMounted(() => {
 });
 
 function initWidget() {
+  const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
   myWidget = window.cloudinary.createUploadWidget(
     {
       cloudName: CLOUD_NAME,
