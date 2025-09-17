@@ -59,7 +59,6 @@
                 variant="outlined"
                 class="mt-2"
               />
-
               <v-file-input
                 v-model="form.image"
                 label="Fotografía del paciente"
@@ -92,7 +91,6 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import Alert from './AlertMessage.vue'
-
 
 const emit = defineEmits(['patient-added'])
 import { post } from '../services/api'
@@ -130,7 +128,7 @@ const form = reactive({
   email: '',
   phone: '',
   birthDate: '',
-  image: null,
+  image: '',
 })
 
 const alert = reactive({
@@ -148,15 +146,16 @@ const newPatient = async () => {
     return
   }
 
-  const formData = {
-    firstName: form.firstName,
-    lastName: form.lastName,
-    email: form.email,
-    phone: form.phone,
-    birthDate: form.birthDate,
-    image: form.image,
+  const formData = new FormData()
+  formData.append('firstName', form.firstName)
+  formData.append('lastName', form.lastName)
+  formData.append('email', form.email)
+  formData.append('phone', form.phone)
+  formData.append('birthDate', form.birthDate)
+  if (form.image) {
+    formData.append('image', form.image)
   }
-
+  
   try {
     await post('/patients', formData)
     formRef.value.reset()

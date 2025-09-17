@@ -21,7 +21,7 @@
             </v-col>
           </v-toolbar>
 
-            <AlertMessage v-if="error" :type="'error'" :message="error" class="mx-4 mt-4" />
+          <AlertMessage v-if="error" :type="'error'" :message="error" class="mx-4 mt-4" />
 
           <v-data-table
             :headers="headers"
@@ -43,7 +43,6 @@
                 <v-icon v-else>mdi-account</v-icon>
               </v-avatar>
             </template>
-
           </v-data-table>
         </v-card>
       </v-col>
@@ -61,8 +60,7 @@ const props = defineProps({
   headers: { type: Array, required: true },
   loadingText: { type: String, default: 'Cargando...' },
   noDataText: { type: String, default: 'No se encontraron resultados' },
-  searchPlaceholder: { type: String, default: 'Buscar...' }
+  searchPlaceholder: { type: String, default: 'Buscar...' },
 })
 const search = ref('')
-
 </script>

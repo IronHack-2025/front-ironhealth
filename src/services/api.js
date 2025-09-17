@@ -13,14 +13,17 @@ async function handleResponse(response) {
 }
 
 export const post = async (endpoint, data) => {
-  const response = await fetch(`${apiBaseUrl}${endpoint}`, {
+  const isFormData = data instanceof FormData
+  const config = {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      // More headers, token etc.
-    },
-    body: JSON.stringify(data),
-  })
+    headers: isFormData
+      ? {} 
+      : {
+          'Content-Type': 'application/json',
+        },
+    body: isFormData ? data : JSON.stringify(data),
+  }
+  const response = await fetch(`${apiBaseUrl}${endpoint}`, config)
 
   return handleResponse(response)
 }
