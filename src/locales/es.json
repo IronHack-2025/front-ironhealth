@@ -4,50 +4,74 @@
     "professionals": "Profesionales",
     "appointments": "Citas",
     "dashboard": "Dashboard",
-    "reports": "Reports",
-    "settings": "Settings"
+    "reports": "Reportes",
+    "settings": "Configuración"
   },
-  "pages": {
+  "views": {
     "patients": {
-      "title": "Patient Management",
-      "subtitle": "Manage all patient records",
+      "title": "Registro de Pacientes",
+      "listTitle": "Listado de Pacientes",
+      "subtitle": "Gestionar todos los registros de pacientes",
       "actions": {
-        "add": "Add Patient",
-        "edit": "Edit Patient",
-        "delete": "Delete Patient"
+        "add": "Agregar Paciente",
+        "edit": "Editar Paciente",
+        "delete": "Eliminar Paciente"
       }
     },
     "professionals": {
-      "title": "Healthcare Professionals",
-      "subtitle": "Manage medical staff",
+      "title": "Profesionales de la Salud",
+      "subtitle": "Gestionar personal médico",
       "actions": {
-        "add": "Add Professional",
-        "edit": "Edit Professional",
-        "delete": "Delete Professional"
+        "add": "Agregar Profesional",
+        "edit": "Editar Profesional",
+        "delete": "Eliminar Profesional"
       }
-},
+    },
     "appointments": {
-      "title": "Appointment Scheduling",
-      "subtitle": "Schedule and manage appointments",
+      "title": "Programación de Citas",
+      "subtitle": "Programar y gestionar citas",
       "actions": {
-        "schedule": "Schedule Appointment",
-        "reschedule": "Reschedule",
-        "cancel": "Cancel Appointment"
+        "schedule": "Programar Cita",
+        "reschedule": "Reprogramar",
+        "cancel": "Cancelar Cita"
       }
     }
   },
   "common": {
+    "forms": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "dateOfBirth": "Fecha de Nacimiento",
+      "required": "Este campo es obligatorio",
+      "invalidEmail": "Por favor ingrese un email válido",
+      "invalidPhone": "Por favor ingrese un número de teléfono válido",
+      "validLength": "Debe tener entre {min} y {max} caracteres",
+      "search": "Buscar..."
+    },
     "buttons": {
-      "save": "Save",
-      "cancel": "Cancel",
-      "delete": "Delete",
-      "edit": "Edit",
-      "view": "View Details"
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "view": "Ver Detalles",
+      "registerPatient": "Registrar Paciente"
     },
     "messages": {
-      "loading": "Loading...",
-      "error": "An error occurred",
-      "success": "Operation completed successfully"
+      "loading": "Cargando...",
+      "error": "Ocurrió un error",
+      "success": "Operación completada con éxito",
+      "noData": "No se encontraron resultados"
+    },
+    "lists": {
+      "defaultTitle": "Lista"
+    },
+    "search": {
+      "placeholder": "Buscar..."
+    },
+    "pagination": {
+      "itemsPerPage": "Elementos por página:"
     }
   }
 }

@@ -5,10 +5,12 @@
     </div>
     <div class="rigth">
       <GenericList
+      :title="$t('views.professionals.listTitle')"
         :items="professionals"
         :headers="headers"
         :loading="loading"
         :error="error"
+        :search-placeholder="$t('common.forms.search')"
       />
     </div>
   </div>
@@ -19,6 +21,9 @@ import { ref, onMounted } from 'vue'
 import GenericList from '@/components/GenericList.vue'
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import professionsData from '@/assets/data/professions.json'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const professionals = ref([])
 const loading = ref(false)
@@ -40,8 +45,9 @@ function getSpecialtyName(code) {
 }
 
 const headers = [
-  { title: 'Nombre', key: 'firstName' },
-  { title: 'Apellidos', key: 'lastName' },
+  { title: t('common.forms.firstName'), key: 'firstName' },
+  { title: t('common.forms.lastName'), key: 'lastName' },
+  { title: t('common.forms.email'), key: 'email' },
   {
     title: 'Profesión',
     key: 'profession',
@@ -52,7 +58,7 @@ const headers = [
     key: 'specialty',
     value: (item) => getSpecialtyName(item.specialty),
   },
-  { title: 'Email', key: 'email' },
+  
 ]
 
 const fetchProfessionals = async () => {

@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            Registro de Profesional Médico
+             {{$t('views.professionals.title')}}
           </v-card-title>
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
@@ -12,7 +12,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.firstName"
-                    label="Nombre"
+                    :label="$t('common.forms.firstName')"
                     prepend-inner-icon="mdi-account"
                     :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
@@ -22,7 +22,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.lastName"
-                    label="Apellidos"
+                   :label="$t('common.forms.lastName')"
                     prepend-inner-icon="mdi-account-details"
                     :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
@@ -32,7 +32,7 @@
               </v-row>
               <v-select
                 v-model="selectedProfession"
-                label="Profesión"
+                :label="$t('common.forms.profession')"
                 prepend-inner-icon="mdi-briefcase"
                 :items="professionsList"
                 item-title="title"
@@ -44,7 +44,7 @@
 
               <v-select
                 v-model="selectedSpecialty"
-                label="Especialidad (opcional)"
+                :label="$t('common.forms.specialty')"
                 prepend-inner-icon="mdi-stethoscope"
                 :items="specialtiesList"
                 item-title="title"
@@ -55,7 +55,7 @@
 
               <v-text-field
                 v-model="form.email"
-                label="Correo electrónico"
+                :label="$t('common.forms.email')"
                 prepend-inner-icon="mdi-email"
                 :rules="[rules.required, rules.email, rules.acceptedLength]"
                 variant="outlined"
@@ -64,14 +64,14 @@
               />
               <v-text-field
                 v-model="form.professionLicenceNumber"
-                label="Número Colegiado (opcional)"
+               :label="$t('common.forms.professionalLicenseNumber')"
                 prepend-inner-icon="mdi-card-account-details"
                 variant="outlined"
                 class="mt-2"
                 maxlength="50"
               />
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
-                Registrar Profesional
+                        {{$t('common.buttons.registerProfessional')}}
               </v-btn>
             </v-form>
             <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
@@ -87,7 +87,11 @@ import { ref, reactive, computed, watch } from 'vue'
 import Alert from './AlertMessage.vue'
 import { post } from '../services/api'
 import professionsData from '@/assets/data/professions.json'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 const emit = defineEmits(['professional-added'])
+
 const formRef = ref(null)
 const isValid = ref(false)
 const selectedProfession = ref(null) // code
@@ -164,18 +168,20 @@ const submitForm = async () => {
 }
 
 const rules = {
-  required: (value) => !!value || 'Este campo es obligatorio.',
+  required: (value) => !!value || t('common.forms.required'),
   email: (value) => {
+    if (!value) return t('common.forms.required')
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(value) || 'Correo electrónico no válido.'
+    return pattern.test(value) || t('common.forms.invalidEmail')
   },
 
   acceptedLength: (value) => {
+    if (!value) return true
     const lengthMax = 50
     const lengthMin = 3
     return (
       (value.length <= lengthMax && value.length >= lengthMin) ||
-      `El campo debe tener entre ${lengthMin} y ${lengthMax} caracteres.`
+      t('common.forms.validLength', { min: lengthMin, max: lengthMax })
     )
   },
 }

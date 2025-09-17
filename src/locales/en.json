@@ -9,7 +9,7 @@
   },
   "views": {
     "patients": {
-      "title": "Add new Patient",
+      "title": "Patients Registration",
       "listTitle": "Patient List",
       "actions": {
         "add": "Add Patient",
@@ -18,8 +18,8 @@
       }
     },
     "professionals": {
-      "title": "Healthcare Professionals",
-      "subtitle": "Manage medical staff",
+      "title": "Healthcare Professionals Registration",
+      "listTitle": "Professionals List",
       "actions": {
         "add": "Add Professional",
         "edit": "Edit Professional",
@@ -45,21 +45,33 @@
       "email": "Email",
       "phone": "Phone Number",
       "profession": "Profession",
-      "specialty": "Specialty",
-      "professionalLicenseNumber": "Professional license Number",
-      "search": "Search..."
+      "specialty": "Specialty(Optional)",
+      "professionalLicenseNumber": "Professional license Number(Optional)",
+      "search": "Search...",
+      "required": "This field is required",
+      "invalidEmail": "Invalid email format",
+      "invalidPhone": "Invalid phone number",
+      "invalidDate": "Invalid date",
+      "validLength": "This field must be between {min} and {max} characters."
+
      },
     "buttons": {
       "save": "Save",
       "cancel": "Cancel",
       "delete": "Delete",
       "edit": "Edit",
-      "view": "View Details"
+      "view": "View Details",
+      "registerPatient": "Register Patient",
+      "registerProfessional": "Register Professional"
     },
     "messages": {
       "loading": "Loading...",
       "error": "An error occurred",
-      "success": "Operation completed successfully"
+      "success": "Operation completed successfully",
+      "noData": "No data available"
+    },
+     "pagination": {
+      "itemsPerPage": "Items per page:"
     }
   }
 }

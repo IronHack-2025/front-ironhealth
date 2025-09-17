@@ -20,15 +20,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import GenericList from '@/components/GenericList.vue'
 import AddPatient from '@/components/AddPatientForm.vue'
-import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 
 const patients = ref([])
 const loading = ref(false)
 const error = ref('')
-const { t } = useI18n()
 
 const headers = [
   { title: t('common.forms.firstName'), key: 'firstName' },

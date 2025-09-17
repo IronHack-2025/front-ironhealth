@@ -67,7 +67,7 @@
                 @click="newPatient"
                 cursor="pointer"
               >
-                Registrar Paciente
+              {{$t('common.buttons.registerPatient')}}
               </v-btn>
             </v-form>
 
@@ -81,34 +81,35 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
-
-const emit = defineEmits(['patient-added'])
 import { post } from '../services/api'
+
+const { t } = useI18n()
+const emit = defineEmits(['patient-added'])
 
 const formRef = ref(null)
 const isValid = ref(false)
-// const dateActive = ref(false)
 
 const rules = {
-  required: (value) => !!value || 'Este campo es obligatorio',
+  required: (value) => !!value || t('common.forms.required'),
   email: (value) => {
-    if (!value) return 'Este campo es obligatorio'
-    // Validación simple de email
+    if (!value) return t('common.forms.required')
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(value) || 'Correo electrónico inválido'
+    return pattern.test(value) || t('common.forms.invalidEmail')
   },
   phone: (value) => {
-    if (!value) return 'Este campo es obligatorio'
+    if (!value) return t('common.forms.required')
     const pattern = /^\+?\d{7,15}$/
-    return pattern.test(value) || 'Número de teléfono inválido'
+    return pattern.test(value) || t('common.forms.invalidPhone')
   },
-    acceptedLength: (value) => {
+  acceptedLength: (value) => {
+    if (!value) return true 
     const lengthMax = 50
     const lengthMin = 3
     return (
       (value.length <= lengthMax && value.length >= lengthMin) ||
-      `El campo debe tener entre ${lengthMin} y ${lengthMax} caracteres.`
+      t('common.forms.validLength', { min: lengthMin, max: lengthMax })
     )
   },
 }

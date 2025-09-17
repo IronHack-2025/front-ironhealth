@@ -9,7 +9,7 @@
             <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
               <v-text-field
                 v-model="search"
-                :placeholder="searchPlaceholder"
+                :placeholder="searchPlaceholder || $t('common.search.placeholder')"
                 prepend-inner-icon="mdi-magnify"
                 variant="solo-filled"
                 hide-details
@@ -28,8 +28,9 @@
             :items="items"
             :loading="loading"
             :search="search"
-            :loading-text="loadingText"
-            :no-data-text="noDataText"
+            :loading-text="loadingText || $t('common.messages.loading')"
+            :no-data-text="noDataText || $t('common.messages.noData')"
+            :items-per-page-text="$t('common.pagination.itemsPerPage')"
             class="rounded-b-xl"
             hover
             density="comfortable"
@@ -45,16 +46,21 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 const props = defineProps({
-  title: { type: String, default: 'Lista de pacientes' },
+  title: { type: String, default: '' },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
   error: { type: String, default: '' },
   headers: { type: Array, required: true },
-  loadingText: { type: String, default: 'Cargando...' },
-  noDataText: { type: String, default: 'No se encontraron resultados' },
-  searchPlaceholder: { type: String, default: 'Buscar...' }
+  loadingText: { type: String, default: '' },
+  noDataText: { type: String, default: '' },
+  searchPlaceholder: { type: String, default: '' }
 })
+
 const search = ref('')
 
 </script>
