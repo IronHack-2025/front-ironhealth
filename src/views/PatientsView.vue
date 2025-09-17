@@ -19,7 +19,7 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import GenericList from '@/components/GenericList.vue'
 import AddPatient from '@/components/AddPatientForm.vue'
@@ -30,12 +30,12 @@ const patients = ref([])
 const loading = ref(false)
 const error = ref('')
 
-const headers = [
+const headers = computed(() => [
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.email'), key: 'email' },
   { title: t('common.forms.phone'), key: 'phone' },
-]
+])
 
 const fetchPatients = async () => {
   loading.value = true

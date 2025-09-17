@@ -9,12 +9,12 @@
         </v-card>
         <v-dialog v-model="dialog" max-width="500">
             <v-card>
-                <v-card-title>📅 New appointment</v-card-title>
+                <v-card-title>📅 {{ t('views.appointments.newAppointment') }}</v-card-title>
                 <v-card-text>
                     <v-text-field
                         v-model="form.start"
                         :value="form.start && form.end ? `${formatDate(form.start)} - ${formatDate(form.end)}` : ''"
-                        label="Time:"
+                       :label="t('views.appointments.time')"
                         outlined
                         dense
                         required
@@ -23,21 +23,23 @@
                      <v-select v-model="selectedPatient" 
                      :items="availablePatients" 
                      item-value="_id"
-                        :item-title="item => `${item.lastName}, ${item.firstName}`" label="Patients" outlined
+                        :item-title="item => `${item.lastName}, ${item.firstName}`" 
+                        :label="t('views.appointments.patients')" outlined
                         dense></v-select>
                     <v-select v-model="selectedProfessional" :items="availableProfessionals"
                         item-value="_id"
                         :item-title="item => `${item.lastName}, ${item.firstName}`"
                         item-disabled="disabled"
-                        label="Available Professionals" outlined
+                         :label="t('views.appointments.professionals')" outlined
                         dense></v-select>
-                    <v-text-field v-model="form.notes" label="Notes" outlined dense maxlength="500" />
+                    <v-text-field v-model="form.notes" 
+                    :label="t('views.appointments.notes')" outlined dense maxlength="500" />
 
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn color="red" variant="tonal" @click="dialog = false">Close</v-btn>
-                    <v-btn color="primary" @click="saveAppointment">Save</v-btn>
+                    <v-btn color="red" variant="tonal" @click="dialog = false">{{ t('common.buttons.close') }}</v-btn>
+                    <v-btn color="primary" @click="saveAppointment">{{ t('common.buttons.save') }}</v-btn>
                 </v-card-actions>
                 <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
             </v-card>
@@ -45,18 +47,18 @@
 
         <v-dialog v-model="showEventDialog" max-width="500">
             <v-card>
-                <v-card-title>Appointment details</v-card-title>
+                <v-card-title>{{ t('views.appointments.details') }}</v-card-title>
                 <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
-                    <div><strong>Patient:</strong> {{ 
+                    <div><strong>{{ t('views.appointments.patient') }}</strong> {{ 
                         `${selectedEvent.extendedProps.patientLastName}, ${selectedEvent.extendedProps.patientFirstName}` 
                     }}</div>
-                    <div><strong>Professional:</strong> {{ 
+                    <div><strong>{{ t('views.appointments.professional') }}</strong> {{ 
                         `${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}` 
                     }}</div>
-                    <div><strong>Start time:</strong> {{ formatDate(selectedEvent.start) }}</div>
-                    <div><strong>End time:</strong> {{ formatDate(selectedEvent.end) }}</div>
+                    <div><strong>{{ t('views.appointments.start') }}</strong> {{ formatDate(selectedEvent.start) }}</div>
+                    <div><strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}</div>
                     <div class="mt-4">
-                        <strong>Notes:</strong>
+                        <strong>{{ t('views.appointments.notes') }}</strong>
                         <v-textarea 
                             v-model="editableNotes"
                             outlined
@@ -73,9 +75,9 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn color="red" variant="tonal" @click="cancelAppointment">Cancelar cita</v-btn>
-                    <v-btn color="blue" variant="tonal" @click="updateNotes">Guardar notas</v-btn>
-                    <v-btn color="primary" variant="tonal" @click="showEventDialog = false">Cerrar</v-btn>
+                    <v-btn color="red" variant="tonal" @click="cancelAppointment">{{ t('common.buttons.cancel') }}</v-btn>
+                    <v-btn color="blue" variant="tonal" @click="updateNotes">{{ t('common.buttons.saveNotes') }}</v-btn>
+                    <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{ t('common.buttons.close') }}</v-btn>
                 </v-card-actions>
                 <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
             </v-card>
