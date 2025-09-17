@@ -1,5 +1,20 @@
 <script setup>
+import { ref, watch } from 'vue'
 import { RouterView } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import SelectLanguage from '@/components/SelectLanguage.vue'
+
+const { locale } = useI18n()
+const currentLocale = ref(locale.value)
+
+// Sincronizar cambios de idioma entre i18n y currentLocale
+watch(() => locale.value, (newLocale) => {
+  currentLocale.value = newLocale
+})
+
+watch(currentLocale, (newLocale) => {
+  locale.value = newLocale
+})
 </script>
 
 <template>
@@ -23,10 +38,12 @@ import { RouterView } from 'vue-router'
 
           </v-list-item>
         </v-list>
+
+        <SelectLanguage v-model="currentLocale"/>
       </v-navigation-drawer>
 
       <v-main>
-        <RouterView />
+        <RouterView :calendar-locale="currentLocale" />
       </v-main>
     </v-app>
   </header>

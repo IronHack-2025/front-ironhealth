@@ -5,7 +5,8 @@
     "appointments": "Citas",
     "dashboard": "Dashboard",
     "reports": "Reportes",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "selectLang": "Idiomas"
   },
   "views": {
     "patients": {
@@ -20,6 +21,7 @@
     },
     "professionals": {
       "title": "Profesionales de la Salud",
+      "listTitle": "Listado de Profesionales",
       "subtitle": "Gestionar personal médico",
       "actions": {
         "add": "Agregar Profesional",
@@ -56,7 +58,8 @@
       "delete": "Eliminar",
       "edit": "Editar",
       "view": "Ver Detalles",
-      "registerPatient": "Registrar Paciente"
+      "registerPatient": "Registrar Paciente",
+      "registerProfessional": "Registrar Profesional"
     },
     "messages": {
       "loading": "Cargando...",

@@ -93,6 +93,17 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import Alert from './AlertMessage.vue'
+import esLocale from '@fullcalendar/core/locales/es'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+const props = defineProps({
+  calendarLocale: {
+    type: String,
+    default: 'es'
+  }
+})
 
 const patients = ref([])
 const professionals = ref([])
@@ -190,6 +201,24 @@ watch(selectedPatient, (newVal) => {
 watch(selectedProfessional, (newVal) => {
     form.value.professionalId = newVal
 })
+
+// Watcher para actualizar el idioma del calendario
+watch(
+  () => props.calendarLocale,
+  (newLocale) => {
+    calendarOptions.value.locale = newLocale
+    // Forzar actualización del calendario
+    if (calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents();
+    }
+  }
+)
+
+watch(
+  () => props.calendarLocale,
+  (newLocale) => {
+    calendarOptions.value.locale = newLocale
+  })
 
 const dialog = ref(false)
 
@@ -381,6 +410,8 @@ const calendarOptions = ref({
     initialView: 'timeGridWeek',
     selectable: true,
     editable: true,
+    locales: [esLocale],
+    locale: props.calendarLocale,
     selectMirror: true,
       expandRows: false, 
        height: 'auto',  

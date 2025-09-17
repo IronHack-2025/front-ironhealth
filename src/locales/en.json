@@ -5,7 +5,8 @@
     "appointments": "Appointments",
     "dashboard": "Dashboard",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "selectLang": "Languages"
   },
   "views": {
     "patients": {
