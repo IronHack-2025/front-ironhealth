@@ -59,14 +59,16 @@
                 variant="outlined"
                 class="mt-2"
               />
-              <v-file-input
+              <!-- <v-file-input
                 v-model="form.image"
                 label="Fotografía del paciente"
                 prepend-inner-icon="mdi-camera"
                 accept="image/*"
                 variant="outlined"
                 class="mt-2"
-              />
+              /> -->
+
+              <v-btn @click="openCloudinaryWidget" color="primary">Subir foto con Cloudinary</v-btn>
 
               <v-btn
                 block
@@ -89,8 +91,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import Alert from './AlertMessage.vue'
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const imageUrl = ref('');
+
+let myWidget = null;
+
 
 const emit = defineEmits(['patient-added'])
 import { post } from '../services/api'
@@ -167,6 +175,46 @@ const newPatient = async () => {
     alert.show = true
     alert.type = 'error'
     alert.message = 'Error de conexion: ' + error.message
+  }
+}
+
+
+
+
+onMounted(() => {
+  if (!window.cloudinary) {
+    const script = document.createElement('script');
+    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js';
+    script.async = true;
+    script.onload = () => {
+      initWidget();
+    };
+    document.head.appendChild(script);
+  } else {
+    initWidget();
+  }
+});
+
+function initWidget() {
+  myWidget = window.cloudinary.createUploadWidget(
+    {
+      cloudName: CLOUD_NAME,
+      uploadPreset: UPLOAD_PRESET,
+    },
+    (error, result) => {
+      if (!error && result && result.event === "success") {
+        imageUrl.value = result.info.secure_url;
+        form.image = result.info.secure_url;
+        console.log('Imagen subida:', result.info);
+        // Aquí puedes guardar la URL en tu formulario
+      }
+    }
+  );
+}
+
+function openCloudinaryWidget() {
+  if (myWidget) {
+    myWidget.open();
   }
 }
 </script>
