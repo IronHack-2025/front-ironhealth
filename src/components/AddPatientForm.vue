@@ -29,7 +29,7 @@
                 variant="outlined" class="mt-2" />
               <CloudinaryUpload preset="signed_preset" folder="patients" buttonText="Subir foto del paciente"
                 api-url="http://localhost:3000/api/signature" @uploaded="form.imageUrl = $event"
-                @cleared="form.imageUrl = ''"  />
+                @cleared="form.imageUrl = ''" block color="primary" class="mt-6" size="large" cursor="pointer" />
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient" cursor="pointer">
                 Registrar Paciente
               </v-btn>
@@ -135,9 +135,10 @@ onMounted(() => {
 });
 
 function initWidget() {
-  const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
-  myWidget = window.cloudinary.createUploadWidget(
+  const myWidget = window.cloudinary.createUploadWidget(
     {
       cloudName: CLOUD_NAME,
       uploadPreset: UPLOAD_PRESET,
