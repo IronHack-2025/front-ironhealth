@@ -80,19 +80,27 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
 import { post } from '../services/api'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const emit = defineEmits(['patient-added'])
 
 const formRef = ref(null)
 const isValid = ref(false)
 
-const rules = {
-  required: (value) => !!value || t('common.forms.required'),
+watch(locale, async () => {
+  if (formRef.value) {
+    // Esperar al siguiente tick para que las traducciones se actualicen
+    await nextTick()
+    formRef.value.validate()
+  }
+})
+
+const rules = computed(() => ({
+required: (value) => !!value || t('common.forms.required'),
   email: (value) => {
     if (!value) return t('common.forms.required')
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -112,7 +120,7 @@ const rules = {
       t('common.forms.validLength', { min: lengthMin, max: lengthMax })
     )
   },
-}
+}))
 
 const form = reactive({
   firstName: '',
