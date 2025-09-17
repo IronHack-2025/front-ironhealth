@@ -27,7 +27,7 @@
               <v-date-input v-model="form.birthDate" label="Fecha de nacimiento"
                 prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
                 variant="outlined" class="mt-2" />
-              <CloudinaryUpload preset="signed_preset" folder="patients" buttonText="Subir foto del paciente"
+              <CloudinaryUpload :preset="uploadPreset" folder="patients" buttonText="Subir foto del paciente"
                 api-url="http://localhost:3000/api/signature" @uploaded="form.imageUrl = $event"
                 @cleared="form.imageUrl = ''" block color="primary" class="mt-6" size="large" cursor="pointer" />
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient" cursor="pointer">
@@ -96,12 +96,14 @@ const newPatient = async () => {
     alert.message = ' Revisa los campos del formulario'
     return
   }
+  console.log(form.imageUrl)
   const formData = {
     firstName: form.firstName,
     lastName: form.lastName,
     email: form.email,
     phone: form.phone,
     birthDate: form.birthDate,
+    imageUrl: form.imageUrl,
   }
   try {
     await post('/patients', formData)
@@ -146,9 +148,8 @@ function initWidget() {
     (error, result) => {
       if (!error && result && result.event === "success") {
         imageUrl.value = result.info.secure_url;
-        form.image = result.info.secure_url;
+        form.imageUrl = result.info.secure_url; // <-- Cambia aquí a imageUrl
         console.log('Imagen subida:', result.info);
-        // Aquí puedes guardar la URL en tu formulario
       }
     }
   );

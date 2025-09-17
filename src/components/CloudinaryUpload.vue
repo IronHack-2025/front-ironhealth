@@ -25,8 +25,7 @@ const imageUrl = ref("");
 const openWidget = async () => {
   try {
     // Obtener firma del backend
-    const res = await fetch(props.apiUrl);
-    const { cloudName, apiKey, signature, timestamp } = await res.json();
+    const res = await fetch(`${props.apiUrl}?folder=${props.folder}`); const { cloudName, apiKey, signature, timestamp } = await res.json();
     const widget = window.cloudinary.createUploadWidget(
       {
         cloudName,
