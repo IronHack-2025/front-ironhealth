@@ -20,9 +20,7 @@
               />
             </v-col>
           </v-toolbar>
-
-          <AlertMessage v-if="error" :type="'error'" :message="error" class="mx-4 mt-4" />
-
+            <AlertMessage v-if="error" :type="'error'" :message="error" class="mx-4 mt-4" />
           <v-data-table
             :headers="headers"
             :items="items"
@@ -36,20 +34,12 @@
             fixed-header
             height="500px"
           >
-           <!-- Slot para renderizar la imagen -->
-            <template v-slot:item.image="{ item }">
-              <v-avatar size="60">
-                <img v-if="item.image" :src="item.image" alt="Foto paciente" class="w-100 h-100 object-cover" />
-                <v-icon v-else>mdi-account</v-icon>
-              </v-avatar>
-            </template>
           </v-data-table>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 const props = defineProps({
@@ -60,7 +50,16 @@ const props = defineProps({
   headers: { type: Array, required: true },
   loadingText: { type: String, default: 'Cargando...' },
   noDataText: { type: String, default: 'No se encontraron resultados' },
-  searchPlaceholder: { type: String, default: 'Buscar...' },
+  searchPlaceholder: { type: String, default: 'Buscar...' }
 })
 const search = ref('')
 </script>
+
+
+
+
+
+
+
+
+
