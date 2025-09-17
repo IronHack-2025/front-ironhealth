@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { watch } from 'vue'
 
 // Configuración de i18n
 const { t, locale } = useI18n()
@@ -17,9 +18,17 @@ const languages = [
   { code: 'es', label: 'Español' }
 ]
 
+// Si el padre cambia el v-model desde fuera, sincronizamos el i18n.locale
+watch(() => props.modelValue, (newVal) => {
+  if (newVal && newVal !== locale.value) {
+    locale.value = newVal   // Añadido (sincronización)
+  }
+})
+
 // Función para manejar cambios
 const handleLanguageChange = (newValue) => {
   locale.value = newValue
+  localStorage.setItem('lang', newValue) // Añadido (persistencia)
   emit('update:modelValue', newValue)
 }
 

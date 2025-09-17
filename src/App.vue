@@ -14,6 +14,7 @@ watch(() => locale.value, (newLocale) => {
 
 watch(currentLocale, (newLocale) => {
   locale.value = newLocale
+  localStorage.setItem('lang', newLocale) // Persistir preferencia de idioma
 })
 </script>
 
