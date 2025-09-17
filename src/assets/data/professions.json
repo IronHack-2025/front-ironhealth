@@ -1,7 +1,10 @@
 {
   "professions": [
     {
-      "text": "Médico",
+      "text": {
+        "en": "Doctor",
+        "es": "Médico"
+      },
       "code": "2001",
       "specialty": [
         {
@@ -163,7 +166,10 @@
       ]
     },
     {
-      "text": "Farmacéutico",
+     "text": {
+        "en": "Pharmacist",
+        "es": "Farmacéutico"
+      },
       "code": "2140",
       "specialty": [
         {
@@ -189,7 +195,10 @@
       ]
     },
     {
-      "text": "Odontólogo (Dentista)",
+      "text": {
+        "en": "Dentist",
+        "es": "Dentista(Odontologo)"
+      },
       "code": "2002",
       "specialty": [
         {
@@ -223,8 +232,11 @@
       ]
     },
     {
-      "text": "Enfermero (Enfermería)",
       "code": "2121",
+      "text": {
+        "en": "Nurse", 
+        "es": "Enfermero/a"
+      },
       "specialty": [
         {
           "specialty-name": "Enfermería Médico-Quirúrgica",
@@ -261,7 +273,10 @@
       ]
     },
     {
-      "text": "Fisioterapeuta",
+      "text": {
+        "en": "Physiotherapist", 
+        "es": "Fisioterapeuta"
+      },
       "code": "2152",
       "specialty": [
         {
@@ -291,7 +306,10 @@
       ]
     },
     {
-      "text": "Terapeuta ocupacional",
+      "text": {
+        "en": "Ocupational therapist", 
+        "es": "Terapeuta Ocupacional"
+      },
       "code": "2156",
       "specialty": [
         {
@@ -317,7 +335,10 @@
       ]
     },
     {
-      "text": "Podólogo",
+      "text": {
+        "en": "Podiatrist", 
+        "es": "Podólogo"
+      }, 
       "code": "2157",
       "specialty": [
         {
@@ -339,7 +360,9 @@
       ]
     },
     {
-      "text": "Óptico-optometrista",
+       "text": {
+        "en": "Optometrist", 
+        "es": "Óptico-optometrista" },
       "code": "2155",
       "specialty": [
         {
@@ -361,7 +384,9 @@
       ]
     },
     {
-      "text": "Logopeda",
+      "text": {
+        "en": "Speech Therapist", 
+        "es": "Logopeda" },
       "code": "2154",
       "specialty": [
         {
@@ -387,7 +412,9 @@
       ]
     },
     {
-      "text": "Dietista-nutricionista",
+      "text": {
+        "en": "Nutricionist", 
+        "es": "Dietista-Nutricionista" },
       "code": "2153",
       "specialty": [
         {
@@ -405,7 +432,9 @@
       ]
     },
     {
-      "text": "Especialista en Análisis Clínicos",
+      "text": {
+        "en": "Clinical Analysis Specialist", 
+        "es": "Especialista en Análisis Clínicos" },
       "code": "2159-1",
       "specialty": [
         {
@@ -427,7 +456,10 @@
       ]
     },
     {
-      "text": "Especialista en Bioquímica Clínica",
+      "text": {
+        "en": "Biochemistry Clinical Specialist",
+        "es": "Especialista en Bioquímica Clínica"
+      },
       "code": "2159-2",
       "specialty": [
         {
@@ -445,7 +477,10 @@
       ]
     },
     {
-      "text": "Psicólogo general sanitario",
+      "text": {
+        "en": "General Health Psychologist",
+        "es": "Psicólogo general sanitario"
+      },
       "code": "2293",
       "specialty": [
         {

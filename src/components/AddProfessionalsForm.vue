@@ -98,10 +98,12 @@ const selectedProfession = ref(null) // code
 const selectedSpecialty = ref('Sin especificar') // specialty-code
 
 // Lista de profesiones: muestra text, guarda code
-const professionsList = professionsData.professions.map((p) => ({
-  title: p.text,
-  value: p.code,
-}))
+const professionsList = computed(() => {
+  return professionsData.professions.map((p) => ({
+    title: p.text[locale.value] || p.text.en, // Usar idioma actual o fallback a inglés
+    value: p.code,
+  }))
+})
 
 // Lista de especialidades según profesión seleccionada
 const specialtiesList = computed(() => {
