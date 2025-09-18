@@ -10,27 +10,75 @@
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.firstName" label="Nombre" prepend-inner-icon="mdi-account"
-                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
+                  <v-text-field
+                    v-model="form.firstName"
+                    label="Nombre"
+                    prepend-inner-icon="mdi-account"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.lastName" label="Apellidos" prepend-inner-icon="mdi-account-details"
-                    :rules="[rules.required, rules.acceptedLength]" variant="outlined" maxlength="50" />
+                  <v-text-field
+                    v-model="form.lastName"
+                    label="Apellidos"
+                    prepend-inner-icon="mdi-account-details"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                  />
                 </v-col>
               </v-row>
-              <v-text-field v-model="form.email" label="Correo electrónico" prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email]" variant="outlined" class="mt-2" maxlength="50" />
+              <v-text-field
+                v-model="form.email"
+                label="Correo electrónico"
+                prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+              />
 
-              <v-text-field v-model="form.phone" label="Número de teléfono" prepend-inner-icon="mdi-phone"
-                :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" maxlength="9" />
+              <v-text-field
+                v-model="form.phone"
+                label="Número de teléfono"
+                prepend-inner-icon="mdi-phone"
+                :rules="[rules.required, rules.phone]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="9"
+                 inputmode="numeric"
+                
+              />
 
-              <v-date-input v-model="form.birthDate" label="Fecha de nacimiento"
-                prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
-                variant="outlined" class="mt-2" />
-              <CloudinaryUpload :preset="uploadPreset" folder="patients" buttonText="Subir foto del paciente"
-                api-url="http://localhost:3000/api/signature" @uploaded="form.imageUrl = $event"
-                @cleared="form.imageUrl = ''" block color="primary" class="mt-6" size="large" cursor="pointer" />
-              <v-btn block color="primary" class="mt-6" size="large" @click="newPatient" cursor="pointer">
+              <v-date-input
+                v-model="form.birthDate"
+                label="Fecha de nacimiento"
+                prepend-inner-icon="mdi-calendar-account-outline"
+                prepend-icon=""
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+              />
+              <CloudinaryUpload
+               ref="cloudinaryRef" 
+                :preset="uploadPreset"
+                folder="patients"
+                buttonText="Subir foto del paciente"
+                api-url="http://localhost:3000/api/signature"
+                @uploaded="form.imageUrl = $event"
+                @cleared="form.imageUrl = ''"
+                block
+              />
+              <v-btn
+                block
+                color="primary"
+                class="mt-6"
+                size="large"
+                @click="newPatient"
+                cursor="pointer"
+              >
                 Registrar Paciente
               </v-btn>
             </v-form>
@@ -44,11 +92,10 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import Alert from './AlertMessage.vue'
-
+const cloudinaryRef = ref(null)
 const emit = defineEmits(['patient-added'])
 import { post } from '../services/api'
-import CloudinaryUpload from "./CloudinaryUpload.vue";
-
+import CloudinaryUpload from './CloudinaryUpload.vue'
 
 const formRef = ref(null)
 const isValid = ref(false)
@@ -81,7 +128,7 @@ const form = reactive({
   email: '',
   phone: '',
   birthDate: '',
-  imageUrl: ''
+  imageUrl: '',
 })
 const alert = reactive({
   show: false,
@@ -103,11 +150,13 @@ const newPatient = async () => {
     email: form.email,
     phone: form.phone,
     birthDate: form.birthDate,
-    imageUrl: form.imageUrl,
+    imageUrl: form.imageUrl
+,
   }
   try {
     await post('/patients', formData)
     formRef.value.reset()
+    cloudinaryRef.value?.clearImage()
     emit('patient-added')
     alert.show = true
     alert.type = 'success'
@@ -119,22 +168,19 @@ const newPatient = async () => {
   }
 }
 
-
-
-
 onMounted(() => {
   if (!window.cloudinary) {
-    const script = document.createElement('script');
-    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js';
-    script.async = true;
+    const script = document.createElement('script')
+    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js'
+    script.async = true
     script.onload = () => {
-      initWidget();
-    };
-    document.head.appendChild(script);
+      initWidget()
+    }
+    document.head.appendChild(script)
   } else {
-    initWidget();
+    initWidget()
   }
-});
+})
 
 function initWidget() {
   const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
@@ -146,18 +192,18 @@ function initWidget() {
       uploadPreset: UPLOAD_PRESET,
     },
     (error, result) => {
-      if (!error && result && result.event === "success") {
-        imageUrl.value = result.info.secure_url;
-        form.imageUrl = result.info.secure_url; // <-- Cambia aquí a imageUrl
-        console.log('Imagen subida:', result.info);
+      if (!error && result && result.event === 'success') {
+        imageUrl.value = result.info.secure_url
+        form.imageUrl = result.info.secure_url // <-- Cambia aquí a imageUrl
+        console.log('Imagen subida:', result.info)
       }
-    }
-  );
+    },
+  )
 }
 
 function openCloudinaryWidget() {
   if (myWidget) {
-    myWidget.open();
+    myWidget.open()
   }
 }
 </script>

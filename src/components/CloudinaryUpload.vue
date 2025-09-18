@@ -13,6 +13,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
+
 const props = defineProps({
   buttonText: { type: String, default: "Subir Imagen" },
   preset: { type: String, required: true }, // tu uploadPreset (signed)
@@ -51,7 +52,7 @@ const clearImage = () => {
   imageUrl.value = "";
   emit("cleared");
 };
-</script>
+defineExpose({ clearImage });</script>
 <style scoped>
 .cloudinary-upload {
   display: flex;
