@@ -47,9 +47,7 @@
                 :rules="[rules.required, rules.phone]"
                 variant="outlined"
                 class="mt-2"
-                maxlength="9"
-                 inputmode="numeric"
-                
+                type="number"
               />
 
               <v-date-input
