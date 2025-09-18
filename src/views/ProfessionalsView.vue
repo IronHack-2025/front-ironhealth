@@ -40,6 +40,7 @@ function getSpecialtyName(code) {
 }
 
 const headers = [
+    {title: 'Foto', key: 'imageUrl'},
   { title: 'Nombre', key: 'firstName' },
   { title: 'Apellidos', key: 'lastName' },
   {
