@@ -113,7 +113,7 @@ const specialtiesList = computed(() => {
   return [
     { title: 'Sin especificar', value: '' },
     ...professionObj.specialty.map((s) => ({
-      title: s['specialty-name'],
+      title: s['specialty-name'][locale.value] || s['specialty-name'].en,
       value: s['specialty-code'],
     })),
   ]
@@ -190,7 +190,7 @@ required: (value) => !!value || t('common.forms.required'),
     return pattern.test(value) || t('common.forms.invalidPhone')
   },
   acceptedLength: (value) => {
-    if (!value) return true 
+    if (!value) return true
     const lengthMax = 50
     const lengthMin = 3
     return (

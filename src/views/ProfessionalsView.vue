@@ -4,14 +4,8 @@
       <AddProfessionalsForm @professional-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
-      <GenericList
-      :title="$t('views.professionals.listTitle')"
-        :items="professionals"
-        :headers="headers"
-        :loading="loading"
-        :error="error"
-        :search-placeholder="$t('common.forms.search')"
-      />
+      <GenericList :title="$t('views.professionals.listTitle')" :items="professionals" :headers="headers"
+        :loading="loading" :error="error" :search-placeholder="$t('common.forms.search')" />
     </div>
   </div>
 </template>
@@ -23,7 +17,7 @@ import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import professionsData from '@/assets/data/professions.json'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const professionals = ref([])
 const loading = ref(false)
@@ -31,7 +25,7 @@ const error = ref('')
 
 function getProfessionName(code) {
   for (const p of professionsData.professions) {
-    if (p.code === code) return p.text
+    if (p.code === code) return p.text[locale.value] || p.text.en
   }
   return '—'
 }
@@ -39,7 +33,7 @@ function getProfessionName(code) {
 function getSpecialtyName(code) {
   for (const p of professionsData.professions) {
     const found = p.specialty?.find((s) => s['specialty-code'] === code)
-    if (found) return found['specialty-name']
+    if (found) return found['specialty-name']?.[locale.value] || found['specialty-name'].en
   }
   return '—'
 }
@@ -49,16 +43,16 @@ const headers = computed(() => [
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.email'), key: 'email' },
   {
-    title: 'Profesión',
+    title: t('common.forms.profession'),
     key: 'profession',
     value: (item) => getProfessionName(item.profession),
   },
   {
-    title: 'Especialidad',
+    title: t('common.forms.specialty'),
     key: 'specialty',
     value: (item) => getSpecialtyName(item.specialty),
   },
-  
+
 ])
 
 const fetchProfessionals = async () => {
