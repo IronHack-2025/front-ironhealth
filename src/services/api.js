@@ -1,5 +1,4 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-
 async function handleResponse(response) {
   if (response.ok) {
     if (response.status === 204 || response.status === 201 || response.headers.get('Content-Length') === '0') {
@@ -11,7 +10,6 @@ async function handleResponse(response) {
     throw new Error(errorData.error || 'API request failed')
   }
 }
-
 export const post = async (endpoint, data) => {
   const response = await fetch(`${apiBaseUrl}${endpoint}`, {
     method: 'POST',
@@ -21,6 +19,5 @@ export const post = async (endpoint, data) => {
     },
     body: JSON.stringify(data),
   })
-
   return handleResponse(response)
 }
