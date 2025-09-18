@@ -1,6 +1,6 @@
 <template>
   <div class="cloudinary-upload">
-    <v-btn color="primary" @click="openWidget">
+    <v-btn color="grey" @click="openWidget">
       {{ buttonText }}
     </v-btn>
     <div v-if="imageUrl" class="mt-3">
