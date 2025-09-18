@@ -64,7 +64,7 @@
                 :preset="uploadPreset"
                 folder="patients"
                 buttonText="Subir foto del paciente"
-                api-url="http://localhost:3000/api/signature"
+                :api-url="`${apiBaseUrl}/signature`"
                 @uploaded="form.imageUrl = $event"
                 @cleared="form.imageUrl = ''"
                 block
@@ -94,6 +94,8 @@ const cloudinaryRef = ref(null)
 const emit = defineEmits(['patient-added'])
 import { post } from '../services/api'
 import CloudinaryUpload from './CloudinaryUpload.vue'
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 
 const formRef = ref(null)
 const isValid = ref(false)

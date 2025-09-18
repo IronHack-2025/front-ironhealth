@@ -19,9 +19,8 @@
             <!-- Slot para renderizar la imageUrln -->
             <template v-slot:item.imageUrl="{ item }">
               <v-avatar size="70">
-                <v-img v-if="item.imageUrl" :src="item.imageUrl"
-                  alt="Foto paciente" class="object-cover w-100 h-auto rounded m-2" />
-                <v-icon v-else>mdi-account</v-icon>
+                <v-img :src="item.imageUrl"
+                  alt="Foto paciente"/>
               </v-avatar>
             </template>
           </v-data-table>
