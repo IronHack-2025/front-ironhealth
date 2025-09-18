@@ -29,7 +29,16 @@
 },
     "appointments": {
       "title": "Appointment Scheduling",
-      "subtitle": "Schedule and manage appointments",
+      "newAppointment": "Book new Appointment",
+      "time": "Time: ",
+      "patient": "Patient:",
+      "patients": "Patients:",
+    "professionals": "Available Professionals:",
+     "professional": "Professional:",
+    "notes": "Notes:",
+      "details": "Appointment Details",
+      "start": "Start time:",
+      "end": "End time:",
       "actions": {
         "schedule": "Schedule Appointment",
         "reschedule": "Reschedule",
@@ -61,6 +70,8 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "edit": "Edit",
+      "close": "Close",
+      "saveNotes": "Save Notes",
       "view": "View Details",
       "registerPatient": "Register Patient",
       "registerProfessional": "Register Professional"

@@ -14,7 +14,7 @@
                     v-model="form.firstName"
                     :label="$t('common.forms.firstName')"
                     prepend-inner-icon="mdi-account"
-                    :rules="[rules.required, rules.acceptedLength]"
+                      :rules="[rules.required, rules.acceptedLength]"
                     variant="outlined"
                     maxlength="50"
                   />
@@ -83,13 +83,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import Alert from './AlertMessage.vue'
 import { post } from '../services/api'
 import professionsData from '@/assets/data/professions.json'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const emit = defineEmits(['professional-added'])
 
 const formRef = ref(null)
@@ -98,10 +98,12 @@ const selectedProfession = ref(null) // code
 const selectedSpecialty = ref('Sin especificar') // specialty-code
 
 // Lista de profesiones: muestra text, guarda code
-const professionsList = professionsData.professions.map((p) => ({
-  title: p.text,
-  value: p.code,
-}))
+const professionsList = computed(() => {
+  return professionsData.professions.map((p) => ({
+    title: p.text[locale.value] || p.text.en, // Usar idioma actual o fallback a inglés
+    value: p.code,
+  }))
+})
 
 // Lista de especialidades según profesión seleccionada
 const specialtiesList = computed(() => {
@@ -119,6 +121,14 @@ const specialtiesList = computed(() => {
 
 watch(selectedProfession, () => {
   selectedSpecialty.value = ''
+})
+
+watch(locale, async () => {
+  if (formRef.value) {
+    // Esperar al siguiente tick para que las traducciones se actualicen
+    await nextTick()
+    formRef.value.validate()
+  }
 })
 
 const form = reactive({
@@ -167,16 +177,20 @@ const submitForm = async () => {
   }
 }
 
-const rules = {
-  required: (value) => !!value || t('common.forms.required'),
+const rules = computed(() => ({
+required: (value) => !!value || t('common.forms.required'),
   email: (value) => {
     if (!value) return t('common.forms.required')
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return pattern.test(value) || t('common.forms.invalidEmail')
   },
-
+  phone: (value) => {
+    if (!value) return t('common.forms.required')
+    const pattern = /^\+?\d{7,15}$/
+    return pattern.test(value) || t('common.forms.invalidPhone')
+  },
   acceptedLength: (value) => {
-    if (!value) return true
+    if (!value) return true 
     const lengthMax = 50
     const lengthMin = 3
     return (
@@ -184,5 +198,5 @@ const rules = {
       t('common.forms.validLength', { min: lengthMin, max: lengthMax })
     )
   },
-}
+}))
 </script>

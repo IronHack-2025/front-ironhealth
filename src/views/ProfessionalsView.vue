@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import GenericList from '@/components/GenericList.vue'
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import professionsData from '@/assets/data/professions.json'
@@ -44,7 +44,7 @@ function getSpecialtyName(code) {
   return '—'
 }
 
-const headers = [
+const headers = computed(() => [
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.email'), key: 'email' },
@@ -59,7 +59,7 @@ const headers = [
     value: (item) => getSpecialtyName(item.specialty),
   },
   
-]
+])
 
 const fetchProfessionals = async () => {
   loading.value = true
