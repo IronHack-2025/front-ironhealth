@@ -71,7 +71,13 @@
               </v-btn>
             </v-form>
 
-            <Alert :show="alert.show" :type="alert.type" :messageCode="alert.alertMessageCode" :fallbackMessage="alert.alertDetails" />
+            <Alert 
+              :show="alert.show" 
+              :type="alert.type" 
+              :messageCode="alert.messageCode" 
+              :details="alert.details"
+              :fallbackMessage="alert.fallbackMessage" 
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -132,17 +138,34 @@ const form = reactive({
 
 const alert = reactive({
   show: false,
-  alertMessageCode: '',
-  alertDetails: null,
   type: 'success',
+  messageCode: '',
+  details: null,
+  fallbackMessage: ''
 })
 
+const resetAlert = () => {
+  alert.show = false
+  alert.type = 'success'
+  alert.messageCode = ''
+  alert.details = null
+  alert.fallbackMessage = ''
+}
+
+const showAlert = (type, messageCode, details = null, fallbackMessage = '') => {
+  alert.show = true
+  alert.type = type
+  alert.messageCode = messageCode
+  alert.details = details
+  alert.fallbackMessage = fallbackMessage
+}
+
 const newPatient = async () => {
+    resetAlert()
+  
   const { valid } = await formRef.value.validate()
   if (!valid) {
-    alert.show = true
-    alert.type = 'error'
-    alert.message = ' Revisa los campos del formulario'
+    showAlert('error', 'FORM_VALIDATION_FAILED', null, 'Please check the form fields')
     return
   }
 
@@ -155,18 +178,37 @@ const newPatient = async () => {
   }
 
   try {
-    await post('/patients', formData)
+  const response = await post('/patients', formData)
+    console.log('Response from backend:', response)
+
     formRef.value.reset()
     emit('patient-added')
-    alert.show = true
-    alert.type = 'success'
-    alert.alertMessageCode = response.data.messageCode || 'PATIENT_CREATED'
-    alert.alertDetails = response.data.messageDetails || null
+
+    showAlert('success', response.data.messageCode || 'PATIENT_CREATED',
+      null,
+      'Patient created successfully')
   } catch (error) {
-    alert.show = true
-    alert.type = 'error'
-    alert.alertMessageCode = error.messageCode || 'PATIENT_CREATION_FAILED'
-    alert.alertDetails = error.messageDetails || (error.response && error.response.data && error.response.data.message) || error.message || 'Error desconocido'
+    console.error('Error creating patient:', error)
+    console.error('Error details:', {
+      messageCode: error.messageCode,
+      messageType: error.messageType,
+      details: error.details,
+      message: error.message,
+      stack: error.stack
+    })
+    
+    // Verificar si el error tiene las propiedades esperadas
+    const errorMessageCode = error?.messageCode || 'INTERNAL_SERVER_ERROR'
+    const errorDetails = error?.details || null
+    const errorMessage = error?.message || 'An error occurred while creating the patient'
+    
+    // Mostrar mensaje de error
+    showAlert(
+      'error',
+      errorMessageCode,
+      errorDetails,
+      errorMessage
+    )
   }
 }
 </script>

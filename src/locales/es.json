@@ -94,7 +94,7 @@
   },
   "messages": {
     "success": {
-      "PATIENT_CREATED": "Patient created successfully",
+      "PATIENT_CREATED": "Paciente creado exitosamente",
       "PATIENT_UPDATED": "Patient updated successfully",
       "PATIENT_DELETED": "Patient deleted successfully",
       "PROFESSIONAL_CREATED": "Professional created successfully",
@@ -106,7 +106,7 @@
       "PATIENTS_RETRIEVED": "Patients retrieved successfully",
       "PROFESSIONALS_RETRIEVED": "Professionals retrieved successfully",
       "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
-      "OPERATION_SUCCESS": "Operation completed successfully",
+      "OPERATION_SUCCESS": "Operación completada exitosamente",
       "NOTES_UPDATED": "Notes saved successfully"
     },
     "error": {
@@ -116,11 +116,13 @@
       "APPOINTMENT_NOT_FOUND": "Appointment not found",
       "EMAIL_ALREADY_EXISTS": "Email already exists",
       "INVALID_EMAIL_FORMAT": "Invalid email format",
-      "INTERNAL_SERVER_ERROR": "Internal server error",
-      "APPOINTMENT_CONFLICT": "Appointment time conflict"
+      "INTERNAL_SERVER_ERROR": "Error interno del servidor",
+      "APPOINTMENT_CONFLICT": "Appointment time conflict",
+      "NETWORK_ERROR": "Error de conexión de red",
+      "PATIENT_CREATION_FAILED": "Error al crear el paciente"
     },
     "validation": {
-      "FORM_FIELDS_REQUIRED": "Please fill in all required fields",
+      "FORM_FIELDS_REQUIRED": "Por favor complete todos los campos requeridos",
       "NAME_MUST_BE_STRING": "Name must be a string",
       "NAME_MIN_LENGTH": "Name must be at least {min} characters long",
       "NAME_MAX_LENGTH": "Name must be at most {max} characters long",

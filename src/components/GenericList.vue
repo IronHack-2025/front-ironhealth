@@ -21,7 +21,14 @@
             </v-col>
           </v-toolbar>
 
-            <AlertMessage v-if="error" :type="'error'" :message="error" class="mx-4 mt-4" />
+            <Alert 
+            v-if="error" 
+            :show="true"
+            type="error" 
+            :messageCode="error"
+            :fallbackMessage="error"
+            class="mx-4 mt-4" 
+          />
 
           <v-data-table
             :headers="headers"
@@ -47,6 +54,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import Alert from './AlertMessage.vue'
 
 const { t } = useI18n()
 

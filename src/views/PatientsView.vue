@@ -44,7 +44,13 @@ const fetchPatients = async () => {
     const response = await fetch('http://localhost:3000/api/patients')
     if (!response.ok) throw new Error('Error al obtener pacientes')
     const data = await response.json()
-    patients.value = Array.isArray(data) ? data : []
+
+   if (data.success && data.data) {
+  patients.value = Array.isArray(data.data) ? data.data : []
+} else {
+  // Fallback para estructura legacy
+  patients.value = Array.isArray(data) ? data : []
+}
   } catch (err) {
     patients.value = []
     error.value = err.message || 'Error desconocido'

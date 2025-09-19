@@ -112,7 +112,8 @@
       "INVALID_EMAIL_FORMAT": "Invalid email format",
       "INTERNAL_SERVER_ERROR": "Internal server error",
       "APPOINTMENT_CONFLICT": "Appointment time conflict",
-      "NETWORK_ERROR": "Network connection error"
+      "NETWORK_ERROR": "Network connection error",
+      "PATIENT_CREATION_FAILED": "Failed to create patient"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Please fill in all required fields",
