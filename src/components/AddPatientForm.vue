@@ -71,7 +71,7 @@
               </v-btn>
             </v-form>
 
-            <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
+            <Alert :show="alert.show" :type="alert.type" :messageCode="alert.alertMessageCode" :fallbackMessage="alert.alertDetails" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -132,7 +132,8 @@ const form = reactive({
 
 const alert = reactive({
   show: false,
-  message: '',
+  alertMessageCode: '',
+  alertDetails: null,
   type: 'success',
 })
 
@@ -159,11 +160,13 @@ const newPatient = async () => {
     emit('patient-added')
     alert.show = true
     alert.type = 'success'
-    alert.message = 'Paciente registrado con éxito'
+    alert.alertMessageCode = response.data.messageCode || 'PATIENT_CREATED'
+    alert.alertDetails = response.data.messageDetails || null
   } catch (error) {
     alert.show = true
     alert.type = 'error'
-    alert.message = 'Error de conexion: ' + error.message
+    alert.alertMessageCode = error.messageCode || 'PATIENT_CREATION_FAILED'
+    alert.alertDetails = error.messageDetails || (error.response && error.response.data && error.response.data.message) || error.message || 'Error desconocido'
   }
 }
 </script>

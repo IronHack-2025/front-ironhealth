@@ -85,5 +85,48 @@
      "pagination": {
       "itemsPerPage": "Items per page:"
     }
+  },
+   "messages": {
+    "success": {
+      "PATIENT_CREATED": "Patient created successfully",
+      "PATIENT_UPDATED": "Patient updated successfully",
+      "PATIENT_DELETED": "Patient deleted successfully",
+      "PROFESSIONAL_CREATED": "Professional created successfully",
+      "PROFESSIONAL_UPDATED": "Professional updated successfully",
+      "PROFESSIONAL_DELETED": "Professional deleted successfully",
+      "APPOINTMENT_CREATED": "Appointment created successfully",
+      "APPOINTMENT_UPDATED": "Appointment updated successfully",
+      "APPOINTMENT_DELETED": "Appointment deleted successfully",
+      "PATIENTS_RETRIEVED": "Patients retrieved successfully",
+      "PROFESSIONALS_RETRIEVED": "Professionals retrieved successfully",
+      "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
+      "OPERATION_SUCCESS": "Operation completed successfully",
+      "NOTES_UPDATED": "Notes saved successfully"
+    },
+    "error": {
+      "VALIDATION_FAILED": "Please check the entered data",
+      "PATIENT_NOT_FOUND": "Patient not found",
+      "PROFESSIONAL_NOT_FOUND": "Professional not found",
+      "APPOINTMENT_NOT_FOUND": "Appointment not found",
+      "EMAIL_ALREADY_EXISTS": "Email already exists",
+      "INVALID_EMAIL_FORMAT": "Invalid email format",
+      "INTERNAL_SERVER_ERROR": "Internal server error",
+      "APPOINTMENT_CONFLICT": "Appointment time conflict",
+      "NETWORK_ERROR": "Network connection error"
+    },
+    "validation": {
+      "FORM_FIELDS_REQUIRED": "Please fill in all required fields",
+      "NAME_MUST_BE_STRING": "Name must be a string",
+      "NAME_MIN_LENGTH": "Name must be at least {min} characters long",
+      "NAME_MAX_LENGTH": "Name must be at most {max} characters long",
+      "NAME_INVALID_CHARACTERS": "Name contains invalid characters",
+      "EMAIL_INVALID_FORMAT": "Please enter a valid email address",
+      "PHONE_INVALID_FORMAT": "Please enter a valid phone number",
+      "BIRTHDATE_INVALID": "Please enter a valid date of birth",
+      "EMAIL_ALREADY_EXISTS": "This email is already registered",
+      "PHONE_ALREADY_EXISTS": "This phone number is already registered"
+
+    }
   }
+
 }
