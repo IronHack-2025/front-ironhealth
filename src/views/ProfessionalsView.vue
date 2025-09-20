@@ -16,6 +16,7 @@ import GenericList from '@/components/GenericList.vue'
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import professionsData from '@/assets/data/professions.json'
 import { useI18n } from 'vue-i18n'
+import { get } from '@/services/api'
 
 const { t, locale } = useI18n()
 
@@ -59,13 +60,14 @@ const fetchProfessionals = async () => {
   loading.value = true
   error.value = ''
   try {
-    const response = await fetch('http://localhost:3000/api/professionals')
-    if (!response.ok) throw new Error('Error al obtener profesionales')
-    const data = await response.json()
-    professionals.value = Array.isArray(data) ? data : []
-  } catch (err) {
+    // Usa el servicio GET (sobre estándar)
+    const resp = await get('/professionals') // { success, messageCode?, data }
+    const arr = Array.isArray(resp?.data) ? resp.data : (resp?.data?.items ?? [])
+    professionals.value = arr
+  } catch (e) {
     professionals.value = []
-    error.value = err.message || 'Error desconocido'
+    const code = e.messageCode || 'INTERNAL_SERVER_ERROR'
+    error.value = t(`messages.error.${code}`) // muestra el texto i18n si existe
   } finally {
     loading.value = false
   }
