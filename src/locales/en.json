@@ -26,16 +26,16 @@
         "edit": "Edit Professional",
         "delete": "Delete Professional"
       }
-},
+    },
     "appointments": {
       "title": "Appointment Scheduling",
       "newAppointment": "Book new Appointment",
       "time": "Time: ",
       "patient": "Patient:",
       "patients": "Patients:",
-    "professionals": "Available Professionals:",
-     "professional": "Professional:",
-    "notes": "Notes:",
+      "professionals": "Available Professionals:",
+      "professional": "Professional:",
+      "notes": "Notes:",
       "details": "Appointment Details",
       "start": "Start time:",
       "end": "End time:",
@@ -48,7 +48,7 @@
   },
 
   "common": {
-    "forms": { 
+    "forms": {
       "firstName": "First Name",
       "lastName": "Last Name",
       "dateOfBirth": "Date of Birth",
@@ -63,8 +63,7 @@
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",
       "validLength": "This field must be between {min} and {max} characters."
-
-     },
+    },
     "buttons": {
       "save": "Save",
       "cancel": "Cancel",
@@ -82,11 +81,11 @@
       "success": "Operation completed successfully",
       "noData": "No data available"
     },
-     "pagination": {
+    "pagination": {
       "itemsPerPage": "Items per page:"
     }
   },
-   "messages": {
+  "messages": {
     "success": {
       "PATIENT_CREATED": "Patient created successfully",
       "PATIENT_UPDATED": "Patient updated successfully",
@@ -126,8 +125,14 @@
       "BIRTHDATE_INVALID": "Please enter a valid date of birth",
       "EMAIL_ALREADY_EXISTS": "This email is already registered",
       "PHONE_ALREADY_EXISTS": "This phone number is already registered"
-
+    },
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "profession": "Profession",
+      "specialty": "Specialty",
+      "professionLicenceNumber": "License number"
     }
   }
-
 }

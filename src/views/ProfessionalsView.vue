@@ -24,9 +24,18 @@ const professionals = ref([])
 const loading = ref(false)
 const error = ref('')
 
+// Helper robusto: string u objeto por idioma -> string legible
+const getText = (val) => {
+  if (typeof val === 'string') return val
+  if (val && typeof val === 'object') {
+    return val[locale.value] || val.en || Object.values(val)[0] || ''
+  }
+  return ''
+}
+
 function getProfessionName(code) {
   for (const p of professionsData.professions) {
-    if (p.code === code) return p.text[locale.value] || p.text.en
+    if (p.code === code) return getText(p.text)
   }
   return '—'
 }
@@ -34,7 +43,7 @@ function getProfessionName(code) {
 function getSpecialtyName(code) {
   for (const p of professionsData.professions) {
     const found = p.specialty?.find((s) => s['specialty-code'] === code)
-    if (found) return found['specialty-name']?.[locale.value] || found['specialty-name'].en
+    if (found) return getText(found['specialty-name'])
   }
   return '—'
 }
@@ -53,21 +62,18 @@ const headers = computed(() => [
     key: 'specialty',
     value: (item) => getSpecialtyName(item.specialty),
   },
-
 ])
 
 const fetchProfessionals = async () => {
   loading.value = true
   error.value = ''
   try {
-    // Usa el servicio GET (sobre estándar)
-    const resp = await get('/professionals') // { success, messageCode?, data }
+    const resp = await get('/professionals') // { success, messageCode, data }
     const arr = Array.isArray(resp?.data) ? resp.data : (resp?.data?.items ?? [])
     professionals.value = arr
   } catch (e) {
     professionals.value = []
-    const code = e.messageCode || 'INTERNAL_SERVER_ERROR'
-    error.value = t(`messages.error.${code}`) // muestra el texto i18n si existe
+    error.value = e.message || 'Error desconocido'
   } finally {
     loading.value = false
   }
@@ -78,7 +84,6 @@ onMounted(fetchProfessionals)
 const handleProfessionalAdded = () => {
   fetchProfessionals()
 }
-
 </script>
 
 <!-- <style scoped>

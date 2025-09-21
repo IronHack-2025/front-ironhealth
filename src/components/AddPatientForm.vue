@@ -4,80 +4,46 @@
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
           <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            {{$t('views.patients.title')}}
+            {{ $t('views.patients.title') }}
           </v-card-title>
+
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.firstName"
-                    :label="$t('common.forms.firstName')"
-                    prepend-inner-icon="mdi-account"
-                    :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined"
-                    maxlength="50"
-                  />
+                  <v-text-field v-model="form.firstName" :label="$t('common.forms.firstName')"
+                    prepend-inner-icon="mdi-account" :rules="[rules.required, rules.acceptedLength]" variant="outlined"
+                    maxlength="50" :error-messages="fieldErrors.firstName || []" />
                 </v-col>
+
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.lastName"
-                    :label="$t('common.forms.lastName')"
-                    prepend-inner-icon="mdi-account-details"
-                    :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined"
-                    maxlength="50"
-                  />
+                  <v-text-field v-model="form.lastName" :label="$t('common.forms.lastName')"
+                    prepend-inner-icon="mdi-account-details" :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" />
                 </v-col>
               </v-row>
-              <v-text-field
-                v-model="form.email"
-                :label="$t('common.forms.email')"
-                prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email]"
-                variant="outlined"
-                class="mt-2"
-                maxlength="50"
-              />
 
-              <v-text-field
-                v-model="form.phone"
-                :label="$t('common.forms.phone')"
-                prepend-inner-icon="mdi-phone"
-                :rules="[rules.required, rules.phone]"
-                variant="outlined"
-                class="mt-2"
-                maxlength="9"
-              />
+              <v-text-field v-model="form.email" :label="$t('common.forms.email')" prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email]" variant="outlined" class="mt-2" maxlength="50"
+                :error-messages="fieldErrors.email || []" />
 
-              <v-date-input
-                v-model="form.birthDate"
-                :label="$t('common.forms.dateOfBirth')"
-                prepend-inner-icon="mdi-calendar-account-outline"
-                prepend-icon=""
-                :rules="[rules.required]"
-                variant="outlined"
-                class="mt-2"
-              />
-              <v-btn
-                block
-                color="primary"
-                class="mt-6"
-                size="large"
-                @click="newPatient"
-                cursor="pointer"
-              >
-              {{$t('common.buttons.registerPatient')}}
+              <v-text-field v-model="form.phone" :label="$t('common.forms.phone')" prepend-inner-icon="mdi-phone"
+                :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" maxlength="15"
+                :error-messages="fieldErrors.phone || []" />
+
+              <!-- NOTA: usar el componente de fecha registrado (Vuetify Labs) -->
+              <v-date-input v-model="form.birthDate" :label="$t('common.forms.dateOfBirth')"
+                prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
+                variant="outlined" class="mt-2" :error-messages="fieldErrors.birthDate || []" />
+
+              <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
+                {{ $t('common.buttons.registerPatient') }}
               </v-btn>
             </v-form>
 
-            <Alert 
-              :show="alert.show" 
-              :type="alert.type" 
-              :messageCode="alert.messageCode" 
-              :details="alert.details"
-              :fallbackMessage="alert.fallbackMessage" 
-            />
+            <!-- Alerta estructurada alineada con el backend -->
+            <Alert class="mt-4" :show="alert.show" :type="alert.type" :message-code="alert.messageCode"
+              :details="alert.details" :message-params="alert.params" :fallback-message="alert.message" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -86,27 +52,51 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
-import { post } from '../services/api'
+import { post } from '@/services/api'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const emit = defineEmits(['patient-added'])
 
 const formRef = ref(null)
 const isValid = ref(false)
 
-watch(locale, async () => {
-  if (formRef.value) {
-    // Esperar al siguiente tick para que las traducciones se actualicen
-    await nextTick()
-    formRef.value.validate()
-  }
+const form = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  birthDate: '' // NOTA: enviar ISO string o Date según backend; aquí lo enviamos tal cual
 })
 
-const rules = computed(() => ({
-required: (value) => !!value || t('common.forms.required'),
+// Estado de alerta estructurada
+const alert = reactive({
+  show: false,
+  type: 'success',                 // 'success' | 'error' | ...
+  message: '',                     // fallback (texto plano)
+  messageCode: 'OPERATION_SUCCESS',
+  details: null,                   // [{ field?, code, meta? }]
+  params: {}                       // placeholders opcionales
+})
+
+// Errores por campo para :error-messages
+const fieldErrors = reactive({})
+function clearFieldErrors() {
+  for (const k of Object.keys(fieldErrors)) delete fieldErrors[k]
+}
+function buildFieldErrors(details) {
+  clearFieldErrors()
+  if (!Array.isArray(details)) return
+  details.forEach(d => {
+    if (!d.field) return
+      ; (fieldErrors[d.field] ||= []).push(t(`messages.validation.${d.code}`, d.meta || {}))
+  })
+}
+
+const rules = {
+  required: (value) => !!value || t('common.forms.required'),
   email: (value) => {
     if (!value) return t('common.forms.required')
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -118,7 +108,7 @@ required: (value) => !!value || t('common.forms.required'),
     return pattern.test(value) || t('common.forms.invalidPhone')
   },
   acceptedLength: (value) => {
-    if (!value) return true 
+    if (!value) return true
     const lengthMax = 50
     const lengthMin = 3
     return (
@@ -126,89 +116,87 @@ required: (value) => !!value || t('common.forms.required'),
       t('common.forms.validLength', { min: lengthMin, max: lengthMax })
     )
   },
-}))
-
-const form = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  birthDate: '',
-})
-
-const alert = reactive({
-  show: false,
-  type: 'success',
-  messageCode: '',
-  details: null,
-  fallbackMessage: ''
-})
-
-const resetAlert = () => {
-  alert.show = false
-  alert.type = 'success'
-  alert.messageCode = ''
-  alert.details = null
-  alert.fallbackMessage = ''
-}
-
-const showAlert = (type, messageCode, details = null, fallbackMessage = '') => {
-  alert.show = true
-  alert.type = type
-  alert.messageCode = messageCode
-  alert.details = details
-  alert.fallbackMessage = fallbackMessage
 }
 
 const newPatient = async () => {
-    resetAlert()
-  
   const { valid } = await formRef.value.validate()
   if (!valid) {
-    showAlert('error', 'FORM_VALIDATION_FAILED', null, 'Please check the form fields')
+
+    // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
+    const details = []
+
+    // Nombre
+    if (!form.firstName) {
+      details.push({ field: 'firstName', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (form.firstName.length < 3 || form.firstName.length > 50) {
+      details.push({ field: 'firstName', code: 'NAME_MIN_LENGTH', meta: { min: 3, max: 50 } })
+    }
+
+    // Apellidos
+    if (!form.lastName) {
+      details.push({ field: 'lastName', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (form.lastName.length < 3 || form.lastName.length > 50) {
+      details.push({ field: 'lastName', code: 'NAME_MIN_LENGTH', meta: { min: 3, max: 50 } })
+    }
+
+    // Email
+    if (!form.email) {
+      details.push({ field: 'email', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      details.push({ field: 'email', code: 'EMAIL_INVALID_FORMAT' })
+    }
+
+    // Teléfono
+    if (!form.phone) {
+      details.push({ field: 'phone', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (!/^\+?\d{7,15}$/.test(form.phone)) {
+      details.push({ field: 'phone', code: 'PHONE_INVALID_FORMAT' })
+    }
+
+    // Fecha de nacimiento
+    if (!form.birthDate) {
+      details.push({ field: 'birthDate', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (isNaN(new Date(form.birthDate).getTime())) {
+      details.push({ field: 'birthDate', code: 'BIRTHDATE_INVALID' })
+    }
+
+    alert.show = true
+    alert.type = 'error'
+    alert.messageCode = 'VALIDATION_FAILED'
+    alert.details = details
+    alert.params = {}
+    alert.message = t('messages.error.VALIDATION_FAILED')
+
+    buildFieldErrors(details)
+
     return
   }
 
-  const formData = {
-    firstName: form.firstName,
-    lastName: form.lastName,
-    email: form.email,
-    phone: form.phone,
-    birthDate: form.birthDate,
-  }
+  alert.show = false
+  clearFieldErrors()
 
   try {
-  const response = await post('/patients', formData)
-    console.log('Response from backend:', response)
-
+    const resp = await post('/patients', { ...form }) // { success, messageCode, data }
     formRef.value.reset()
     emit('patient-added')
 
-    showAlert('success', response.data.messageCode || 'PATIENT_CREATED',
-      null,
-      'Patient created successfully')
-  } catch (error) {
-    console.error('Error creating patient:', error)
-    console.error('Error details:', {
-      messageCode: error.messageCode,
-      messageType: error.messageType,
-      details: error.details,
-      message: error.message,
-      stack: error.stack
-    })
-    
-    // Verificar si el error tiene las propiedades esperadas
-    const errorMessageCode = error?.messageCode || 'INTERNAL_SERVER_ERROR'
-    const errorDetails = error?.details || null
-    const errorMessage = error?.message || 'An error occurred while creating the patient'
-    
-    // Mostrar mensaje de error
-    showAlert(
-      'error',
-      errorMessageCode,
-      errorDetails,
-      errorMessage
-    )
+    // Éxito
+    alert.show = true
+    alert.type = 'success'
+    alert.messageCode = resp?.messageCode || 'PATIENT_CREATED'
+    alert.details = null
+    alert.params = {}
+    alert.message = t('common.messages.success') // fallback
+  } catch (e) {
+    // Error (validación o servidor)
+    alert.show = true
+    alert.type = 'error'
+    alert.messageCode = e.messageCode || 'INTERNAL_SERVER_ERROR'
+    alert.details = e.details || null
+    alert.params = {}
+    alert.message = t('common.messages.error')
+
+    buildFieldErrors(e.details)
   }
 }
 </script>

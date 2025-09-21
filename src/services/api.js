@@ -15,7 +15,7 @@ async function handleResponse(response) {
     try {
       const data = await response.json()
 
-      // NEW: si por algún motivo el backend devuelve success:false con 200
+      // Si el backend (por error) manda success:false con 200, lo tratamos como error lógico
       if (data && data.success === false) {
         const error = new Error('API logical error')
         error.messageCode = data.messageCode || 'INTERNAL_SERVER_ERROR'
@@ -34,7 +34,7 @@ async function handleResponse(response) {
       }
 
       // Respuesta legacy sin messageCode
-      // NEW: si el backend devuelve un array plano (o un primitivo), lo envolvemos en { success, data }
+      // Si el backend devuelve un array plano (listado), lo envolvemos como { success, data }
       if (Array.isArray(data) || data === null || typeof data !== 'object') {
         return {
           success: true,
@@ -44,7 +44,7 @@ async function handleResponse(response) {
         }
       }
 
-      // NEW: objeto sin messageCode ni success -> asumimos payload directo y lo envolvemos en data
+      // Objeto sin messageCode -> asumimos payload directo y lo envolvemos en data
       return {
         success: true,
         data,
@@ -52,7 +52,7 @@ async function handleResponse(response) {
         messageType: 'success',
       }
     } catch {
-      // Si no se puede parsear JSON, asumir éxito simple
+      // Si no se puede parsear JSON, asumir un éxito simple
       return {
         success: true,
         messageCode: 'OPERATION_SUCCESS',
@@ -94,7 +94,6 @@ export const post = async (endpoint, data) => {
       },
       body: JSON.stringify(data),
     })
-
     return handleResponse(response)
   } catch (error) {
     // Si es un error de red o fetch (no tiene messageCode)
@@ -106,7 +105,7 @@ export const post = async (endpoint, data) => {
   }
 }
 
-// NEW: GET con el mismo manejo de respuestas y errores
+// Añadimos GET con el mismo manejo
 export const get = async (endpoint) => {
   try {
     const response = await fetch(`${apiBaseUrl}${endpoint}`)

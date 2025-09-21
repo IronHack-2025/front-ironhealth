@@ -1,10 +1,13 @@
 <template>
-  <v-alert v-if="show" :type="type" variant="tonal" border="start" prominent class="mt-4">
+  <v-alert v-if="show && (translatedMessage || validationItems.length)" :type="type" variant="tonal" border="start"
+    prominent class="mt-4">
+
     <!-- Si es un error de validación con múltiples campos -->
-    <div v-if="isValidationError && details">
-      <div class="font-weight-bold mb-2">{{ $t('messages.error.VALIDATION_FAILED') }}</div>
+    <div v-if="isValidationError && validationItems.length">
+
+      <!-- Usamos validationTitle con fallback a common.messages.error -->
+      <div class="font-weight-bold mb-2">{{ validationTitle }}</div>
       <ul class="pl-4">
-        <!-- ⬅️ usamos validationItems, ya viene traducido e interpolado -->
         <li v-for="(msg, index) in validationItems" :key="index" class="text-body-2">
           {{ msg }}
         </li>
@@ -21,94 +24,74 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 const { t } = useI18n()
 
-const FIELD_I18N_KEYS = {
-  // backend -> i18n (en.json usa "professionalLicenseNumber")
-  professionLicenceNumber: 'professionalLicenseNumber',
-  birthDate: 'dateOfBirth',
-}
-
+// Props estructurados
 const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false
-  },
+  show: { type: Boolean, default: false },
   type: {
     type: String,
-    required: true,
-    validator: (value) => ['success', 'error', 'warning', 'info'].includes(value),
+    validator: v => ['success', 'error', 'warning', 'info'].includes(v),
     default: 'success'
   },
-  messageCode: {
-    type: String,
-    required: true,
-    default: ''
-  },
-  fallbackMessage: {
-    type: String,
-    default: ''
-  },
-  details: {
-    type: Array,
-    default: null
-  },
-  // Parámetros opcionales para mensaje principal (placeholders)
-  messageParams: {
-    type: Object,
-    default: () => ({})
-  }
+  // messageCode estructurado (ej: 'PROFESSIONAL_CREATED' o 'VALIDATION_FAILED')
+  messageCode: { type: String, default: '' },
+  // Compatibilidad con tu versión previa (texto plano)
+  message: { type: String, default: '' },
+  // detalles de validación [{ field?, code, meta? }, ...]
+  details: { type: Array, default: null },
+  // params opcionales para el mensaje principal (placeholders)
+  messageParams: { type: Object, default: () => ({}) }
 })
 
-const isValidationError = computed(() => {
-  return props.messageCode === 'VALIDATION_FAILED' && props.details && props.details.length > 0
+// ¿Es un error de validación con lista?
+const isValidationError = computed(() =>
+  props.messageCode === 'VALIDATION_FAILED' && Array.isArray(props.details) && props.details.length > 0
+)
+
+// Título de la sección de validación con fallback a common.messages.error
+const validationTitle = computed(() => {
+  const key = 'messages.error.VALIDATION_FAILED'
+  const txt = t(key)
+  if (txt !== key) return txt
+
+  const commonKey = 'common.messages.error'
+  const common = t(commonKey)
+  return common !== commonKey ? common : 'Validation error'
 })
 
+// Mensaje principal traducido (success/error) con fallback a common.messages
 const translatedMessage = computed(() => {
-  // Buscar en la estructura correcta: messages.success.CODE o messages.error.CODE
-  const messageKey = `messages.${props.type}.${props.messageCode}`
-  const translation = t(messageKey, props.messageParams) // ⬅️ añadido: interpolación
+  // Si tenemos messageCode, intentamos traducirlo: messages.success.CODE o messages.error.CODE
+  if (props.messageCode) {
+    const key = `messages.${props.type}.${props.messageCode}`
+    const msg = t(key, props.messageParams)
+    if (msg !== key) return msg
 
-  // Si no existe la traducción, usar fallback o el código
-  if (translation === messageKey) {
-    return props.fallbackMessage || props.messageCode
+    // Fallback: common.messages.success | common.messages.error
+    const commonKey = `common.messages.${props.type === 'error' ? 'error' : 'success'}`
+    const commonMsg = t(commonKey)
+    if (commonMsg !== commonKey) return commonMsg
   }
-
-  return translation
+  // Fallback final: usa el mensaje plano si lo pasas, o cadena vacía
+  return props.message || ''
 })
 
-// Lista de mensajes de validación ya traducidos
+// Convierte details[] a lista de textos traducidos
 const validationItems = computed(() => {
-  if (!props.details?.length) return []
-  return props.details.map(detail => getValidationMessage(detail))
+  if (!Array.isArray(props.details)) return []
+  return props.details.map(detail => {
+    const textKey = `messages.validation.${detail.code}`
+    const text = t(textKey, detail.meta || {})
+    const resolved = (text === textKey) ? detail.code : text
+
+    // Si viene el nombre del campo, añadimos su etiqueta traducida si existe
+    if (detail.field) {
+      const fieldKey = `messages.fields.${detail.field}`
+      const label = t(fieldKey)
+      return (label === fieldKey) ? resolved : `${label}: ${resolved}`
+    }
+    return resolved
+  })
 })
-
-const getValidationMessage = (detail) => {
-  // Traducción del texto del error (con meta para placeholders)
-  const validationKey = `messages.validation.${detail.code}`
-  const msg = t(validationKey, detail.meta || {})
-
-  // Si falta traducción, devolvemos el code
-  const resolvedMsg = (msg === validationKey) ? detail.code : msg
-
-  // Si llega el campo, intentamos anteponer su etiqueta traducida
-  if (detail.field) {
-    // 1) Intentar en common.forms con posible mapeo de nombre del back a la clave del i18n
-    const formsKey = `common.forms.${FIELD_I18N_KEYS[detail.field] || detail.field}`
-    const formsLabel = t(formsKey)
-    if (formsLabel !== formsKey) {
-      return `${formsLabel}: ${resolvedMsg}`
-    }
-
-    // 2) Fallback opcional a messages.fields (por si en el futuro añadís esa sección)
-    const fieldKey = `messages.fields.${detail.field}`
-    const fieldLabel = t(fieldKey)
-    if (fieldLabel !== fieldKey) {
-      return `${fieldLabel}: ${resolvedMsg}`
-    }
-  }
-
-  return resolvedMsg // ⬅️ Añadido para manejar el caso en que no haya campo
-}
 </script>

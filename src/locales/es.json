@@ -51,7 +51,7 @@
   "common": {
     "forms": {
       "firstName": "Nombre",
-      "lastName": "Apellido",
+      "lastName": "Apellidos",
       "email": "Correo Electrónico",
       "phone": "Teléfono",
       "dateOfBirth": "Fecha de Nacimiento",
@@ -94,45 +94,54 @@
   },
   "messages": {
     "success": {
-      "PATIENT_CREATED": "Paciente creado exitosamente",
-      "PATIENT_UPDATED": "Patient updated successfully",
-      "PATIENT_DELETED": "Patient deleted successfully",
-      "PROFESSIONAL_CREATED": "Professional created successfully",
-      "PROFESSIONAL_UPDATED": "Professional updated successfully",
-      "PROFESSIONAL_DELETED": "Professional deleted successfully",
-      "APPOINTMENT_CREATED": "Appointment created successfully",
-      "APPOINTMENT_UPDATED": "Appointment updated successfully",
-      "APPOINTMENT_DELETED": "Appointment deleted successfully",
-      "PATIENTS_RETRIEVED": "Patients retrieved successfully",
-      "PROFESSIONALS_RETRIEVED": "Professionals retrieved successfully",
-      "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
-      "OPERATION_SUCCESS": "Operación completada exitosamente",
-      "NOTES_UPDATED": "Notes saved successfully"
+      "PATIENT_CREATED": "Paciente creado correctamente",
+      "PATIENT_UPDATED": "Paciente actualizado correctamente",
+      "PATIENT_DELETED": "Paciente eliminado correctamente",
+      "PROFESSIONAL_CREATED": "Profesional creado correctamente",
+      "PROFESSIONAL_UPDATED": "Profesional actualizado correctamente",
+      "PROFESSIONAL_DELETED": "Profesional eliminado correctamente",
+      "APPOINTMENT_CREATED": "Cita creada correctamente",
+      "APPOINTMENT_UPDATED": "Cita actualizada correctamente",
+      "APPOINTMENT_DELETED": "Cita eliminada correctamente",
+      "PATIENTS_RETRIEVED": "Pacientes recuperados con éxito",
+      "PROFESSIONALS_RETRIEVED": "Profesionales recuperados con éxito",
+      "APPOINTMENT_RETRIEVED": "Citas recuperadas correctamente",
+      "OPERATION_SUCCESS": "Operación realizada con éxito",
+      "NOTES_UPDATED": "Notas guardadas correctamente"
     },
     "error": {
-      "VALIDATION_FAILED": "Please check the entered data",
-      "PATIENT_NOT_FOUND": "Patient not found",
-      "PROFESSIONAL_NOT_FOUND": "Professional not found",
-      "APPOINTMENT_NOT_FOUND": "Appointment not found",
-      "EMAIL_ALREADY_EXISTS": "Email already exists",
-      "INVALID_EMAIL_FORMAT": "Invalid email format",
+      "VALIDATION_FAILED": "Revisa los siguientes campos:",
+      "PATIENT_NOT_FOUND": "Paciente no encontrado",
+      "PROFESSIONAL_NOT_FOUND": "Profesional no encontrado",
+      "APPOINTMENT_NOT_FOUND": "No se ha encontrado ninguna cita.",
+      "EMAIL_ALREADY_EXISTS": "El correo electrónico ya existe.",
+      "INVALID_EMAIL_FORMAT": "Formato de correo electrónico no válido",
       "INTERNAL_SERVER_ERROR": "Error interno del servidor",
-      "APPOINTMENT_CONFLICT": "Appointment time conflict",
+      "APPOINTMENT_CONFLICT": "Conflicto de horarios de citas",
       "NETWORK_ERROR": "Error de conexión de red",
       "PATIENT_CREATION_FAILED": "Error al crear el paciente"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Por favor complete todos los campos requeridos",
-      "NAME_MUST_BE_STRING": "Name must be a string",
-      "NAME_MIN_LENGTH": "Name must be at least {min} characters long",
-      "NAME_MAX_LENGTH": "Name must be at most {max} characters long",
-      "NAME_INVALID_CHARACTERS": "Name contains invalid characters",
-      "EMAIL_INVALID_FORMAT": "Please enter a valid email address",
-      "PHONE_INVALID_FORMAT": "Please enter a valid phone number",
-      "BIRTHDATE_INVALID": "Please enter a valid date of birth",
-      "EMAIL_ALREADY_EXISTS": "This email is already registered",
-      "PHONE_ALREADY_EXISTS": "This phone number is already registered"
-
+      "NAME_MUST_BE_STRING": "Este campo debe ser un texto",
+      "NAME_MIN_LENGTH": "Debe tener entre {min} y {max} caracteres",
+      "NAME_MAX_LENGTH": "El nombre debe tener como máximo {max} caracteres.",
+      "NAME_INVALID_CHARACTERS": "El valor contiene caracteres no permitidos",
+      "EMAIL_INVALID_FORMAT": "El email no tiene un formato válido",
+      "PHONE_INVALID_FORMAT": "Introduzca un número de teléfono válido",
+      "BIRTHDATE_INVALID": "Introduzca una fecha de nacimiento válida",
+      "EMAIL_ALREADY_EXISTS": "Este email ya está registrado",
+      "PHONE_ALREADY_EXISTS": "Este número de teléfono ya está registrado"
+    },
+    "fields": {
+      "firstName": "Nombre",
+      "lastName": "Apellidos",
+      "email": "Email",
+      "phone": "Teléfono",
+      "birthDate": "Fecha de Nacimiento",
+      "profession": "Profesión",
+      "specialty": "Especialidad",
+      "professionLicenceNumber": "Nº de licencia"
     }
   }
 }
