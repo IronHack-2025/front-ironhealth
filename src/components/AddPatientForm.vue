@@ -44,7 +44,7 @@
                ref="cloudinaryRef" 
                 :preset="uploadPreset"
                 folder="patients"
-                buttonText="$t('common.buttons.uploadImage')"
+                :buttonText="$t('common.buttons.uploadImage')"
                 :api-url="`${apiBaseUrl}/signature`"
                 @uploaded="form.imageUrl = $event"
                 @cleared="form.imageUrl = ''"
@@ -72,6 +72,8 @@ import Alert from './AlertMessage.vue'
 import { post } from '@/services/api'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 const cloudinaryRef = ref(null)
+const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const { t } = useI18n()
 const emit = defineEmits(['patient-added'])
