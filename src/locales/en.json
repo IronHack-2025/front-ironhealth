@@ -57,12 +57,14 @@
       "profession": "Profession",
       "specialty": "Specialty(Optional)",
       "professionalLicenseNumber": "Professional license Number(Optional)",
+      "photo": "Photo",
       "search": "Search...",
       "required": "This field is required",
       "invalidEmail": "Invalid email format",
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",
-      "validLength": "This field must be between {min} and {max} characters."
+      "validLength": "This field must be between {min} and {max} characters.",
+      "imageRequired": "Image upload is required."
     },
     "buttons": {
       "save": "Save",
@@ -73,7 +75,8 @@
       "saveNotes": "Save Notes",
       "view": "View Details",
       "registerPatient": "Register Patient",
-      "registerProfessional": "Register Professional"
+      "registerProfessional": "Register Professional",
+      "uploadImage": "Upload Image"
     },
     "messages": {
       "loading": "Loading...",

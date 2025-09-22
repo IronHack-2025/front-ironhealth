@@ -58,6 +58,7 @@
       "profession": "Profesión",
       "specialty": "Especialidad (Opcional)",
       "professionalLicenseNumber": "Número de Licencia Profesional (Opcional)",
+      "photo": "Foto",
       "required": "Este campo es obligatorio",
       "invalidEmail": "Por favor ingrese un email válido",
       "invalidPhone": "Por favor ingrese un número de teléfono válido",
@@ -74,7 +75,8 @@
       "saveNotes": "Guardar Notas",
       "view": "Ver Detalles",
       "registerPatient": "Registrar Paciente",
-      "registerProfessional": "Registrar Profesional"
+      "registerProfessional": "Registrar Profesional",
+      "uploadImage": "Subir Imagen"
     },
     "messages": {
       "loading": "Cargando...",
