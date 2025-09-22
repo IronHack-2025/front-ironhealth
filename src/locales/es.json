@@ -103,6 +103,7 @@
       "APPOINTMENT_CREATED": "Cita creada correctamente",
       "APPOINTMENT_UPDATED": "Cita actualizada correctamente",
       "APPOINTMENT_DELETED": "Cita eliminada correctamente",
+      "APPOINTMENT_CANCELLED": "Cita cancelada correctamente",
       "PATIENTS_RETRIEVED": "Pacientes recuperados con éxito",
       "PROFESSIONALS_RETRIEVED": "Profesionales recuperados con éxito",
       "APPOINTMENT_RETRIEVED": "Citas recuperadas correctamente",
@@ -131,7 +132,10 @@
       "PHONE_INVALID_FORMAT": "Introduzca un número de teléfono válido",
       "BIRTHDATE_INVALID": "Introduzca una fecha de nacimiento válida",
       "EMAIL_ALREADY_EXISTS": "Este email ya está registrado",
-      "PHONE_ALREADY_EXISTS": "Este número de teléfono ya está registrado"
+      "PHONE_ALREADY_EXISTS": "Este número de teléfono ya está registrado",
+      "NOTES_HTML_NOT_ALLOWED": "Las notas no pueden contener HTML",
+      "NOTES_TOO_LONG": "Las notas no pueden exceder los {max} caracteres",
+      "ID_INVALID_FORMAT": "ID inválido"
     },
     "fields": {
       "firstName": "Nombre",

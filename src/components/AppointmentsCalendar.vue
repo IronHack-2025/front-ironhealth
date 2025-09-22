@@ -55,7 +55,8 @@
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{ t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
-        <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
+         <Alert :show="alert.show" :type="alert.type" :message-code="alert.messageCode" 
+               :details="alert.details" :message-params="alert.params" :fallback-message="alert.message" />
       </v-card>
     </v-dialog>
 
@@ -171,6 +172,9 @@ const alert = reactive({
   show: false,
   message: '',
   type: 'success',
+  messageCode: 'OPERATION_SUCCESS',
+  details: null,
+  params: {},
 })
 // Sincroniza la selección del v-select con el formulario
 watch(selectedPatient, (newVal) => {
@@ -219,7 +223,16 @@ const cancelAppointmentById = async (id) => {
         status: { cancelled: true, timestamp: new Date() }
       }),
     });
-    if (!response.ok) throw new Error("Error al cancelar cita");
+     if (!response.ok) {
+      const errorData = await response.json();
+      const error = new Error(errorData.error || 'Error al cancelar cita');
+      error.messageCode = errorData.messageCode || 'INTERNAL_SERVER_ERROR';
+      error.details = errorData.details || null;
+      throw error;
+    }
+    
+    const result = await response.json();
+    return result;
   } catch (error) {
     console.error("Error cancelando cita:", error);
     throw error;
@@ -231,9 +244,6 @@ const handleEventDrop = async (info) => {
 
   // Log para depuración
   console.log("Evento arrastrado:", event);
-
-  const originalStart = event.start;
-  const originalEnd = event.end;
 
   try {
 
@@ -249,19 +259,33 @@ const handleEventDrop = async (info) => {
       notes: event.extendedProps.notes
     };
 
-    const newAppointment = await post('/appointment', newAppointmentData)
+    const response = await post('/appointment', newAppointmentData)
 
-    console.log("Reprogramación exitosa", newAppointment);
+        console.log("Reprogramación exitosa", response);
 
     // Actualizar el ID del evento en el calendario
-    event.setProp("id", newAppointment._id);
+    event.setProp("id", response.data._id);
 
     // Refrescar eventos del calendario
     calendarRef.value.getApi().refetchEvents();
 
+    alert.show = true;
+    alert.type = 'success';
+    alert.messageCode = response.messageCode || 'APPOINTMENT_RESCHEDULED';
+    alert.details = null;
+    alert.params = {};
+    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_RESCHEDULED'}`);
+
   } catch (error) {
     console.error("Error al reprogramar:", error);
     info.revert();
+
+    alert.show = true;
+    alert.type = 'error';
+    alert.messageCode = error.messageCode || 'APPOINTMENT_RESCHEDULE_FAILED';
+    alert.details = error.details || null;
+    alert.params = {};
+    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_RESCHEDULE_FAILED'}`);
   }
 }
 
@@ -269,6 +293,9 @@ const resetAlert = () => {
   alert.show = false
   alert.message = ''
   alert.type = 'success'
+  alert.messageCode = 'OPERATION_SUCCESS'
+  alert.details = null
+  alert.params = {}
 }
 
 const cancelAppointment = async () => {
@@ -284,28 +311,40 @@ const cancelAppointment = async () => {
       }),
     })
 
-    if (response.status === 200) {
-      alert.type = 'success'
-      alert.message = 'La cita se ha cancelado correctamente.'
-      alert.show = true
+    if (response.ok) {
+      const result = await response.json();
+      
+      alert.type = 'success';
+      alert.messageCode = result.messageCode || 'APPOINTMENT_CANCELLED';
+      alert.details = null;
+      alert.params = {};
+      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_CANCELLED'}`);
+      alert.show = true;
 
     } else {
-      const errorData = await response.json()
-      alert.type = 'error'
-      alert.message = errorData.error || 'Se ha producido un error.'
-      alert.show = true
+      const errorData = await response.json();
+      
+      alert.type = 'error';
+      alert.messageCode = errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED';
+      alert.details = errorData.details || null;
+      alert.params = {};
+      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'}`);
+      alert.show = true;
     }
   } catch (error) {
     console.error('Error de conexión al cancelar la cita:', error);
-    alert.type = 'error'
-    alert.message = 'Error de conexión al cancelar la cita'
-    alert.show = true
+    
+    alert.type = 'error';
+    alert.messageCode = 'NETWORK_ERROR';
+    alert.details = null;
+    alert.params = {};
+    alert.message = t('messages.error.NETWORK_ERROR');
+    alert.show = true;
   }
-
-  await fetchAppointments();
+    await fetchAppointments();
   calendarRef.value.getApi().refetchEvents();
-
 }
+
 const saveAppointment = async () => {
   if (!form.value.patientId || !form.value.professionalId) return
 
@@ -314,15 +353,17 @@ const saveAppointment = async () => {
     endDate: form.value.end,
     patientId: form.value.patientId,
     professionalId: form.value.professionalId,
-    notes: form.value.notes
+    notes: form.value.notes || ""
   }
   try {
-    await post('/appointment', event)
+    const response = await post('/appointment', event)
 
-
-    alert.type = 'success'
-    alert.message = 'La cita se ha guardado correctamente.'
-    alert.show = true
+    alert.type = 'success';
+    alert.messageCode = response.messageCode || 'APPOINTMENT_CREATED';
+    alert.details = null;
+    alert.params = {};
+    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_CREATED'}`);
+    alert.show = true;
 
     // Solo resetear si fue exitoso
     form.value = { patientId: "", professionalId: "", start: null, end: null, notes: "" };
@@ -333,11 +374,15 @@ const saveAppointment = async () => {
     calendarRef.value.getApi().refetchEvents();
   }
 
-  catch (error) {
-    console.error('Error:', error.message)
-    alert.type = 'error'
-    alert.message = 'Error: ' + error.message
-    alert.show = true
+   catch (error) {
+    console.error('Error:', error);
+    
+    alert.type = 'error';
+    alert.messageCode = error.messageCode || 'APPOINTMENT_CREATE_FAILED';
+    alert.details = error.details || null;
+    alert.params = {};
+    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_CREATE_FAILED'}`);
+    alert.show = true;
   }
 }
 
@@ -351,10 +396,15 @@ const updateNotes = async () => {
       }),
     })
 
-    if (response.ok) {
-      alert.type = 'success'
-      alert.message = 'Las notas se han actualizado correctamente.'
-      alert.show = true
+      if (response.ok) {
+      const result = await response.json();
+      
+      alert.type = 'success';
+      alert.messageCode = result.messageCode || 'APPOINTMENT_NOTES_UPDATED';
+      alert.details = null;
+      alert.params = {};
+      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_NOTES_UPDATED'}`);
+      alert.show = true;
 
       // Actualizar las notas en el evento seleccionado
       selectedEvent.value.setExtendedProp('notes', editableNotes.value)
@@ -362,16 +412,24 @@ const updateNotes = async () => {
       // Refrescar eventos del calendario
       calendarRef.value.getApi().refetchEvents()
     } else {
-      const errorData = await response.json()
-      alert.type = 'error'
-      alert.message = errorData.error || 'Error al actualizar las notas.'
-      alert.show = true
+      const errorData = await response.json();
+      
+      alert.type = 'error';
+      alert.messageCode = errorData.messageCode || 'APPOINTMENT_NOTES_UPDATE_FAILED';
+      alert.details = errorData.details || null;
+      alert.params = {};
+      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_NOTES_UPDATE_FAILED'}`);
+      alert.show = true;
     }
   } catch (error) {
-    console.error('Error al actualizar notas:', error)
-    alert.type = 'error'
-    alert.message = 'Error de conexión al actualizar las notas'
-    alert.show = true
+    console.error('Error al actualizar notas:', error);
+    
+    alert.type = 'error';
+    alert.messageCode = 'NETWORK_ERROR';
+    alert.details = null;
+    alert.params = {};
+    alert.message = t('messages.error.NETWORK_ERROR');
+    alert.show = true;
   }
 }
 
@@ -397,9 +455,20 @@ const calendarOptions = ref({
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
       const res = await fetch("http://localhost:3000/api/appointment");
-      const data = await res.json();
-      // Transforma los datos al formato que FullCalendar espera
-      const filtered = data.filter(ev => !ev.status.cancelled)
+      const response = await res.json();
+
+      const data = response.data || [];
+
+       // Validar que data sea un array
+      if (!Array.isArray(data)) {
+        console.error('API response data is not an array:', data);
+        successCallback([]);
+        return;
+      }
+      
+      // Filtrar eventos no cancelados
+      const filtered = data.filter(ev => !ev.status?.cancelled);
+
       const events = filtered.map(event => {
         const patient = patients.value.find(p => p._id === event.patientId) || {};
         const professional = professionals.value.find(p => p._id === event.professionalId) || {};
@@ -454,8 +523,10 @@ const fetchAppointments = async () => {
   try {
     const appointmentsRes = await fetch('http://localhost:3000/api/appointment');
     if (appointmentsRes.ok) {
-      appointments.value = await appointmentsRes.json();
-      // Refresh calendar events after fetching appointments
+      const response = await appointmentsRes.json();
+
+       appointments.value = response.data || [];
+     
       if (calendarRef.value) {
         calendarRef.value.getApi().refetchEvents();
       }
@@ -467,9 +538,40 @@ const fetchAppointments = async () => {
   }
 };
 
+const fetchProfessionals = async () => {
+  try {
+    const professionalsRes = await fetch('http://localhost:3000/api/professionals');
+    if (professionalsRes.ok) {
+      const response = await professionalsRes.json();
+      professionals.value = response.data || [];
+    } else {
+      console.error('Failed to fetch professionals:', professionalsRes.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching professionals:', error);
+  }
+};
+
+const fetchPatients = async () => {
+  try {
+    const patientsRes = await fetch('http://localhost:3000/api/patients');
+    if (patientsRes.ok) {
+      const response = await patientsRes.json();
+      patients.value = response.data || [];
+    } else {
+      console.error('Failed to fetch patients:', patientsRes.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching patients:', error);
+  }
+};
 // Call fetchAppointments on component mount
 onMounted(async () => {
+
+
   await fetchAppointments();
+  await fetchProfessionals();
+  await fetchPatients();
 });
 
 </script>

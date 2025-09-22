@@ -96,6 +96,7 @@
       "APPOINTMENT_CREATED": "Appointment created successfully",
       "APPOINTMENT_UPDATED": "Appointment updated successfully",
       "APPOINTMENT_DELETED": "Appointment deleted successfully",
+      "APPOINTMENT_CANCELLED": "Appointment cancelled successfully",
       "PATIENTS_RETRIEVED": "Patients retrieved successfully",
       "PROFESSIONALS_RETRIEVED": "Professionals retrieved successfully",
       "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
@@ -124,7 +125,10 @@
       "PHONE_INVALID_FORMAT": "Please enter a valid phone number",
       "BIRTHDATE_INVALID": "Please enter a valid date of birth",
       "EMAIL_ALREADY_EXISTS": "This email is already registered",
-      "PHONE_ALREADY_EXISTS": "This phone number is already registered"
+      "PHONE_ALREADY_EXISTS": "This phone number is already registered",
+      "NOTES_HTML_NOT_ALLOWED": "Notes cannot contain HTML",
+      "NOTES_TOO_LONG": "Notes cannot exceed {max} characters",
+      "ID_INVALID_FORMAT": "Invalid ID"
     },
     "fields": {
       "firstName": "First name",
@@ -132,7 +136,9 @@
       "email": "Email",
       "profession": "Profession",
       "specialty": "Specialty",
-      "professionLicenceNumber": "License number"
+      "professionLicenceNumber": "License number",
+      "phone": "Phone Number",
+      "birthDate": "Date of Birth"
     }
   }
 }
