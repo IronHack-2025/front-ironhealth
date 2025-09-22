@@ -1,5 +1,4 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-
 async function handleResponse(response) {
   if (response.ok) {
     // Solo para respuestas realmente vacías (204 No Content)
@@ -83,7 +82,6 @@ async function handleResponse(response) {
     }
   }
 }
-
 export const post = async (endpoint, data) => {
   try {
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {

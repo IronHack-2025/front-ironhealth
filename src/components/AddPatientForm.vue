@@ -40,7 +40,16 @@
                 prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
                 variant="outlined" class="mt-2" :error-messages="fieldErrors.birthDate || []" 
                 @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
-
+              <CloudinaryUpload
+               ref="cloudinaryRef" 
+                :preset="uploadPreset"
+                folder="patients"
+                buttonText="$t('common.buttons.uploadImage')"
+                :api-url="`${apiBaseUrl}/signature`"
+                @uploaded="form.imageUrl = $event"
+                @cleared="form.imageUrl = ''"
+                block
+              />
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
                 {{ $t('common.buttons.registerPatient') }}
               </v-btn>
@@ -56,13 +65,14 @@
     </v-row>
   </v-container>
 </template>
-
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
 import { post } from '@/services/api'
-
+import CloudinaryUpload from './CloudinaryUpload.vue'
+const cloudinaryRef = ref(null)
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const { t } = useI18n()
 const emit = defineEmits(['patient-added'])
 
@@ -74,10 +84,9 @@ const form = reactive({
   lastName: '',
   email: '',
   phone: '',
-  birthDate: '' // NOTA: enviar ISO string o Date según backend; aquí lo enviamos tal cual
+  birthDate: '',
+  imageUrl: '',
 })
-
-// Estado de alerta estructurada
 const alert = reactive({
   show: false,
   type: 'success',                 // 'success' | 'error' | ...
@@ -194,9 +203,12 @@ const newPatient = async () => {
   alert.show = false
   clearFieldErrors()
 
+  console.log(form.imageUrl)
+  
   try {
     const resp = await post('/patients', { ...form }) // { success, messageCode, data }
     formRef.value.reset()
+    cloudinaryRef.value?.clearImage()
     emit('patient-added')
 
     // Éxito
@@ -214,6 +226,45 @@ const newPatient = async () => {
     alert.details = e.details || null
     alert.params = {}
     alert.message = t('common.messages.error')
+  }
+}
+
+onMounted(() => {
+  if (!window.cloudinary) {
+    const script = document.createElement('script')
+    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js'
+    script.async = true
+    script.onload = () => {
+      initWidget()
+    }
+    document.head.appendChild(script)
+  } else {
+    initWidget()
+  }
+})
+
+function initWidget() {
+  const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+
+  const myWidget = window.cloudinary.createUploadWidget(
+    {
+      cloudName: CLOUD_NAME,
+      uploadPreset: UPLOAD_PRESET,
+    },
+    (error, result) => {
+      if (!error && result && result.event === 'success') {
+        imageUrl.value = result.info.secure_url
+        form.imageUrl = result.info.secure_url // <-- Cambia aquí a imageUrl
+        console.log('Imagen subida:', result.info)
+      }
+    },
+  )
+}
+
+function openCloudinaryWidget() {
+  if (myWidget) {
+    myWidget.open()
   }
 }
 </script>

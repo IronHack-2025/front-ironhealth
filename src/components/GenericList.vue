@@ -43,14 +43,22 @@
             density="comfortable"
             fixed-header
             height="500px"
+
           >
-          </v-data-table>
+           <!-- Slot para renderizar la imageUrln -->
+            <template v-slot:item.imageUrl="{ item }">
+              <v-avatar size="70">
+                <v-img :src="item.imageUrl"
+                  alt="Foto paciente"/>
+              </v-avatar>
+            </template>
+         
+</v-data-table>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -70,5 +78,4 @@ const props = defineProps({
 })
 
 const search = ref('')
-
 </script>
