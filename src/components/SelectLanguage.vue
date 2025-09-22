@@ -54,4 +54,5 @@ const handleLanguageChange = (newValue) => {
 .language-selector {
   margin-bottom: 1rem;
 }
+
 </style>

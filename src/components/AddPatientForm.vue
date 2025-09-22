@@ -13,28 +13,33 @@
                 <v-col cols="12" md="6">
                   <v-text-field v-model="form.firstName" :label="$t('common.forms.firstName')"
                     prepend-inner-icon="mdi-account" :rules="[rules.required, rules.acceptedLength]" variant="outlined"
-                    maxlength="50" :error-messages="fieldErrors.firstName || []" />
+                    maxlength="50" :error-messages="fieldErrors.firstName || []" 
+                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field v-model="form.lastName" :label="$t('common.forms.lastName')"
                     prepend-inner-icon="mdi-account-details" :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" />
+                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" 
+                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
                 </v-col>
               </v-row>
 
               <v-text-field v-model="form.email" :label="$t('common.forms.email')" prepend-inner-icon="mdi-email"
                 :rules="[rules.required, rules.email]" variant="outlined" class="mt-2" maxlength="50"
-                :error-messages="fieldErrors.email || []" />
+                :error-messages="fieldErrors.email || []" 
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
 
               <v-text-field v-model="form.phone" :label="$t('common.forms.phone')" prepend-inner-icon="mdi-phone"
                 :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" maxlength="15"
-                :error-messages="fieldErrors.phone || []" />
+                :error-messages="fieldErrors.phone || []" 
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
 
               <!-- NOTA: usar el componente de fecha registrado (Vuetify Labs) -->
               <v-date-input v-model="form.birthDate" :label="$t('common.forms.dateOfBirth')"
                 prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
-                variant="outlined" class="mt-2" :error-messages="fieldErrors.birthDate || []" />
+                variant="outlined" class="mt-2" :error-messages="fieldErrors.birthDate || []" 
+                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
 
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
                 {{ $t('common.buttons.registerPatient') }}
@@ -43,7 +48,8 @@
 
             <!-- Alerta estructurada alineada con el backend -->
             <Alert class="mt-4" :show="alert.show" :type="alert.type" :message-code="alert.messageCode"
-              :details="alert.details" :message-params="alert.params" :fallback-message="alert.message" />
+              :details="alert.details" :message-params="alert.params" :message="alert.message" 
+              @field-errors-updated="updateFieldErrors" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -86,13 +92,28 @@ const fieldErrors = reactive({})
 function clearFieldErrors() {
   for (const k of Object.keys(fieldErrors)) delete fieldErrors[k]
 }
-function buildFieldErrors(details) {
+
+// Recibir fieldErrors del componente Alert
+const updateFieldErrors = (errors) => {
+  // Limpiar errores anteriores
   clearFieldErrors()
-  if (!Array.isArray(details)) return
-  details.forEach(d => {
-    if (!d.field) return
-      ; (fieldErrors[d.field] ||= []).push(t(`messages.validation.${d.code}`, d.meta || {}))
-  })
+  // Asignar nuevos errores
+  Object.assign(fieldErrors, errors)
+}
+
+// Función para ocultar alerta cuando el usuario interactúa
+const hideAlertOnFocus = () => {
+  if (alert.show && alert.type === 'error') {
+    alert.show = false
+    clearFieldErrors()
+  }
+}
+
+const hideAlertOnInput = () => {
+  if (alert.show && alert.type === 'error') {
+    alert.show = false
+    clearFieldErrors()
+  }
 }
 
 const rules = {
@@ -167,8 +188,6 @@ const newPatient = async () => {
     alert.params = {}
     alert.message = t('messages.error.VALIDATION_FAILED')
 
-    buildFieldErrors(details)
-
     return
   }
 
@@ -195,8 +214,6 @@ const newPatient = async () => {
     alert.details = e.details || null
     alert.params = {}
     alert.message = t('common.messages.error')
-
-    buildFieldErrors(e.details)
   }
 }
 </script>

@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
@@ -43,6 +43,9 @@ const props = defineProps({
   // params opcionales para el mensaje principal (placeholders)
   messageParams: { type: Object, default: () => ({}) }
 })
+
+// Emit para comunicar los fieldErrors al componente padre
+const emit = defineEmits(['field-errors-updated'])
 
 // ¿Es un error de validación con lista?
 const isValidationError = computed(() =>
@@ -94,4 +97,27 @@ const validationItems = computed(() => {
     return resolved
   })
 })
+
+// Computed reactivo para fieldErrors
+const fieldErrors = computed(() => {
+  const errors = {}
+  if (!Array.isArray(props.details)) return errors
+  
+  props.details.forEach(detail => {
+    if (!detail.field) return
+    const textKey = `messages.validation.${detail.code}`
+    const text = t(textKey, detail.meta || {})
+    const resolved = (text === textKey) ? detail.code : text
+    
+    if (!errors[detail.field]) errors[detail.field] = []
+    errors[detail.field].push(resolved)
+  })
+  
+  return errors
+})
+
+// Emitir los fieldErrors cuando cambien
+watch(fieldErrors, (newErrors) => {
+  emit('field-errors-updated', newErrors)
+}, { immediate: true, deep: true })
 </script>

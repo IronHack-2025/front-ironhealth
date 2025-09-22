@@ -12,12 +12,14 @@
                 <v-col cols="12" md="6">
                   <v-text-field v-model="form.firstName" :label="$t('common.forms.firstName')"
                     prepend-inner-icon="mdi-account" :rules="[rules.required, rules.acceptedLength]" variant="outlined"
-                    maxlength="50" :error-messages="fieldErrors.firstName || []" />
+                    maxlength="50" :error-messages="fieldErrors.firstName || []" 
+                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field v-model="form.lastName" :label="$t('common.forms.lastName')"
                     prepend-inner-icon="mdi-account-details" :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" />
+                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" 
+                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
                 </v-col>
               </v-row>
 
@@ -25,20 +27,24 @@
               <v-select v-model="selectedProfession" :label="$t('common.forms.profession')"
                 prepend-inner-icon="mdi-briefcase" :items="professionsList" item-title="title" item-value="value"
                 :rules="[rules.required]" variant="outlined" class="mt-2"
-                :error-messages="fieldErrors.profession || []" />
+                :error-messages="fieldErrors.profession || []" 
+                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
 
               <!-- ESPECIALIDAD -->
               <v-select v-model="selectedSpecialty" :label="$t('common.forms.specialty')"
                 prepend-inner-icon="mdi-stethoscope" :items="specialtiesList" item-title="title" item-value="value"
-                variant="outlined" class="mt-2" :error-messages="fieldErrors.specialty || []" />
+                variant="outlined" class="mt-2" :error-messages="fieldErrors.specialty || []" 
+                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
 
               <v-text-field v-model="form.email" :label="$t('common.forms.email')" prepend-inner-icon="mdi-email"
                 :rules="[rules.required, rules.email, rules.acceptedLength]" variant="outlined" class="mt-2"
-                maxlength="50" :error-messages="fieldErrors.email || []" />
+                maxlength="50" :error-messages="fieldErrors.email || []" 
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
 
               <v-text-field v-model="form.professionLicenceNumber" :label="$t('common.forms.professionalLicenseNumber')"
                 prepend-inner-icon="mdi-card-account-details" variant="outlined" class="mt-2" maxlength="50"
-                :error-messages="fieldErrors.professionLicenceNumber || []" />
+                :error-messages="fieldErrors.professionLicenceNumber || []" 
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
 
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
                 {{ $t('common.buttons.registerProfessional') }}
@@ -47,7 +53,8 @@
 
             <!-- Alerta estructurada -->
             <Alert :show="alert.show" :type="alert.type" :message-code="alert.messageCode" :details="alert.details"
-              :message-params="alert.params" :fallback-message="alert.message" class="mt-4" />
+              :message-params="alert.params" :message="alert.message" class="mt-4" 
+              @field-errors-updated="updateFieldErrors" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -56,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import Alert from './AlertMessage.vue'
 import { post } from '../services/api'
 import professionsData from '@/assets/data/professions.json'
@@ -108,14 +115,6 @@ watch(selectedProfession, () => {
   selectedSpecialty.value = ''                // FIX coherente con value
 })
 
-watch(locale, async () => {
-  if (formRef.value) {
-    // Esperar al siguiente tick para que las traducciones se actualicen
-    await nextTick()
-    formRef.value.validate()
-  }
-})
-
 const form = reactive({
   firstName: '',
   lastName: '',
@@ -139,13 +138,28 @@ const fieldErrors = reactive({})
 function clearFieldErrors() {
   for (const k of Object.keys(fieldErrors)) delete fieldErrors[k]
 }
-function buildFieldErrors(details) {
+
+// Recibir fieldErrors del componente Alert
+const updateFieldErrors = (errors) => {
+  // Limpiar errores anteriores
   clearFieldErrors()
-  if (!Array.isArray(details)) return
-  details.forEach(d => {
-    if (!d.field) return
-    (fieldErrors[d.field] ||= []).push(t(`messages.validation.${d.code}`, d.meta || {}))
-  })
+  // Asignar nuevos errores
+  Object.assign(fieldErrors, errors)
+}
+
+// Función para ocultar alerta cuando el usuario interactúa
+const hideAlertOnFocus = () => {
+  if (alert.show && alert.type === 'error') {
+    alert.show = false
+    clearFieldErrors()
+  }
+}
+
+const hideAlertOnInput = () => {
+  if (alert.show && alert.type === 'error') {
+    alert.show = false
+    clearFieldErrors()
+  }
 }
 
 const submitForm = async () => {
@@ -194,8 +208,6 @@ const submitForm = async () => {
     alert.params = {}
     alert.message = t('messages.error.VALIDATION_FAILED')
 
-    buildFieldErrors(details) // alimenta :error-messages
-
     return
   }
 
@@ -236,9 +248,6 @@ const submitForm = async () => {
     alert.details = error.details || null
     alert.params = {}
     alert.message = t(`messages.error.${alert.messageCode}`)
-
-    // Pintar errores bajo cada input si vienen con field
-    buildFieldErrors(error.details)
   }
 }
 
