@@ -1,0 +1,153 @@
+{
+  "navbar": {
+    "patients": "Pacientes",
+    "professionals": "Profesionales",
+    "appointments": "Citas",
+    "dashboard": "Dashboard",
+    "reports": "Reportes",
+    "settings": "Configuración",
+    "selectLang": "Idiomas"
+  },
+  "views": {
+    "patients": {
+      "title": "Registro de Pacientes",
+      "listTitle": "Listado de Pacientes",
+      "subtitle": "Gestionar todos los registros de pacientes",
+      "actions": {
+        "add": "Agregar Paciente",
+        "edit": "Editar Paciente",
+        "delete": "Eliminar Paciente"
+      }
+    },
+    "professionals": {
+      "title": "Profesionales de la Salud",
+      "listTitle": "Listado de Profesionales",
+      "subtitle": "Gestionar personal médico",
+      "actions": {
+        "add": "Agregar Profesional",
+        "edit": "Editar Profesional",
+        "delete": "Eliminar Profesional"
+      }
+    },
+    "appointments": {
+      "title": "Programación de Citas",
+      "newAppointment": "Reservar nueva cita",
+      "time": "Hora: ",
+      "patient": "Paciente:",
+      "patients": "Pacientes:",
+      "professionals": "Profesionales Disponibles:",
+      "professional": "Profesional:",
+      "notes": "Notas:",
+      "details": "Detalles de la Cita",
+      "start": "Hora de inicio:",
+      "end": "Hora de fin:",
+      "actions": {
+        "schedule": "Programar Cita",
+        "reschedule": "Reprogramar",
+        "cancel": "Cancelar Cita"
+      }
+    }
+  },
+  "common": {
+    "forms": {
+      "firstName": "Nombre",
+      "lastName": "Apellidos",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "dateOfBirth": "Fecha de Nacimiento",
+      "profession": "Profesión",
+      "specialty": "Especialidad (Opcional)",
+      "professionalLicenseNumber": "Número de Licencia Profesional (Opcional)",
+      "photo": "Foto",
+      "required": "Este campo es obligatorio",
+      "invalidEmail": "Por favor ingrese un email válido",
+      "invalidPhone": "Por favor ingrese un número de teléfono válido",
+      "invalidDate": "Fecha inválida",
+      "validLength": "Debe tener entre {min} y {max} caracteres",
+      "search": "Buscar..."
+    },
+    "buttons": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "close": "Cerrar",
+      "saveNotes": "Guardar Notas",
+      "view": "Ver Detalles",
+      "registerPatient": "Registrar Paciente",
+      "registerProfessional": "Registrar Profesional",
+      "uploadImage": "Subir Imagen"
+    },
+    "messages": {
+      "loading": "Cargando...",
+      "error": "Ocurrió un error",
+      "success": "Operación completada con éxito",
+      "noData": "No se encontraron resultados"
+    },
+    "lists": {
+      "defaultTitle": "Lista"
+    },
+    "search": {
+      "placeholder": "Buscar..."
+    },
+    "pagination": {
+      "itemsPerPage": "Elementos por página:"
+    }
+  },
+  "messages": {
+    "success": {
+      "PATIENT_CREATED": "Paciente creado correctamente",
+      "PATIENT_UPDATED": "Paciente actualizado correctamente",
+      "PATIENT_DELETED": "Paciente eliminado correctamente",
+      "PROFESSIONAL_CREATED": "Profesional creado correctamente",
+      "PROFESSIONAL_UPDATED": "Profesional actualizado correctamente",
+      "PROFESSIONAL_DELETED": "Profesional eliminado correctamente",
+      "APPOINTMENT_CREATED": "Cita creada correctamente",
+      "APPOINTMENT_UPDATED": "Cita actualizada correctamente",
+      "APPOINTMENT_DELETED": "Cita eliminada correctamente",
+      "APPOINTMENT_CANCELLED": "Cita cancelada correctamente",
+      "PATIENTS_RETRIEVED": "Pacientes recuperados con éxito",
+      "PROFESSIONALS_RETRIEVED": "Profesionales recuperados con éxito",
+      "APPOINTMENT_RETRIEVED": "Citas recuperadas correctamente",
+      "OPERATION_SUCCESS": "Operación realizada con éxito",
+      "NOTES_UPDATED": "Notas guardadas correctamente"
+    },
+    "error": {
+      "VALIDATION_FAILED": "Revisa los siguientes campos:",
+      "PATIENT_NOT_FOUND": "Paciente no encontrado",
+      "PROFESSIONAL_NOT_FOUND": "Profesional no encontrado",
+      "APPOINTMENT_NOT_FOUND": "No se ha encontrado ninguna cita.",
+      "EMAIL_ALREADY_EXISTS": "El correo electrónico ya existe.",
+      "INVALID_EMAIL_FORMAT": "Formato de correo electrónico no válido",
+      "INTERNAL_SERVER_ERROR": "Error interno del servidor",
+      "APPOINTMENT_CONFLICT": "Conflicto de horarios de citas",
+      "NETWORK_ERROR": "Error de conexión de red",
+      "PATIENT_CREATION_FAILED": "Error al crear el paciente"
+    },
+    "validation": {
+      "FORM_FIELDS_REQUIRED": "Por favor complete todos los campos requeridos",
+      "NAME_MUST_BE_STRING": "Este campo debe ser un texto",
+      "NAME_MIN_LENGTH": "Debe tener entre {min} y {max} caracteres",
+      "NAME_MAX_LENGTH": "El nombre debe tener como máximo {max} caracteres.",
+      "NAME_INVALID_CHARACTERS": "El valor contiene caracteres no permitidos",
+      "EMAIL_INVALID_FORMAT": "El email no tiene un formato válido",
+      "PHONE_INVALID_FORMAT": "Introduzca un número de teléfono válido",
+      "BIRTHDATE_INVALID": "Introduzca una fecha de nacimiento válida",
+      "EMAIL_ALREADY_EXISTS": "Este email ya está registrado",
+      "PHONE_ALREADY_EXISTS": "Este número de teléfono ya está registrado",
+      "NOTES_HTML_NOT_ALLOWED": "Las notas no pueden contener HTML",
+      "NOTES_TOO_LONG": "Las notas no pueden exceder los {max} caracteres",
+      "ID_INVALID_FORMAT": "ID inválido"
+    },
+    "fields": {
+      "firstName": "Nombre",
+      "lastName": "Apellidos",
+      "email": "Email",
+      "phone": "Teléfono",
+      "birthDate": "Fecha de Nacimiento",
+      "profession": "Profesión",
+      "specialty": "Especialidad",
+      "professionLicenceNumber": "Nº de licencia"
+    }
+  }
+}
