@@ -60,6 +60,7 @@
       "professionalLicenseNumber": "Número de Licencia Profesional (Opcional)",
       "photo": "Foto",
       "required": "Este campo es obligatorio",
+      "actions": "Acciones",
       "invalidEmail": "Por favor ingrese un email válido",
       "invalidPhone": "Por favor ingrese un número de teléfono válido",
       "invalidDate": "Fecha inválida",

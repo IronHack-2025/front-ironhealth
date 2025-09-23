@@ -60,6 +60,7 @@
       "photo": "Photo",
       "search": "Search...",
       "required": "This field is required",
+      "actions": "Actions",
       "invalidEmail": "Invalid email format",
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",

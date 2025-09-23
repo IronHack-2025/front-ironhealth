@@ -28,7 +28,8 @@ const headers = computed(() => [
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.phone'), key: 'phone' },
-  { title: t('common.forms.email'), key: 'email' }
+  { title: t('common.forms.email'), key: 'email' },
+  { title: t('common.forms.actions'), key: 'actions' }
 ])
 
 const fetchPatients = async () => {

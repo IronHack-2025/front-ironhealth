@@ -49,6 +49,7 @@ function getSpecialtyName(code) {
 }
 
 const headers = computed(() => [
+    { title: t('common.forms.actions'), key: 'actions' },
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.email'), key: 'email' },
