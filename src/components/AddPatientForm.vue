@@ -72,7 +72,6 @@ import Alert from './AlertMessage.vue'
 import { post } from '@/services/api'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 const cloudinaryRef = ref(null)
-const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const { t } = useI18n()
