@@ -51,16 +51,9 @@
               </v-avatar>
             </template>
 
-
-<template v-slot:item.actions="{ item }">
-  <ItemActions
-    :id="item.id"
-    @edit="onEdit"
-    @delete="onDelete"
-  />
-</template>
-
-
+            <template v-slot:item.actions="{ item }">
+              <ItemActions :id="item._id || item.id" @edit="onEdit" @delete="onDelete" />
+            </template>
           </v-data-table>
         </v-card>
       </v-col>
@@ -74,6 +67,8 @@ import Alert from './AlertMessage.vue'
 import ItemActions from './ItemActions.vue'
 
 const { t } = useI18n()
+
+const emit = defineEmits(['refresh'])
 
 const props = defineProps({
   title: { type: String, default: '' },
@@ -89,11 +84,23 @@ const props = defineProps({
 const search = ref('')
 function onEdit(id) {
   console.log('Editar item con id:', id)
-  // Aquí llamas a backend o navegas a página de edición
 }
 
-function onDelete(id) {
-  console.log('Eliminar confirmado para id:', id)
-  // Aquí haces la llamada al backend para borrar el item
+
+async function onDelete(id) {
+    console.log('Eliminar confirmado para id:', id)
+console.log(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`)
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`, {
+      method: 'PUT'
+    })
+    const data = await res.json()
+    console.log('Profesional eliminado:', data)
+    emit('refresh')
+  } catch (error) {
+    console.error('Error al eliminar profesional:', error)
+  }
 }
+
+
 </script>

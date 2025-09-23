@@ -50,13 +50,10 @@
       @click="dialog = true"
     />
 
-    <!-- Diálogo de confirmación -->
     <v-dialog v-model="dialog" max-width="400">
       <v-card>
         <v-card-title class="text-h6">Confirmar eliminación</v-card-title>
-        <v-card-text>
-          ¿Estás seguro de que quieres eliminar este elemento?
-        </v-card-text>
+        <v-card-text> ¿Estás seguro de que quieres eliminar este elemento? </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn text @click="dialog = false">Cancelar</v-btn>
           <v-btn color="error" @click="confirmDelete">Eliminar</v-btn>
@@ -71,7 +68,6 @@ import { ref } from 'vue'
 
 const props = defineProps({
   id: { type: [String, Number], required: true },
-
   showView: { type: Boolean, default: true },
   showEdit: { type: Boolean, default: true },
   showDelete: { type: Boolean, default: true },
@@ -79,10 +75,7 @@ const props = defineProps({
   showToggle: { type: Boolean, default: false },
 })
 
-const emit = defineEmits([
-  'view', 'edit', 'delete', 'duplicate',
-  'download', 'toggle', 'share'
-])
+const emit = defineEmits(['view', 'edit', 'delete', 'download', 'toggle'])
 
 const dialog = ref(false)
 

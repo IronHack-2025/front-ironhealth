@@ -4,8 +4,15 @@
       <AddProfessionalsForm @professional-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
-      <GenericList :title="$t('views.professionals.listTitle')" :items="professionals" :headers="headers"
-        :loading="loading" :error="error" :search-placeholder="$t('common.forms.search')" />
+      <GenericList
+        :title="$t('views.professionals.listTitle')"
+        :items="professionals"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+        @refresh="fetchProfessionals"
+      />
     </div>
   </div>
 </template>
@@ -49,7 +56,7 @@ function getSpecialtyName(code) {
 }
 
 const headers = computed(() => [
-    { title: t('common.forms.actions'), key: 'actions' },
+  { title: t('common.forms.actions'), key: 'actions' },
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.email'), key: 'email' },

@@ -116,3 +116,44 @@ export const get = async (endpoint) => {
     throw error
   }
 }
+
+
+// Añadimos PUT con el mismo manejo
+// export const put = async (endpoint, data) => {
+//   try {
+//     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(data),
+//     })
+//     return handleResponse(response)
+//   } catch (error) {
+//     if (!error.messageCode) {
+//       error.messageCode = 'NETWORK_ERROR'
+//       error.messageType = 'error'
+//     }
+//     throw error
+//   }
+// }
+
+// Añadimos PATCH con el mismo manejo
+// export const patch = async (endpoint, data) => {
+//   try {
+//     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
+//       method: 'PATCH',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(data),
+//     })
+//     return handleResponse(response)
+//   } catch (error) {
+//     if (!error.messageCode) {
+//       error.messageCode = 'NETWORK_ERROR'
+//       error.messageType = 'error'
+//     }
+//     throw error
+//   }
+// }
