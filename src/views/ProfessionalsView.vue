@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <div class="left">
-      <AddProfessionalsForm @professional-added="handleProfessionalAdded" />
+      <AddProfessionalsForm 
+        @professional-added="handleProfessionalAdded"
+                :btnTitle="$t('common.buttons.registerProfessional')"
+ />
     </div>
     <div class="rigth">
       <GenericList

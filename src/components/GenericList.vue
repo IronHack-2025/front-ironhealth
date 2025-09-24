@@ -55,6 +55,27 @@
               <ItemActions :id="item._id || item.id" @edit="onEdit" @delete="onDelete" />
             </template>
           </v-data-table>
+          <v-dialog v-model="dialog" max-width="800px" persistent>
+            <v-card class="elevation-6 rounded-xl pa-2">
+              <v-btn icon @click="dialog = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <!-- Adaptar el componente? -->
+              <v-card-text class="pa-0">
+                <AddProfessionalsForm
+                  @professional-added="handleProfessional"
+                  @professional-updated="handleUpdate"
+                  :btnTitle="
+                    edit
+                      ? $t('common.buttons.editProfessional')
+                      : $t('common.buttons.registerProfessional')
+                  "
+                  :items="editingProfessional"
+                  :mode="edit ? 'edit' : 'create'"
+                />
+              </v-card-text>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-col>
     </v-row>
@@ -65,6 +86,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
 import ItemActions from './ItemActions.vue'
+import AddProfessionalsForm from './AddProfessionalsForm.vue'
 
 const { t } = useI18n()
 
@@ -80,27 +102,64 @@ const props = defineProps({
   noDataText: { type: String, default: '' },
   searchPlaceholder: { type: String, default: '' },
 })
-
+let edit = ref(false)
 const search = ref('')
-function onEdit(id) {
-  console.log('Editar item con id:', id)
+const dialog = ref(false)
+const editingProfessional = ref(null)
+
+async function onEdit(id) {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/edit`)
+    
+    if (!res.ok) throw new Error('No se pudo cargar el profesional')
+    const response = await res.json()
+    
+    // Extraer los datos del profesional desde response.data
+    const data = response.data
+    
+    editingProfessional.value = {
+      id: data._id || data.id,
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      email: data.email || '',
+      profession: data.profession || '',
+      specialty: data.specialty || '',
+      professionLicenceNumber: data.professionLicenceNumber || '',
+      imageUrl: data.imageUrl || '',
+    }
+    
+    edit.value = true  
+    dialog.value = true
+  } catch (error) {
+    console.error('Error al cargar profesional:', error)
+  }
 }
 
+function openCreateForm() {
+  editingProfessional.value = null
+  edit.value = false   // 🔹 vuelve a modo registro
+  dialog.value = true
+}
+
+function handleProfessional() {
+  dialog.value = false
+  emit('refresh')
+}
+
+function handleUpdate() {
+  dialog.value = false
+  emit('refresh')
+}
 
 async function onDelete(id) {
-    console.log('Eliminar confirmado para id:', id)
-console.log(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`)
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`, {
-      method: 'PUT'
+      method: 'PUT',
     })
     const data = await res.json()
-    console.log('Profesional eliminado:', data)
     emit('refresh')
   } catch (error) {
     console.error('Error al eliminar profesional:', error)
   }
 }
-
-
 </script>

@@ -10,51 +10,105 @@
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.firstName" :label="$t('common.forms.firstName')"
-                    prepend-inner-icon="mdi-account" :rules="[rules.required, rules.acceptedLength]" variant="outlined"
-                    maxlength="50" :error-messages="fieldErrors.firstName || []" 
-                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                  <v-text-field
+                    v-model="form.firstName"
+                    :label="$t('common.forms.firstName')"
+                    prepend-inner-icon="mdi-account"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                    :error-messages="fieldErrors.firstName || []"
+                    @focus="hideAlertOnFocus"
+                    @input="hideAlertOnInput"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.lastName" :label="$t('common.forms.lastName')"
-                    prepend-inner-icon="mdi-account-details" :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" 
-                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                  <v-text-field
+                    v-model="form.lastName"
+                    :label="$t('common.forms.lastName')"
+                    prepend-inner-icon="mdi-account-details"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                    :error-messages="fieldErrors.lastName || []"
+                    @focus="hideAlertOnFocus"
+                    @input="hideAlertOnInput"
+                  />
                 </v-col>
               </v-row>
 
               <!-- PROFESIÓN -->
-              <v-select v-model="selectedProfession" :label="$t('common.forms.profession')"
-                prepend-inner-icon="mdi-briefcase" :items="professionsList" item-title="title" item-value="value"
-                :rules="[rules.required]" variant="outlined" class="mt-2"
-                :error-messages="fieldErrors.profession || []" 
-                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
+              <v-select
+                v-model="selectedProfession"
+                :label="$t('common.forms.profession')"
+                prepend-inner-icon="mdi-briefcase"
+                :items="professionsList"
+                item-title="title"
+                item-value="value"
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.profession || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
 
               <!-- ESPECIALIDAD -->
-              <v-select v-model="selectedSpecialty" :label="$t('common.forms.specialty')"
-                prepend-inner-icon="mdi-stethoscope" :items="specialtiesList" item-title="title" item-value="value"
-                variant="outlined" class="mt-2" :error-messages="fieldErrors.specialty || []" 
-                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
+              <v-select
+                v-model="selectedSpecialty"
+                :label="$t('common.forms.specialty')"
+                prepend-inner-icon="mdi-stethoscope"
+                :items="specialtiesList"
+                item-title="title"
+                item-value="value"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.specialty || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
 
-              <v-text-field v-model="form.email" :label="$t('common.forms.email')" prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email, rules.acceptedLength]" variant="outlined" class="mt-2"
-                maxlength="50" :error-messages="fieldErrors.email || []" 
-                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+              <v-text-field
+                v-model="form.email"
+                :label="$t('common.forms.email')"
+                prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email, rules.acceptedLength]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+                :error-messages="fieldErrors.email || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
 
-              <v-text-field v-model="form.professionLicenceNumber" :label="$t('common.forms.professionalLicenseNumber')"
-                prepend-inner-icon="mdi-card-account-details" variant="outlined" class="mt-2" maxlength="50"
-                :error-messages="fieldErrors.professionLicenceNumber || []" 
-                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+              <v-text-field
+                v-model="form.professionLicenceNumber"
+                :label="$t('common.forms.professionalLicenseNumber')"
+                prepend-inner-icon="mdi-card-account-details"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+                :error-messages="fieldErrors.professionLicenceNumber || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
 
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
-                {{ $t('common.buttons.registerProfessional') }}
+                {{ btnTitle }}
               </v-btn>
             </v-form>
 
             <!-- Alerta estructurada -->
-            <Alert :show="alert.show" :type="alert.type" :message-code="alert.messageCode" :details="alert.details"
-              :message-params="alert.params" :message="alert.message" class="mt-4" 
-              @field-errors-updated="updateFieldErrors" />
+            <Alert
+              :show="alert.show"
+              :type="alert.type"
+              :message-code="alert.messageCode"
+              :details="alert.details"
+              :message-params="alert.params"
+              :message="alert.message"
+              class="mt-4"
+              @field-errors-updated="updateFieldErrors"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -63,19 +117,23 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import Alert from './AlertMessage.vue'
 import { post } from '../services/api'
 import professionsData from '@/assets/data/professions.json'
 import { useI18n } from 'vue-i18n'
+const props = defineProps({
+  btnTitle: { type: String, default: '' },
+  items: { type: Object, required: false },
+  mode: { type: String, default: 'create' }, // 'create' o 'edit'
+})
 
 const { t, locale } = useI18n()
-const emit = defineEmits(['professional-added'])
-
+const emit = defineEmits(['professional-added', 'professional-updated'])
 const formRef = ref(null)
 const isValid = ref(false)
-const selectedProfession = ref(null)            // code
-const selectedSpecialty = ref('')              // FIX: usar el VALUE '', no la etiqueta "Sin especificar"
+const selectedProfession = ref(null) // code
+const selectedSpecialty = ref('') // FIX: usar el VALUE '', no la etiqueta "Sin especificar"
 
 // Helper robusto para i18n: admite string o objeto por idioma
 const getText = (val) => {
@@ -91,7 +149,7 @@ const getText = (val) => {
 // Lista de profesiones: muestra text, guarda code
 const professionsList = computed(() => {
   return professionsData.professions.map((p) => ({
-    title: getText(p.text),  // FIX: evita [object Object] cuando p.text es {es,en}
+    title: getText(p.text), // FIX: evita [object Object] cuando p.text es {es,en}
     value: p.code,
   }))
 })
@@ -104,7 +162,7 @@ const specialtiesList = computed(() => {
   return [
     { title: 'Sin especificar', value: '' }, // value siempre '', la UI muestra etiqueta
     ...professionObj.specialty.map((s) => ({
-      title: getText(s['specialty-name']),   // FIX: idem para specialty-name
+      title: getText(s['specialty-name']), // FIX: idem para specialty-name
       value: s['specialty-code'],
     })),
   ]
@@ -112,7 +170,7 @@ const specialtiesList = computed(() => {
 
 watch(selectedProfession, () => {
   // Al cambiar la profesión, resetea el value (no la etiqueta)
-  selectedSpecialty.value = ''                // FIX coherente con value
+  selectedSpecialty.value = '' // FIX coherente con value
 })
 
 const form = reactive({
@@ -122,6 +180,7 @@ const form = reactive({
   profession: '',
   specialty: '',
   professionLicenceNumber: '',
+  imageUrl: '',
 })
 
 const alert = reactive({
@@ -132,6 +191,46 @@ const alert = reactive({
   details: null, // [{ field?, code, meta? }]
   params: {},
 })
+
+function loadEditData() {
+  if (props.mode === 'edit' && props.items) {
+    // Campos básicos
+    form.firstName = props.items.firstName || ''
+    form.lastName = props.items.lastName || ''
+    form.email = props.items.email || ''
+    form.professionLicenceNumber = props.items.professionLicenceNumber || ''
+    form.imageUrl = props.items.imageUrl || ''
+
+    // Selects
+    selectedProfession.value = props.items.profession || null
+    selectedSpecialty.value = props.items.specialty || ''
+  } else if (props.mode === 'create') {
+    // Resetea el formulario si no hay datos
+    resetForm()
+  }
+}
+
+onMounted(() => {
+  loadEditData()
+})
+
+watch(
+  [() => props.items, () => props.mode],
+  () => {
+    loadEditData()
+  },
+  { immediate: true }
+)
+
+function resetForm() {
+  form.firstName = ''
+  form.lastName = ''
+  form.email = ''
+  form.professionLicenceNumber = ''
+  form.imageUrl = ''
+  selectedProfession.value = null
+  selectedSpecialty.value = ''
+}
 
 // Errores por campo para enganchar a :error-messages
 const fieldErrors = reactive({})
@@ -165,7 +264,6 @@ const hideAlertOnInput = () => {
 const submitForm = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) {
-
     // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
     const details = []
 
@@ -211,7 +309,6 @@ const submitForm = async () => {
     return
   }
 
-
   // limpiar estado previo de errores
   alert.show = false
   clearFieldErrors()
@@ -226,17 +323,37 @@ const submitForm = async () => {
     specialty: specialtyToSend,
     email: form.email,
     professionLicenceNumber: form.professionLicenceNumber,
+    imageUrl: form.imageUrl,
   }
 
   try {
-    const resp = await post('/professionals', formData)
-    formRef.value.reset()
-    emit('professional-added')
-
+    let res
+    if (props.mode === 'create') {
+      res = await post('/professionals', formData)
+      formRef.value.reset()
+      emit('professional-added', res)
+    } else if (props.mode === 'edit' && props.items?.id) {
+      const resonse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/professionals/${props.items.id}/edit`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        }
+      )
+      
+      if (!resonse.ok) {
+        throw new Error('Error en la resuesta del servidor')
+      }
+      
+      res = await resonse.json()
+      emit('professional-updated', res)
+    }
+    
     // ÉXITO: mostrar alerta traducida por messageCode
     alert.show = true
     alert.type = 'success'
-    alert.messageCode = resp?.messageCode || 'OPERATION_SUCCESS'
+    alert.messageCode = res?.messageCode || 'OPERATION_SUCCESS'
     alert.details = null
     alert.params = {}
     alert.message = t('messages.success.OPERATION_SUCCESS') // fallback
@@ -247,7 +364,7 @@ const submitForm = async () => {
     alert.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
     alert.details = error.details || null
     alert.params = {}
-    alert.message = t(`messages.error.${alert.messageCode}`)
+    alert.message = error.message || t(`messages.error.${alert.messageCode}`)
   }
 }
 

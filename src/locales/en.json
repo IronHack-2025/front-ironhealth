@@ -77,6 +77,7 @@
       "view": "View Details",
       "registerPatient": "Register Patient",
       "registerProfessional": "Register Professional",
+      "editProfessional": "Edit Professional",
       "uploadImage": "Upload Image"
     },
     "messages": {
