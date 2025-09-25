@@ -21,15 +21,14 @@
             </v-col>
           </v-toolbar>
 
-          <Alert
-            v-if="error"
-            :show="true"
-            type="error"
-            :messageCode="error"
-            :fallbackMessage="error"
+          <AlertMessage
+            v-if="alert.show"
+            :show="alert.show"
+            :type="alert.type"
+            :message-code="alert.messageCode"
+            :message="alert.message"
             class="mx-4 mt-4"
           />
-
           <v-data-table
             :headers="headers"
             :items="items"
@@ -82,14 +81,19 @@
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Alert from './AlertMessage.vue'
+import AlertMessage from './AlertMessage.vue'
 import ItemActions from './ItemActions.vue'
 import AddProfessionalsForm from './AddProfessionalsForm.vue'
 
 const { t } = useI18n()
-
+const alert = reactive({
+  show: false,
+  type: 'success',
+  messageCode: '',
+  message: '',
+})
 const emit = defineEmits(['refresh'])
 
 const props = defineProps({
@@ -110,13 +114,11 @@ const editingProfessional = ref(null)
 async function onEdit(id) {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/edit`)
-    
+
     if (!res.ok) throw new Error('No se pudo cargar el profesional')
     const response = await res.json()
-    
-    // Extraer los datos del profesional desde response.data
+
     const data = response.data
-    
     editingProfessional.value = {
       id: data._id || data.id,
       firstName: data.firstName || '',
@@ -127,19 +129,19 @@ async function onEdit(id) {
       professionLicenceNumber: data.professionLicenceNumber || '',
       imageUrl: data.imageUrl || '',
     }
-    
-    edit.value = true  
+
+    edit.value = true
     dialog.value = true
   } catch (error) {
     console.error('Error al cargar profesional:', error)
   }
 }
 
-function openCreateForm() {
-  editingProfessional.value = null
-  edit.value = false   // 🔹 vuelve a modo registro
-  dialog.value = true
-}
+// function openCreateForm() {
+//   editingProfessional.value = null
+//   edit.value = false
+//   dialog.value = true
+// }
 
 function handleProfessional() {
   dialog.value = false
@@ -147,8 +149,10 @@ function handleProfessional() {
 }
 
 function handleUpdate() {
-  dialog.value = false
-  emit('refresh')
+  setTimeout(() => {
+    dialog.value = false
+    emit('refresh')
+  }, 3000)
 }
 
 async function onDelete(id) {
@@ -156,10 +160,34 @@ async function onDelete(id) {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`, {
       method: 'PUT',
     })
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Error al eliminar')
+    }
+
     const data = await res.json()
+
+    // Mostrar éxito
+    alert.show = true
+    alert.type = 'success'
+    alert.messageCode = 'PROFESSIONAL_DELETED' 
+    alert.message = t('messages.success.PROFESSIONAL_DELETED')
+
+    setTimeout(() => {
+      alert.show = false
+    }, 3000)
+
     emit('refresh')
   } catch (error) {
-    console.error('Error al eliminar profesional:', error)
+    alert.show = true
+    alert.type = 'error'
+    alert.messageCode = 'INTERNAL_SERVER_ERROR'
+    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+
+    setTimeout(() => {
+      alert.show = false
+    }, 5000)
   }
 }
 </script>

@@ -99,7 +99,7 @@
             </v-form>
 
             <!-- Alerta estructurada -->
-            <Alert
+            <AlertMessage
               :show="alert.show"
               :type="alert.type"
               :message-code="alert.messageCode"
@@ -118,8 +118,7 @@
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import Alert from './AlertMessage.vue'
-import { post } from '../services/api'
+import AlertMessage from './AlertMessage.vue'
 import professionsData from '@/assets/data/professions.json'
 import { useI18n } from 'vue-i18n'
 const props = defineProps({
@@ -280,7 +279,6 @@ const submitForm = async () => {
     specialty: specialtyToSend,
     email: form.email,
     professionLicenceNumber: form.professionLicenceNumber,
-    imageUrl: form.imageUrl,
   }
 
   try {
@@ -344,6 +342,10 @@ const submitForm = async () => {
     alert.params = {}
     alert.message = t('messages.success.OPERATION_SUCCESS')
 
+    setTimeout(() => {
+      alert.show = false
+    }, 3000)
+
   } catch (error) {
     alert.show = true
     alert.type = 'error'
@@ -351,6 +353,10 @@ const submitForm = async () => {
     alert.details = null
     alert.params = {}
     alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+        setTimeout(() => {
+      alert.show = false
+    }, 3000)
+
   }
 }
 
