@@ -568,10 +568,13 @@ const fetchPatients = async () => {
 // Call fetchAppointments on component mount
 onMounted(async () => {
 
-
-  await fetchAppointments();
   await fetchProfessionals();
   await fetchPatients();
+  await fetchAppointments();
+
+  if (calendarRef.value) {
+    calendarRef.value.getApi().refetchEvents();
+  }
 });
 
 </script>

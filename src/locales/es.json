@@ -6,7 +6,9 @@
     "dashboard": "Dashboard",
     "reports": "Reportes",
     "settings": "Configuración",
-    "selectLang": "Idiomas"
+    "selectLang": "Idiomas",
+    "profile": "Perfil de Usuario",
+    "login": "Inicio de Sesión"
   },
   "views": {
     "patients": {
@@ -45,6 +47,18 @@
         "schedule": "Programar Cita",
         "reschedule": "Reprogramar",
         "cancel": "Cancelar Cita"
+      }
+    },
+    "login": {
+      "title": "Inicio de Sesión",
+      "subtitle": "Accede a tu cuenta",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "resetPassword": "Restablecer Contraseña",
+      "actions": {
+        "login": "Iniciar Sesión",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "register": "Registrarse"
       }
     }
   },

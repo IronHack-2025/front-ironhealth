@@ -42,7 +42,6 @@ const handleLanguageChange = (newValue) => {
         :items="languages"
         item-title="label"
         item-value="code"
-        :label="t('navbar.selectLang')"
         variant="outlined"
         density="compact"
     ></v-select>
@@ -52,7 +51,8 @@ const handleLanguageChange = (newValue) => {
 
 <style scoped>
 .language-selector {
-  margin-bottom: 1rem;
+  margin-top: 1.5rem;
 }
+
 
 </style>

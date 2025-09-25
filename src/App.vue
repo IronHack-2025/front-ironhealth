@@ -25,6 +25,7 @@ watch(currentLocale, (newLocale) => {
         <v-list-item title="IronHealth" subtitle="CRM"></v-list-item>
         <v-divider />
         <v-list>
+          <v-list-item to="/login" prepend-icon="mdi-login" :title="$t('navbar.login')"></v-list-item>
           <v-list-item
             to="/patients"
             prepend-icon="mdi-account-multiple"
@@ -39,11 +40,22 @@ watch(currentLocale, (newLocale) => {
 
           </v-list-item>
         </v-list>
-
-        <SelectLanguage v-model="currentLocale"/>
       </v-navigation-drawer>
 
       <v-main>
+         <v-app-bar
+  app
+  density="compact"
+  flat
+  color="primary"
+>
+  <v-spacer />
+  <SelectLanguage v-model="currentLocale"/>
+
+  <v-btn icon :title="$t('navbar.profile')">
+    <v-icon>mdi-account</v-icon>
+  </v-btn>
+</v-app-bar>
         <RouterView :calendar-locale="currentLocale" />
       </v-main>
     </v-app>

@@ -6,7 +6,9 @@
     "dashboard": "Dashboard",
     "reports": "Reports",
     "settings": "Settings",
-    "selectLang": "Languages"
+    "selectLang": "Languages",
+    "profile": "User profile",
+    "login": "Login"
   },
   "views": {
     "patients": {
@@ -43,6 +45,17 @@
         "schedule": "Schedule Appointment",
         "reschedule": "Reschedule",
         "cancel": "Cancel Appointment"
+      }
+    },
+    "login": {
+      "title": "User Login",
+      "subtitle": "Access your account",
+      "email": "Email",
+      "password": "Password",
+      "actions": {
+        "login": "Login",
+        "forgotPassword": "Forgot Password?",
+        "register": "Register"
       }
     }
   },
