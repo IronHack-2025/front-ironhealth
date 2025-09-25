@@ -17,7 +17,8 @@
         "add": "Agregar Paciente",
         "edit": "Editar Paciente",
         "delete": "Eliminar Paciente"
-      }
+      },
+      "details": "Detalles"
     },
     "professionals": {
       "title": "Profesionales de la Salud",
@@ -64,7 +65,14 @@
       "invalidPhone": "Por favor ingrese un número de teléfono válido",
       "invalidDate": "Fecha inválida",
       "validLength": "Debe tener entre {min} y {max} caracteres",
-      "search": "Buscar..."
+      "search": "Buscar...",
+      "city": "Ciudad",
+      "street": "Calle",
+      "postalCode": "Código Postal",
+      "gender": "Género",
+      "emergencyContact": "Contacto de emergencia",
+      "nationality": "Nacionalidad"
+      
     },
     "buttons": {
       "save": "Guardar",
@@ -92,6 +100,11 @@
     },
     "pagination": {
       "itemsPerPage": "Elementos por página:"
+    },
+    "genders": {
+      "genderMan": "Hombre",
+      "genderWoman": "Mujer",
+      "genderNonBinary": "No binario"
     }
   },
   "messages": {

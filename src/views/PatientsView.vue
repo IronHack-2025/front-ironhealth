@@ -4,8 +4,17 @@
       <AddPatient @patient-added="handlePatientAdded" />
     </div>
     <div class="rigth">
-      <GenericList :title="$t('views.patients.listTitle')" :items="patients" :headers="headers" :loading="loading"
-        :error="error" :search-placeholder="$t('common.forms.search')" />
+      <GenericList
+        :title="$t('views.patients.listTitle')"
+        :items="patients"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+        route-name="PatientDetail"  
+        id-field="_id"
+        :row-clickable="true"
+      />
     </div>
   </div>
 </template>

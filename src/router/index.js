@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import Patients from '../views/PatientsView.vue'
 import Professionals from '../views/ProfessionalsView.vue'
 import Appointments from '../views/AppointmentsView.vue'
-
+import PatientDetail from '@/views/PatientSummaryView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -26,6 +26,11 @@ const router = createRouter({
       path: '/appointments',
       name: 'appointments',
       component: Appointments,
+    },
+    {
+      path: '/patients/:id',
+      name: 'PatientDetail',
+      component: PatientDetail,
     }
   ],
 })

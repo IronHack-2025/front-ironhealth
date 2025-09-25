@@ -16,7 +16,8 @@
         "add": "Add Patient",
         "edit": "Edit Patient",
         "delete": "Delete Patient"
-      }
+      },
+      "details": "Details"
     },
     "professionals": {
       "title": "Healthcare Professionals Registration",
@@ -46,7 +47,6 @@
       }
     }
   },
-
   "common": {
     "forms": {
       "firstName": "First Name",
@@ -64,7 +64,14 @@
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",
       "validLength": "This field must be between {min} and {max} characters.",
-      "imageRequired": "Image upload is required."
+      "imageRequired": "Image upload is required.",
+      "city": "City",
+      "street": "Street",
+      "postalCode": "Postal Code",
+      "gender": "Gender",
+      "emergencyContact": "Emergency contact",
+      "nationality": "Nationality"
+      
     },
     "buttons": {
       "save": "Save",
@@ -86,6 +93,11 @@
     },
     "pagination": {
       "itemsPerPage": "Items per page:"
+    },
+    "genders": {
+      "genderMan": "Man",
+      "genderWoman": "Woman",
+      "genderNonBinary": "Non-binary"
     }
   },
   "messages": {
