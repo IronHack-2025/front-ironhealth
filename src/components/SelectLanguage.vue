@@ -37,6 +37,7 @@ const handleLanguageChange = (newValue) => {
 <template>
 <div class="language-selector">
     <v-select
+     prepend-icon="mdi-translate"
         :model-value="locale"
         @update:model-value="handleLanguageChange"
         :items="languages"

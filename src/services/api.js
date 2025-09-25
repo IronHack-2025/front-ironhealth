@@ -1,4 +1,18 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
+const getAuthToken = () => {
+  return localStorage.getItem('authToken') || localStorage.getItem('token')
+}
+const getAuthHeaders = () => {
+  const token = getAuthToken()
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` })
+  }
+}
+
+// Manejo centralizado de respuestas
+
 async function handleResponse(response) {
   if (response.ok) {
     // Solo para respuestas realmente vacías (204 No Content)
@@ -88,7 +102,7 @@ export const post = async (endpoint, data) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // More headers, token etc.
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(data),
     })
@@ -106,7 +120,13 @@ export const post = async (endpoint, data) => {
 // Añadimos GET con el mismo manejo
 export const get = async (endpoint) => {
   try {
-    const response = await fetch(`${apiBaseUrl}${endpoint}`)
+    const response = await fetch(`${apiBaseUrl}${endpoint}`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      }
+    })
     return handleResponse(response)
   } catch (error) {
     if (!error.messageCode) {

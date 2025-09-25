@@ -8,7 +8,8 @@
     "settings": "Configuración",
     "selectLang": "Idiomas",
     "profile": "Perfil de Usuario",
-    "login": "Inicio de Sesión"
+    "login": "Inicio de Sesión",
+    "logout": "Cerrar Sesión"
   },
   "views": {
     "patients": {

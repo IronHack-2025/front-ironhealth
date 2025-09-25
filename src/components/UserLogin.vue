@@ -123,6 +123,11 @@ const handleLogin = async () => {
       localStorage.setItem('authToken', response.data.token)
     }
 
+    if (response.data.user) {
+      localStorage.setItem('userId', response.data.user.id)
+      localStorage.setItem('userRole', response.data.user.role)
+    }
+
     alert.show = true
     alert.type = 'success'
     alert.message = t('messages.success.LOGIN_SUCCESS')

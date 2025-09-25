@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { post } from '../services/api'
+import { post, get } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -454,9 +454,7 @@ const calendarOptions = ref({
 
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
-      const res = await fetch("http://localhost:3000/api/appointment");
-      const response = await res.json();
-
+      const response = await get("/appointment");
       const data = response.data || [];
 
        // Validar que data sea un array
@@ -521,17 +519,11 @@ const calendarOptions = ref({
 // Ensure appointments are fetched and displayed correctly
 const fetchAppointments = async () => {
   try {
-    const appointmentsRes = await fetch('http://localhost:3000/api/appointment');
-    if (appointmentsRes.ok) {
-      const response = await appointmentsRes.json();
-
-       appointments.value = response.data || [];
+    const response = await get('/appointment');
+    appointments.value = response.data || [];
      
-      if (calendarRef.value) {
-        calendarRef.value.getApi().refetchEvents();
-      }
-    } else {
-      console.error('Failed to fetch appointments:', appointmentsRes.statusText);
+    if (calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents();
     }
   } catch (error) {
     console.error('Error fetching appointments:', error);
@@ -540,13 +532,8 @@ const fetchAppointments = async () => {
 
 const fetchProfessionals = async () => {
   try {
-    const professionalsRes = await fetch('http://localhost:3000/api/professionals');
-    if (professionalsRes.ok) {
-      const response = await professionalsRes.json();
-      professionals.value = response.data || [];
-    } else {
-      console.error('Failed to fetch professionals:', professionalsRes.statusText);
-    }
+    const response = await get('/professionals');
+    professionals.value = response.data || [];
   } catch (error) {
     console.error('Error fetching professionals:', error);
   }
@@ -554,13 +541,8 @@ const fetchProfessionals = async () => {
 
 const fetchPatients = async () => {
   try {
-    const patientsRes = await fetch('http://localhost:3000/api/patients');
-    if (patientsRes.ok) {
-      const response = await patientsRes.json();
-      patients.value = response.data || [];
-    } else {
-      console.error('Failed to fetch patients:', patientsRes.statusText);
-    }
+    const response = await get('/patients');
+    patients.value = response.data || [];
   } catch (error) {
     console.error('Error fetching patients:', error);
   }
