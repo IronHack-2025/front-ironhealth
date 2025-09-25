@@ -51,7 +51,21 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <ItemActions :id="item._id || item.id" @edit="onEdit" @delete="onDelete" />
+                <v-btn
+                v-if="canEdit"
+                icon="mdi-pencil"
+                size="small"
+                variant="text"
+                color="primary"
+                @click="$emit('edit', item._id || item.id)"
+              />
+              <v-btn
+                v-if="canDelete"
+                icon="mdi-delete"
+                variant="text"
+                color="error"
+                @click="$emit('delete', item._id || item.id)"
+              />
             </template>
           </v-data-table>
           <v-dialog v-model="dialog" max-width="800px" persistent>
@@ -62,13 +76,7 @@
               <!-- Adaptar el componente? -->
               <v-card-text class="pa-0">
                 <AddProfessionalsForm
-                  @professional-added="handleProfessional"
-                  @professional-updated="handleUpdate"
-                  :btnTitle="
-                    edit
-                      ? $t('common.buttons.editProfessional')
-                      : $t('common.buttons.registerProfessional')
-                  "
+                  :btnTitle="$t('common.buttons.editProfessional')"
                   :items="editingProfessional"
                   :mode="edit ? 'edit' : 'create'"
                 />
@@ -84,8 +92,6 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AlertMessage from './AlertMessage.vue'
-import ItemActions from './ItemActions.vue'
-import AddProfessionalsForm from './AddProfessionalsForm.vue'
 
 const { t } = useI18n()
 const alert = reactive({
@@ -94,7 +100,7 @@ const alert = reactive({
   messageCode: '',
   message: '',
 })
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['refresh', 'edit', 'delete'])
 
 const props = defineProps({
   title: { type: String, default: '' },
@@ -105,89 +111,8 @@ const props = defineProps({
   loadingText: { type: String, default: '' },
   noDataText: { type: String, default: '' },
   searchPlaceholder: { type: String, default: '' },
+  canEdit: { type: Boolean, default: false },
+  canDelete: { type: Boolean, default: false },
 })
-let edit = ref(false)
 const search = ref('')
-const dialog = ref(false)
-const editingProfessional = ref(null)
-
-async function onEdit(id) {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/edit`)
-
-    if (!res.ok) throw new Error('No se pudo cargar el profesional')
-    const response = await res.json()
-
-    const data = response.data
-    editingProfessional.value = {
-      id: data._id || data.id,
-      firstName: data.firstName || '',
-      lastName: data.lastName || '',
-      email: data.email || '',
-      profession: data.profession || '',
-      specialty: data.specialty || '',
-      professionLicenceNumber: data.professionLicenceNumber || '',
-      imageUrl: data.imageUrl || '',
-    }
-
-    edit.value = true
-    dialog.value = true
-  } catch (error) {
-    console.error('Error al cargar profesional:', error)
-  }
-}
-
-// function openCreateForm() {
-//   editingProfessional.value = null
-//   edit.value = false
-//   dialog.value = true
-// }
-
-function handleProfessional() {
-  dialog.value = false
-  emit('refresh')
-}
-
-function handleUpdate() {
-  setTimeout(() => {
-    dialog.value = false
-    emit('refresh')
-  }, 3000)
-}
-
-async function onDelete(id) {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`, {
-      method: 'PUT',
-    })
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}))
-      throw new Error(errorData.message || 'Error al eliminar')
-    }
-
-    const data = await res.json()
-
-    // Mostrar éxito
-    alert.show = true
-    alert.type = 'success'
-    alert.messageCode = 'PROFESSIONAL_DELETED' 
-    alert.message = t('messages.success.PROFESSIONAL_DELETED')
-
-    setTimeout(() => {
-      alert.show = false
-    }, 3000)
-
-    emit('refresh')
-  } catch (error) {
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = 'INTERNAL_SERVER_ERROR'
-    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
-
-    setTimeout(() => {
-      alert.show = false
-    }, 5000)
-  }
-}
 </script>

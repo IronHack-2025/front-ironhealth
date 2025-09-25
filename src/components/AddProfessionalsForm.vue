@@ -218,7 +218,7 @@ watch(
   () => {
     loadEditData()
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function resetForm() {
@@ -283,7 +283,6 @@ const submitForm = async () => {
 
   try {
     let response
-    let res
 
     if (props.mode === 'create') {
       // Crear nuevo
@@ -293,59 +292,35 @@ const submitForm = async () => {
         body: JSON.stringify(formData),
       })
     } else if (props.mode === 'edit') {
-      // Aseguramos que haya un ID válido
       if (!props.items?.id) {
         throw new Error('No se puede editar: falta el ID del profesional')
       }
 
-      // Editar existente → usamos el ID del objeto recibido
       response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/professionals/${props.items.id}/edit`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
-        }
+        },
       )
-    } else {
-      throw new Error('Modo desconocido: debe ser "create" o "edit"')
     }
 
-    if (!response.ok) {
-      // Intentar extraer mensaje del backend
-      let errorMessage = 'Error en la operación'
-      try {
-        const errorData = await response.json()
-        errorMessage = errorData.message || errorData.error || errorMessage
-      } catch (e) {
-        // Si no es JSON, usar status text
-        errorMessage = response.statusText || 'Error desconocido'
-      }
-      throw new Error(errorMessage)
-    }
+    response = await response.json()
 
-    res = await response.json()
-
-    // Emitir evento
     if (props.mode === 'create') {
       formRef.value.reset()
-      emit('professional-added', res)
+      emit('professional-added', response)
     } else {
-      emit('professional-updated', res)
+      emit('professional-updated', response)
     }
 
-    // Éxito
     alert.show = true
     alert.type = 'success'
-    alert.messageCode = res?.messageCode || 'OPERATION_SUCCESS'
+    alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
     alert.details = null
     alert.params = {}
     alert.message = t('messages.success.OPERATION_SUCCESS')
-
-    setTimeout(() => {
-      alert.show = false
-    }, 3000)
-
   } catch (error) {
     alert.show = true
     alert.type = 'error'
@@ -353,10 +328,10 @@ const submitForm = async () => {
     alert.details = null
     alert.params = {}
     alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
-        setTimeout(() => {
+  } finally {
+    setTimeout(() => {
       alert.show = false
     }, 3000)
-
   }
 }
 
