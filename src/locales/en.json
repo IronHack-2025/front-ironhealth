@@ -54,9 +54,7 @@
       "email": "Email",
       "password": "Password",
       "actions": {
-        "login": "Login",
-        "forgotPassword": "Forgot Password?",
-        "register": "Register"
+        "login": "Login"
       }
     }
   },
@@ -119,7 +117,8 @@
       "PROFESSIONALS_RETRIEVED": "Professionals retrieved successfully",
       "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
       "OPERATION_SUCCESS": "Operation completed successfully",
-      "NOTES_UPDATED": "Notes saved successfully"
+      "NOTES_UPDATED": "Notes saved successfully",
+      "LOGIN_SUCCESS": "Login successful"
     },
     "error": {
       "VALIDATION_FAILED": "Please check the entered data",
@@ -153,7 +152,9 @@
       "PHONE_ALREADY_EXISTS": "This phone number is already registered",
       "NOTES_HTML_NOT_ALLOWED": "Notes cannot contain HTML",
       "NOTES_TOO_LONG": "Notes cannot exceed {max} characters",
-      "ID_INVALID_FORMAT": "Invalid ID"
+      "ID_INVALID_FORMAT": "Invalid ID",
+      "PASSWORD_LENGTH": "Password must be at least 6 characters long",
+      "PASSWORD_INCORRECT": "Incorrect password"
     },
     "fields": {
       "firstName": "First name",

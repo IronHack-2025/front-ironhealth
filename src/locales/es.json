@@ -125,7 +125,8 @@
       "PROFESSIONALS_RETRIEVED": "Profesionales recuperados con éxito",
       "APPOINTMENT_RETRIEVED": "Citas recuperadas correctamente",
       "OPERATION_SUCCESS": "Operación realizada con éxito",
-      "NOTES_UPDATED": "Notas guardadas correctamente"
+      "NOTES_UPDATED": "Notas guardadas correctamente",
+      "LOGIN_SUCCESS": "Inicio de sesión exitoso"
     },
     "error": {
       "VALIDATION_FAILED": "Revisa los siguientes campos:",
@@ -159,7 +160,9 @@
       "PHONE_ALREADY_EXISTS": "Este número de teléfono ya está registrado",
       "NOTES_HTML_NOT_ALLOWED": "Las notas no pueden contener HTML",
       "NOTES_TOO_LONG": "Las notas no pueden exceder los {max} caracteres",
-      "ID_INVALID_FORMAT": "ID inválido"
+      "ID_INVALID_FORMAT": "ID inválido",
+      "PASSWORD_LENGTH": "La contraseña debe tener al menos 6 caracteres",
+      "PASSWORD_INCORRECT": "Contraseña incorrecta"
     },
     "fields": {
       "firstName": "Nombre",

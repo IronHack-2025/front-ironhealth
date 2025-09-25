@@ -49,7 +49,7 @@
            
           </v-form>
 
-          <Alert 
+          <AlertMessage 
             :show="alert.show" 
             :type="alert.type" 
             :message="alert.message" 
@@ -66,7 +66,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { post } from '@/services/api'
-import Alert from './AlertMessage.vue'
+import AlertMessage from './AlertMessage.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -74,8 +74,6 @@ const router = useRouter()
 const valid = ref(false)
 const loading = ref(false)
 const showPassword = ref(false)
-const showForgotPassword = ref(false)
-const resetEmail = ref('')
 const loginForm = ref(null)
 
 const form = reactive({
@@ -91,13 +89,13 @@ const alert = reactive({
 
 // Validation rules
 const emailRules = [
-  v => !!v || t('validation.required'),
-  v => /.+@.+\..+/.test(v) || t('validation.emailFormat')
+  v => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
+  v => /.+@.+\..+/.test(v) || t('messages.validation.EMAIL_INVALID_FORMAT')
 ]
 
 const passwordRules = [
-  v => !!v || t('validation.required'),
-  v => (v && v.length >= 6) || t('validation.passwordLength')
+  v => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
+  v => (v && v.length >= 6) || t('messages.validation.PASSWORD_LENGTH')
 ]
 
 const resetAlert = () => {
@@ -136,15 +134,13 @@ const handleLogin = async () => {
       if (data.user.profileId) {
         localStorage.setItem('profileId', data.user.profileId)
       }
-      if (data.user.mustChangePassword) {
-        localStorage.setItem('mustChangePassword', data.user.mustChangePassword)
-      }
+     
     }
 
     alert.show = true
     alert.type = 'success'
     alert.message = t('messages.success.LOGIN_SUCCESS')
-    
+
     // Redirect after successful login
     setTimeout(() => {
       router.push('/appointments')
