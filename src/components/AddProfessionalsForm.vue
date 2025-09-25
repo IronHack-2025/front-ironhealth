@@ -41,6 +41,11 @@
                 maxlength="50" :error-messages="fieldErrors.email || []" 
                 @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
 
+               <v-text-field v-model="form.dni" :label="$t('common.forms.dni')" prepend-inner-icon="mdi-card-account-details"
+                :rules="[rules.required]" variant="outlined" class="mt-2" maxlength="9"
+                :error-messages="fieldErrors.dni || []" 
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                
               <v-text-field v-model="form.professionLicenceNumber" :label="$t('common.forms.professionalLicenseNumber')"
                 prepend-inner-icon="mdi-card-account-details" variant="outlined" class="mt-2" maxlength="50"
                 :error-messages="fieldErrors.professionLicenceNumber || []" 

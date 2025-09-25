@@ -137,7 +137,14 @@
       "INTERNAL_SERVER_ERROR": "Error interno del servidor",
       "APPOINTMENT_CONFLICT": "Conflicto de horarios de citas",
       "NETWORK_ERROR": "Error de conexión de red",
-      "PATIENT_CREATION_FAILED": "Error al crear el paciente"
+      "PATIENT_CREATION_FAILED": "Error al crear el paciente",
+      "PROFESSIONAL_CREATION_FAILED": "Error al crear el profesional",
+      "APPOINTMENT_CREATION_FAILED": "Error al crear la cita",
+      "UNAUTHORIZED": "Acceso no autorizado",
+      "INVALID_TOKEN": "Token inválido o expirado",
+      "TOKEN_NOT_PROVIDED": "Token no proporcionado",
+      "INSUFFICIENT_PERMISSIONS": "Permisos insuficientes",
+      "UNAUTHORIZED_PROFILE_ACCESS": "No tienes permiso para acceder a este perfil"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Por favor complete todos los campos requeridos",

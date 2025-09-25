@@ -17,16 +17,19 @@ const router = createRouter({
       path: '/patients',
       name: 'patients',
       component: Patients,
+      //meta: { requiresAuth: true, roles: ['admin', 'professional'] }
     },
     {
       path: '/professionals',
       name: 'professionals',
       component: Professionals,
+      //meta: { requiresAuth: true }
     },
     {
       path: '/appointments',
       name: 'appointments',
       component: Appointments,
+      //meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -34,6 +37,25 @@ const router = createRouter({
       component: Login,
     }
   ],
+})
+
+// Guard de autenticación
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('authToken')
+  const userRole = localStorage.getItem('userRole') // Asume que guardas el rol
+  
+  if (to.meta.requiresAuth && !token) {
+    next('/login')
+    return
+  }
+  
+  if (to.meta.roles && !to.meta.roles.includes(userRole)) {
+    // Redirigir a página de "sin permisos" o dashboard
+    next('/appointments')
+    return
+  }
+  
+  next()
 })
 
 export default router

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import SelectLanguage from '@/components/SelectLanguage.vue'
@@ -7,6 +7,11 @@ import SelectLanguage from '@/components/SelectLanguage.vue'
 const { locale } = useI18n()
 const router = useRouter()
 const currentLocale = ref(locale.value)
+
+// Computed para roles de usuario
+const userRole = computed(() => localStorage.getItem('userRole'))
+const isAdmin = computed(() => userRole.value === 'admin')
+const isLoggedIn = computed(() => !!localStorage.getItem('authToken'))
 
 // Sincronizar cambios de idioma entre i18n y currentLocale
 watch(() => locale.value, (newLocale) => {
@@ -67,11 +72,16 @@ const logout = async () => {
         <v-list-item title="IronHealth" subtitle="CRM"></v-list-item>
         <v-divider />
         <v-list>
-          <v-list-item to="/login" prepend-icon="mdi-login" :title="$t('navbar.login')"></v-list-item>
+          <v-list-item to="/login" 
+          prepend-icon="mdi-login" 
+          :title="$t('navbar.login')"
+          v-if="!isLoggedIn"
+          ></v-list-item>
           <v-list-item
             to="/patients"
             prepend-icon="mdi-account-multiple"
             :title="$t('navbar.patients')"
+            v-if="isLoggedIn && isAdmin"
           ></v-list-item>
           <v-list-item
             to="/professionals"

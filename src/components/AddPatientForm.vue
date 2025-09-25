@@ -34,7 +34,11 @@
                 :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" maxlength="15"
                 :error-messages="fieldErrors.phone || []" 
                 @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
-
+              
+              <v-text-field v-model="form.dni" :label="$t('common.forms.dni')" prepend-inner-icon="mdi-card-account-details"
+                :rules="[rules.required]" variant="outlined" class="mt-2" maxlength="9"
+                :error-messages="fieldErrors.dni || []" 
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
               <!-- NOTA: usar el componente de fecha registrado (Vuetify Labs) -->
               <v-date-input v-model="form.birthDate" :label="$t('common.forms.dateOfBirth')"
                 prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
@@ -87,6 +91,7 @@ const form = reactive({
   email: '',
   phone: '',
   birthDate: '',
+  dni: '',
   imageUrl: '',
 })
 const alert = reactive({
@@ -190,6 +195,12 @@ const newPatient = async () => {
       details.push({ field: 'birthDate', code: 'FORM_FIELDS_REQUIRED' })
     } else if (isNaN(new Date(form.birthDate).getTime())) {
       details.push({ field: 'birthDate', code: 'BIRTHDATE_INVALID' })
+    }
+     // DNI
+    if (!form.dni) {
+      details.push({ field: 'dni', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (!/^\d{8}[A-Z]$/.test(form.dni)) {
+      details.push({ field: 'dni', code: 'DNI_INVALID_FORMAT' })
     }
 
     alert.show = true

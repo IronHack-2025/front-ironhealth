@@ -118,20 +118,33 @@ const handleLogin = async () => {
       password: form.password
     })
 
+    console.log('Login response:', response); // Debug
+
+    // Acceder correctamente a los datos
+    const { data } = response; // response.data contiene { token, user }
+    
     // Store token if provided
-    if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token)
+    if (data.token) {
+      localStorage.setItem('authToken', data.token)
     }
 
-    if (response.data.user) {
-      localStorage.setItem('userId', response.data.user.id)
-      localStorage.setItem('userRole', response.data.user.role)
+    if (data.user) {
+      localStorage.setItem('userId', data.user.id)
+      localStorage.setItem('userRole', data.user.role)
+      
+      // Opcional: guardar más datos del usuario
+      if (data.user.profileId) {
+        localStorage.setItem('profileId', data.user.profileId)
+      }
+      if (data.user.mustChangePassword) {
+        localStorage.setItem('mustChangePassword', data.user.mustChangePassword)
+      }
     }
 
     alert.show = true
     alert.type = 'success'
     alert.message = t('messages.success.LOGIN_SUCCESS')
-
+    
     // Redirect after successful login
     setTimeout(() => {
       router.push('/appointments')

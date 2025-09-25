@@ -68,6 +68,7 @@
       "dateOfBirth": "Date of Birth",
       "email": "Email",
       "phone": "Phone Number",
+      "dni": "DNI",
       "profession": "Profession",
       "specialty": "Specialty(Optional)",
       "professionalLicenseNumber": "Professional license Number(Optional)",
@@ -130,7 +131,14 @@
       "INTERNAL_SERVER_ERROR": "Internal server error",
       "APPOINTMENT_CONFLICT": "Appointment time conflict",
       "NETWORK_ERROR": "Network connection error",
-      "PATIENT_CREATION_FAILED": "Failed to create patient"
+      "PATIENT_CREATION_FAILED": "Failed to create patient",
+      "PROFESSIONAL_CREATION_FAILED": "Failed to create professional",
+      "APPOINTMENT_CREATION_FAILED": "Failed to create appointment",
+      "UNAUTHORIZED": "Unauthorized access",
+      "INVALID_TOKEN": "Invalid or expired token",
+      "TOKEN_NOT_PROVIDED": "Token not provided",
+      "INSUFFICIENT_PERMISSIONS": "Insufficient permissions",
+      "UNAUTHORIZED_PROFILE_ACCESS": "You do not have permission to access this profile"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Please fill in all required fields",
