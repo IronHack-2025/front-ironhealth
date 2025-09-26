@@ -17,7 +17,6 @@ async function handleResponse(response) {
   if (response.status === 401) {
     localStorage.removeItem('authToken')
     localStorage.removeItem('token')
-    window.location.href = '/login'
     const error = new Error('Token expired or invalid')
     error.messageCode = 'INVALID_TOKEN'
     error.messageType = 'error'

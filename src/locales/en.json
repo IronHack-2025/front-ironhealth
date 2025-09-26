@@ -138,7 +138,11 @@
       "INVALID_TOKEN": "Invalid or expired token",
       "TOKEN_NOT_PROVIDED": "Token not provided",
       "INSUFFICIENT_PERMISSIONS": "Insufficient permissions",
-      "UNAUTHORIZED_PROFILE_ACCESS": "You do not have permission to access this profile"
+      "UNAUTHORIZED_PROFILE_ACCESS": "You do not have permission to access this profile",
+      "LOGIN_FAILED": "Authentication error",
+      "INVALID_CREDENTIALS": "Invalid email or password",
+      "USER_NOT_FOUND": "User not found",
+      "INVALID_PASSWORD": "Invalid password"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Please fill in all required fields",

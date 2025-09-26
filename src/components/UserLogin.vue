@@ -34,7 +34,7 @@
               class="mb-4"
             />
 
-            <v-btn
+             <v-btn
               type="submit"
               color="primary"
               block
@@ -63,18 +63,17 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { post } from '@/services/api'
+import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth.js'
 import AlertMessage from './AlertMessage.vue'
 
 const { t } = useI18n()
 const router = useRouter()
+const { login, loading, loginError, clearLoginError } = useAuth()
 
 const valid = ref(false)
-const loading = ref(false)
 const showPassword = ref(false)
-const loginForm = ref(null)
 
 const form = reactive({
   email: '',
@@ -102,61 +101,40 @@ const resetAlert = () => {
   alert.show = false
   alert.message = ''
   alert.type = 'success'
+  clearLoginError()
 }
 
 const handleLogin = async () => {
   if (!valid.value) return
 
-  loading.value = true
   resetAlert()
 
   try {
-    const response = await post('/auth/login', {
+    const result = await login({
       email: form.email,
       password: form.password
     })
 
-    console.log('Login response:', response); // Debug
-
-    // Acceder correctamente a los datos
-    const { data } = response; // response.data contiene { token, user }
-    
-    // Store token if provided
-    if (data.token) {
-      localStorage.setItem('authToken', data.token)
-    }
-
-    if (data.user) {
-      localStorage.setItem('userId', data.user.id)
-      localStorage.setItem('userRole', data.user.role)
+    if (result.success) {
+      alert.show = true
+      alert.type = 'success'
+      alert.message = t('messages.success.LOGIN_SUCCESS')
       
-      // Opcional: guardar más datos del usuario
-      if (data.user.profileId) {
-        localStorage.setItem('profileId', data.user.profileId)
-      }
-     
+      setTimeout(() => {
+        router.push('/appointments')
+      }, 1000)
+    } else {
+      alert.show = true
+      alert.type = 'error'
+      alert.message = t(`messages.error.${result.error}`)
     }
-
-    alert.show = true
-    alert.type = 'success'
-    alert.message = t('messages.success.LOGIN_SUCCESS')
-
-    // Redirect after successful login
-    setTimeout(() => {
-      router.push('/appointments')
-    }, 1500)
-
   } catch (error) {
-    console.error('Login error:', error)
-    
+    console.error('Unexpected error in handleLogin:', error)
     alert.show = true
     alert.type = 'error'
-    alert.message = t(`messages.error.${error.messageCode || 'LOGIN_FAILED'}`)
-  } finally {
-    loading.value = false
+    alert.message = t('messages.error.LOGIN_FAILED')
   }
 }
-
 </script>
 
 <style scoped>
