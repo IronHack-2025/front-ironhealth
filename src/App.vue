@@ -10,7 +10,7 @@ const router = useRouter()
 const currentLocale = ref(locale.value)
 
 // Usar el composable useAuth en lugar de computed locales
-const { isAuthenticated, isAdmin, logout, initializeAuth } = useAuth()
+const { isAuthenticated, isAdmin, isProfessional, logout, initializeAuth } = useAuth()
 
 // Inicializar autenticación al cargar la app
 initializeAuth()
@@ -43,7 +43,7 @@ watch(currentLocale, (newLocale) => {
             to="/patients"
             prepend-icon="mdi-account-multiple"
             :title="$t('navbar.patients')"
-            v-if="isAuthenticated && isAdmin"
+            v-if="isAuthenticated && (isProfessional || isAdmin)"
           ></v-list-item>
           <v-list-item
             to="/professionals"
