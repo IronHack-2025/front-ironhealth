@@ -77,7 +77,8 @@
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",
       "validLength": "This field must be between {min} and {max} characters.",
-      "imageRequired": "Image upload is required."
+      "imageRequired": "Image upload is required.",
+       "invalidDNI": "DNI must be 7 or 8 digits followed by a letter"
     },
     "buttons": {
       "save": "Save",
@@ -154,7 +155,9 @@
       "NOTES_TOO_LONG": "Notes cannot exceed {max} characters",
       "ID_INVALID_FORMAT": "Invalid ID",
       "PASSWORD_LENGTH": "Password must be at least 6 characters long",
-      "PASSWORD_INCORRECT": "Incorrect password"
+      "PASSWORD_INCORRECT": "Incorrect password",
+      "DNI_ALREADY_EXISTS": "This DNI is already registered",
+      "DNI_INVALID_FORMAT": "DNI must be 7 or 8 digits"
     },
     "fields": {
       "firstName": "First name",

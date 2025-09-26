@@ -42,9 +42,10 @@
                 @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
 
                <v-text-field v-model="form.dni" :label="$t('common.forms.dni')" prepend-inner-icon="mdi-card-account-details"
-                :rules="[rules.required]" variant="outlined" class="mt-2" maxlength="9"
+                :rules="[rules.required, rules.dni]" variant="outlined" class="mt-2" maxlength="9"
                 :error-messages="fieldErrors.dni || []" 
-                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                @focus="hideAlertOnFocus" @input="hideAlertOnInput"
+                />
                 
               <v-text-field v-model="form.professionLicenceNumber" :label="$t('common.forms.professionalLicenseNumber')"
                 prepend-inner-icon="mdi-card-account-details" variant="outlined" class="mt-2" maxlength="50"
@@ -126,6 +127,7 @@ const form = reactive({
   email: '',
   profession: '',
   specialty: '',
+  dni: '',
   professionLicenceNumber: '',
 })
 
@@ -170,8 +172,6 @@ const hideAlertOnInput = () => {
 const submitForm = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) {
-
-    // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
     const details = []
 
     // Nombre
@@ -198,6 +198,13 @@ const submitForm = async () => {
       details.push({ field: 'email', code: 'FORM_FIELDS_REQUIRED' })
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       details.push({ field: 'email', code: 'EMAIL_INVALID_FORMAT' })
+    }
+
+    // DNI - Validación corregida para aceptar 7-8 dígitos + letra
+    if (!form.dni) {
+      details.push({ field: 'dni', code: 'FORM_FIELDS_REQUIRED' })
+    } else if (!/^\d{7,8}[A-Za-z]$/i.test(form.dni)) {
+      details.push({ field: 'dni', code: 'DNI_INVALID_FORMAT' })
     }
 
     // Nº licencia (opcional) – validación simple si hay valor
@@ -230,6 +237,7 @@ const submitForm = async () => {
     profession: selectedProfession.value,
     specialty: specialtyToSend,
     email: form.email,
+    dni: form.dni,
     professionLicenceNumber: form.professionLicenceNumber,
   }
 
@@ -277,5 +285,11 @@ const rules = computed(() => ({
       t('common.forms.validLength', { min: lengthMin, max: lengthMax })
     )
   },
+  // Agregar validación de DNI para Vuetify
+  dni: (value) => {
+    if (!value) return t('common.forms.required')
+    const pattern = /^\d{7,8}[A-Za-z]$/i
+    return pattern.test(value) || t('common.forms.invalidDNI')
+  }
 }))
 </script>

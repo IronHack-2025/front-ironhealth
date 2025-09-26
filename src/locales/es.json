@@ -79,7 +79,9 @@
       "invalidPhone": "Por favor ingrese un número de teléfono válido",
       "invalidDate": "Fecha inválida",
       "validLength": "Debe tener entre {min} y {max} caracteres",
-      "search": "Buscar..."
+      "search": "Buscar...",
+      "invalidDNI": "El DNI debe tener 7 u 8 dígitos seguidos de una letra",
+      "imageRequired": "La carga de imagen es obligatoria."
     },
     "buttons": {
       "save": "Guardar",
