@@ -6,6 +6,7 @@ import Professionals from '../views/ProfessionalsView.vue'
 import Appointments from '../views/AppointmentsView.vue'
 import Login from '../views/LoginView.vue'
 import MyAppointments from '../views/MyAppointmentsView.vue'
+import Users from '../views/UsersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,12 @@ const router = createRouter({
       component: MyAppointments,
       meta: { requiresAuth: true , requiredRole: ['patient', 'professional']}
     },
+      {
+      path: '/users',
+      name: 'users',
+      component: Users,
+      meta: { requiresAuth: true, requiredRole: ['admin'] }
+    }
   ],
 })
 

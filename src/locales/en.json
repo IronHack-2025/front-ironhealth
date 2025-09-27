@@ -7,6 +7,7 @@
     "myAppointments": "My Appointments",
     "reports": "Reports",
     "settings": "Settings",
+    "users": "Users",
     "selectLang": "Languages",
     "profile": "User profile",
     "login": "Login",
@@ -56,6 +57,23 @@
         "schedule": "Schedule Appointment",
         "reschedule": "Reschedule",
         "cancel": "Cancel Appointment"
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "searchPlaceholder": "Search users...",
+      "noData": "No users found",
+      "table": {
+        "email": "Email",
+        "role": "Role",
+        "profileModel": "Profile Type",
+        "isActive": "Status Active",
+        "createdAt": "Registration Date"
+      },
+      "roles": {
+        "admin": "Administrator",
+        "professional": "Professional",
+        "patient": "Patient"
       }
     },
     "login": {
@@ -110,7 +128,9 @@
     },
     "pagination": {
       "itemsPerPage": "Items per page:"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "messages": {
     "success": {

@@ -6,6 +6,7 @@
     "myAppointments": "Mis Citas",
     "dashboard": "Dashboard",
     "reports": "Reportes",
+    "users": "Usuarios",
     "settings": "Configuración",
     "selectLang": "Idiomas",
     "profile": "Perfil de Usuario",
@@ -58,6 +59,23 @@
         "schedule": "Programar Cita",
         "reschedule": "Reprogramar",
         "cancel": "Cancelar Cita"
+      }
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "searchPlaceholder": "Buscar usuarios...",
+      "noData": "No hay usuarios registrados",
+      "table": {
+        "email": "Correo Electrónico",
+        "role": "Rol",
+        "profileModel": "Tipo de Perfil", 
+        "isActive": "Estado Activo",
+        "createdAt": "Fecha de Registro"
+      },
+      "roles": {
+        "admin": "Administrador",
+        "professional": "Profesional",
+        "patient": "Paciente"
       }
     },
     "login": {
@@ -119,7 +137,9 @@
     },
     "pagination": {
       "itemsPerPage": "Elementos por página:"
-    }
+    },
+    "yes": "Sí",
+    "no": "No"
   },
   "messages": {
     "success": {
