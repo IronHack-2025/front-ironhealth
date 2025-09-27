@@ -49,6 +49,9 @@
       "details": "Detalles de la Cita",
       "start": "Hora de inicio:",
       "end": "Hora de fin:",
+      "cancelled": "Cancelada",
+      "completed": "Completada",
+      "cancelledAt": "Cancelada el:",
       "privateInfo": "Información Privada",
       "privateAppointment": "Esta es una cita de otro paciente. Los detalles son confidenciales.",
       "actions": {

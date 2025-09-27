@@ -42,7 +42,7 @@ const router = createRouter({
       path: '/my-appointments',
       name: 'my-appointments',
       component: MyAppointments,
-      meta: { requiresAuth: true, requiredRole: 'professional' }
+      meta: { requiresAuth: true , requiredRole: ['patient', 'professional']}
     },
   ],
 })

@@ -4,7 +4,7 @@
       <AppointmentsCalendar :calendar-locale="calendarLocale" />
     </div>
     <div v-else>
-      <PatientCalendar />
+      <PatientCalendar :calendar-locale="calendarLocale" />
     </div>
 </template>
 

@@ -55,7 +55,7 @@ watch(currentLocale, (newLocale) => {
            v-if="isAuthenticated"
           ></v-list-item>
           <v-list-item to="/my-appointments" prepend-icon="mdi-calendar-check" :title="$t('navbar.myAppointments')"
-           v-if="isAuthenticated && isProfessional"
+           v-if="isAuthenticated && !isAdmin"
           ></v-list-item>
           <v-list-item @click="logout" prepend-icon="mdi-logout" :title="$t('navbar.logout')" 
           v-if="isAuthenticated"></v-list-item>
