@@ -95,20 +95,30 @@ export function useAuth() {
     }
   }
 
-  // Función de logout mejorada usando services/api
+  // Función de logout usando servicio API
   async function logout() {
     try {
-      // 1. Llamar al endpoint de logout del backend usando el servicio API
+      // 1. Intentar logout en servidor usando servicio API
       if (authToken.value) {
-        await post('/auth/logout').catch((error) => {
-          console.warn('Error calling logout endpoint:', error)
-          // Continuar con el logout local aunque falle el backend
-        })
+        try {
+          console.info('🔄 Attempting server logout...')
+          await post('/auth/logout')
+          console.info('✅ Server logout successful')
+        } catch (error) {
+          // Manejar diferentes tipos de error de logout elegantemente
+          if (error.statusCode === 401 || error.messageCode === 'INVALID_TOKEN') {
+            console.info('ℹ️ Token already expired - server logout not needed')
+          } else if (error.messageCode === 'NETWORK_ERROR') {
+            console.info('ℹ️ Network error during logout - proceeding with local cleanup only')
+          } else {
+            console.info(`ℹ️ Server logout error (${error.messageCode || error.message}) - proceeding with local cleanup`)
+          }
+        }
       }
     } catch (error) {
-      console.error('Error during logout:', error)
+      console.info('ℹ️ Local logout proceeding despite server error')
     } finally {
-      // 2. Limpiar estado reactivo (esto automáticamente limpia localStorage)
+      // 2. Limpiar estado reactivo
       authToken.value = null
       user.value = null
       userRole.value = null
@@ -117,7 +127,7 @@ export function useAuth() {
       // 3. Limpiar otros datos relacionados
       localStorage.removeItem('profileId')
       localStorage.removeItem('userId')
-      localStorage.removeItem('token') // Por compatibilidad
+      localStorage.removeItem('token')
       
       // 4. Limpiar cookies si las usas
       document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
