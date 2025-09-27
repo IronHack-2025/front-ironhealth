@@ -45,7 +45,10 @@
       "start": "Start time:",
       "end": "End time:",
       "professionalNotAvailable": "Professional not available",
+      "patientNotAvailable": "Patient not available",
       "selectDifferentTime": "Please select a different time.",
+      "privateInfo": "Private Information",
+      "privateAppointment": "This is another patient's appointment. Details are confidential.",
       "actions": {
         "schedule": "Schedule Appointment",
         "reschedule": "Reschedule",
