@@ -54,7 +54,7 @@
           <div class="mt-4">
             <strong>{{ t('views.appointments.professionalNotes') }}</strong>
             <v-textarea 
-             v-model="form.professionalNotes" 
+             v-model="editableProfessionalNotes" 
              outlined 
              rows="4" 
              maxlength="1000" 
@@ -203,6 +203,7 @@ watch(
 const dialog = ref(false)
 
 const editableNotes = ref('')
+const editableProfessionalNotes = ref('')
 
 const form = ref({
   patientId: "",
@@ -410,7 +411,8 @@ const updateNotes = async () => {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        notes: editableNotes.value
+        notes: editableNotes.value,
+        professionalNotes: editableProfessionalNotes.value
       }),
     })
 
