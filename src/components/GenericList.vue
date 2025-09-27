@@ -64,23 +64,28 @@
                 icon="mdi-delete"
                 variant="text"
                 color="error"
-                @click="$emit('delete', item._id || item.id)"
+                @click="confirmDelete(item)"
               />
             </template>
           </v-data-table>
-          <v-dialog v-model="dialog" max-width="800px" persistent>
-            <v-card class="elevation-6 rounded-xl pa-2">
-              <v-btn icon @click="dialog = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <!-- Adaptar el componente? -->
-              <v-card-text class="pa-0">
-                <AddProfessionalsForm
-                  :btnTitle="$t('common.buttons.editProfessional')"
-                  :items="editingProfessional"
-                  :mode="edit ? 'edit' : 'create'"
-                />
+
+          <!-- Modal de confirmación de eliminación -->
+          <v-dialog v-model="deleteDialog" max-width="500">
+            <v-card>
+              <v-card-title class="text-h6">
+                {{ $t('common.confirmations.deleteTitle') || 'Confirmar eliminación' }}
+              </v-card-title>
+              <v-card-text>
+                {{ $t('common.confirmations.deleteMessage') || '¿Estás seguro de que quieres eliminar este elemento?' }}
               </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn text @click="deleteDialog = false">
+                  {{ $t('common.buttons.cancel') || 'Cancelar' }}
+                </v-btn>
+                <v-btn color="error" @click="executeDelete">
+                  {{ $t('common.buttons.delete') || 'Eliminar' }}
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-dialog>
         </v-card>
@@ -113,6 +118,23 @@ const props = defineProps({
   searchPlaceholder: { type: String, default: '' },
   canEdit: { type: Boolean, default: false },
   canDelete: { type: Boolean, default: false },
+  form:{ type: String, default: '' },
 })
 const search = ref('')
+const deleteDialog = ref(false)
+const itemToDelete = ref(null)
+
+// Funciones para el modal de eliminación
+const confirmDelete = (item) => {
+  itemToDelete.value = item
+  deleteDialog.value = true
+}
+
+const executeDelete = () => {
+  if (itemToDelete.value) {
+    emit('delete', itemToDelete.value._id || itemToDelete.value.id)
+  }
+  deleteDialog.value = false
+  itemToDelete.value = null
+}
 </script>

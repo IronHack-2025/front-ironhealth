@@ -67,6 +67,10 @@
       "validLength": "This field must be between {min} and {max} characters.",
       "imageRequired": "Image upload is required."
     },
+    "confirmations": {
+      "deleteTitle": "Confirm deletion",
+      "deleteMessage": "Are you sure you want to delete this item? This action cannot be undone."
+    },
     "buttons": {
       "save": "Save",
       "cancel": "Cancel",
@@ -76,6 +80,7 @@
       "saveNotes": "Save Notes",
       "view": "View Details",
       "registerPatient": "Register Patient",
+      "editPatient": "Edit Patient",
       "registerProfessional": "Register Professional",
       "editProfessional": "Edit Professional",
       "uploadImage": "Upload Image"
@@ -95,6 +100,7 @@
       "PATIENT_CREATED": "Patient created successfully",
       "PATIENT_UPDATED": "Patient updated successfully",
       "PATIENT_DELETED": "Patient deleted successfully",
+      "PATIENTS_DELETED": "Patient deleted successfully",
       "PROFESSIONAL_CREATED": "Professional created successfully",
       "PROFESSIONAL_UPDATED": "Professional updated successfully",
       "PROFESSIONAL_DELETED": "Professional deleted successfully",

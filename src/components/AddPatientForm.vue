@@ -51,7 +51,7 @@
                 block
               />
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
-                {{ $t('common.buttons.registerPatient') }}
+                {{ props.btnTitle || (props.mode === 'edit' ? $t('common.buttons.editPatient') : $t('common.buttons.registerPatient')) }}
               </v-btn>
             </v-form>
 
@@ -66,7 +66,7 @@
   </v-container>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
 import { post } from '@/services/api'
@@ -74,8 +74,17 @@ import CloudinaryUpload from './CloudinaryUpload.vue'
 const cloudinaryRef = ref(null)
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+// const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 const { t } = useI18n()
-const emit = defineEmits(['patient-added'])
+
+// Props para manejar modo create/edit
+const props = defineProps({
+  mode: { type: String, default: 'create' }, // 'create' | 'edit'
+  items: { type: Object, default: null }, // Datos del paciente para editar
+  btnTitle: { type: String, default: '' }, // Título del botón
+})
+
+const emit = defineEmits(['patient-added', 'patient-updated'])
 
 const formRef = ref(null)
 const isValid = ref(false)
@@ -110,6 +119,22 @@ const updateFieldErrors = (errors) => {
   // Asignar nuevos errores
   Object.assign(fieldErrors, errors)
 }
+
+// Cargar datos del paciente en modo edición
+const loadPatientData = () => {
+  if (props.mode === 'edit' && props.items) {
+    form.firstName = props.items.firstName || ''
+    form.lastName = props.items.lastName || ''
+    form.email = props.items.email || ''
+    form.phone = props.items.phone || ''
+    form.birthDate = props.items.birthDate ? new Date(props.items.birthDate) : ''
+    form.imageUrl = props.items.imageUrl || ''
+  }
+}
+
+// Watchers para cargar datos cuando cambian las props
+watch(() => props.items, loadPatientData, { immediate: true })
+watch(() => props.mode, loadPatientData)
 
 // Función para ocultar alerta cuando el usuario interactúa
 const hideAlertOnFocus = () => {
@@ -204,29 +229,71 @@ const newPatient = async () => {
   alert.show = false
   clearFieldErrors()
 
-  console.log(form.imageUrl)
+  // Preparar los datos para enviar
+  const formData = {
+    ...form,
+    birthDate: form.birthDate instanceof Date 
+      ? form.birthDate.toISOString().split('T')[0] 
+      : form.birthDate
+  }
+
+  console.log('Sending patient data:', formData)
   
   try {
-    const resp = await post('/patients', { ...form }) // { success, messageCode, data }
-    formRef.value.reset()
-    cloudinaryRef.value?.clearImage()
-    emit('patient-added')
+    let response
+
+    if (props.mode === 'create') {
+      response = await fetch(`${apiBaseUrl}/patients`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+    } else if (props.mode === 'edit') {
+      if (!props.items?.id) {
+        throw new Error('No se puede editar: falta el ID del paciente')
+      }
+
+      response = await fetch(`${apiBaseUrl}/patients/${props.items.id}/edit`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+    }
+
+    const responseData = await response.json()
+
+    if (!response.ok) {
+      throw new Error(responseData.message || responseData.error || 'Error en la petición')
+    }
+
+    if (props.mode === 'create') {
+      formRef.value.reset()
+      cloudinaryRef.value?.clearImage()
+      emit('patient-added', responseData)
+    } else {
+      emit('patient-updated', responseData)
+    }
 
     // Éxito
     alert.show = true
     alert.type = 'success'
-    alert.messageCode = resp?.messageCode || 'PATIENT_CREATED'
+    alert.messageCode = responseData?.messageCode || (props.mode === 'create' ? 'PATIENT_CREATED' : 'PATIENT_UPDATED')
     alert.details = null
     alert.params = {}
-    alert.message = t('common.messages.success') // fallback
-  } catch (e) {
+    alert.message = t(props.mode === 'create' ? 'messages.success.PATIENT_CREATED' : 'messages.success.PATIENT_UPDATED')
+  } catch (error) {
     // Error (validación o servidor)
+    console.error('Error saving patient:', error)
     alert.show = true
     alert.type = 'error'
-    alert.messageCode = e.messageCode || 'INTERNAL_SERVER_ERROR'
-    alert.details = e.details || null
+    alert.messageCode = 'INTERNAL_SERVER_ERROR'
+    alert.details = null
     alert.params = {}
-    alert.message = t('common.messages.error')
+    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+  } finally {
+    setTimeout(() => {
+      alert.show = false
+    }, 3000)
   }
 }
 
@@ -256,7 +323,7 @@ function initWidget() {
     (error, result) => {
       if (!error && result && result.event === 'success') {
         imageUrl.value = result.info.secure_url
-        form.imageUrl = result.info.secure_url // <-- Cambia aquí a imageUrl
+        form.imageUrl = result.info.secure_url 
         console.log('Imagen subida:', result.info)
       }
     },

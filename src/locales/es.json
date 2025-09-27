@@ -67,6 +67,10 @@
       "validLength": "Debe tener entre {min} y {max} caracteres",
       "search": "Buscar..."
     },
+    "confirmations": {
+      "deleteTitle": "Confirmar eliminación",
+      "deleteMessage": "¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer."
+    },
     "buttons": {
       "save": "Guardar",
       "cancel": "Cancelar",
@@ -76,6 +80,7 @@
       "saveNotes": "Guardar Notas",
       "view": "Ver Detalles",
       "registerPatient": "Registrar Paciente",
+      "editPatient": "Modificar Paciente",
       "registerProfessional": "Registrar Profesional",
       "editProfessional": "Modificar Profesional",
       "uploadImage": "Subir Imagen"
@@ -101,6 +106,7 @@
       "PATIENT_CREATED": "Paciente creado correctamente",
       "PATIENT_UPDATED": "Paciente actualizado correctamente",
       "PATIENT_DELETED": "Paciente eliminado correctamente",
+      "PATIENTS_DELETED": "Paciente eliminado correctamente",
       "PROFESSIONAL_CREATED": "Profesional creado correctamente",
       "PROFESSIONAL_UPDATED": "Profesional actualizado correctamente",
       "PROFESSIONAL_DELETED": "Profesional eliminado correctamente",

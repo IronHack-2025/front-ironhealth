@@ -15,12 +15,12 @@
         :error="error"
         :search-placeholder="$t('common.forms.search')"
         @refresh="fetchProfessionals"
+        :form="professionals"
         :canEdit="true"
         :canDelete="true"
         @edit="onEdit"
         @delete="onDelete"
-      >
-      </GenericList>
+      />
       <AlertMessage
         v-if="alert.show"
         :show="alert.show"
