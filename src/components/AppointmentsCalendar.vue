@@ -216,9 +216,13 @@ const form = ref({
 
 const cancelAppointmentById = async (id) => {
   try {
+    const token = localStorage.getItem('authToken');
+
     const response = await fetch(`http://localhost:3000/api/appointment/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" ,
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({
         status: { cancelled: true, timestamp: new Date() }
       }),
@@ -300,9 +304,13 @@ const resetAlert = () => {
 
 const cancelAppointment = async () => {
   try {
+    const token = localStorage.getItem('authToken');
+    
     const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' ,
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({
         status: {
           cancelled: true,
@@ -387,12 +395,17 @@ const saveAppointment = async () => {
 }
 
 const updateNotes = async () => {
+  const token = localStorage.getItem('authToken');
+  
   try {
     const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}/notes`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' ,
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({
-        notes: editableNotes.value
+        notes: editableNotes.value,
+
       }),
     })
 
@@ -517,18 +530,6 @@ const calendarOptions = ref({
 })
 
 // Ensure appointments are fetched and displayed correctly
-const fetchAppointments = async () => {
-  try {
-    const response = await get('/appointment');
-    appointments.value = response.data || [];
-     
-    if (calendarRef.value) {
-      calendarRef.value.getApi().refetchEvents();
-    }
-  } catch (error) {
-    console.error('Error fetching appointments:', error);
-  }
-};
 
 const fetchProfessionals = async () => {
   try {
@@ -545,6 +546,19 @@ const fetchPatients = async () => {
     patients.value = response.data || [];
   } catch (error) {
     console.error('Error fetching patients:', error);
+  }
+};
+
+const fetchAppointments = async () => {
+  try {
+    const response = await get('/appointment');
+    appointments.value = response.data || [];
+     
+    if (calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents();
+    }
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
   }
 };
 // Call fetchAppointments on component mount

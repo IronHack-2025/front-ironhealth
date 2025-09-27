@@ -240,31 +240,6 @@ const form = ref({
   notes: ""
 })
 
-const cancelAppointmentById = async (id) => {
-  try {
-    const response = await fetch(`http://localhost:3000/api/appointment/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status: { cancelled: true, timestamp: new Date() }
-      }),
-    });
-     if (!response.ok) {
-      const errorData = await response.json();
-      const error = new Error(errorData.error || 'Error al cancelar cita');
-      error.messageCode = errorData.messageCode || 'INTERNAL_SERVER_ERROR';
-      error.details = errorData.details || null;
-      throw error;
-    }
-    
-    const result = await response.json();
-    return result;
-  } catch (error) {
-    console.error("Error cancelando cita:", error);
-    throw error;
-  }
-};
-
 const resetAlert = () => {
   alert.show = false
   alert.message = ''
@@ -276,9 +251,12 @@ const resetAlert = () => {
 
 const cancelAppointment = async () => {
   try {
+    const token = localStorage.getItem('authToken');
     const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({
         status: {
           cancelled: true,
