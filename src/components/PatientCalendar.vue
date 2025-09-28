@@ -99,7 +99,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 
 const { t } = useI18n()
-const { user, isAuthenticated } = useAuth()
+const { user } = useAuth()
 
 const props = defineProps({
   calendarLocale: {
@@ -108,7 +108,7 @@ const props = defineProps({
   }
 })
 
-const patients = ref([])
+// Remover patients ya que no es necesario
 const professionals = ref([])
 const selectedProfessional = ref(null)
 const selectedEvent = ref(null)
@@ -117,11 +117,57 @@ const calendarRef = ref(null)
 const appointments = ref([])
 const isDataLoaded = ref(false)
 
-// Computed para obtener el paciente logueado del array de patients
-const loggedPatient = computed(() => {
-  if (!user.value?.profileId || !patients.value.length) return null;
-  return patients.value.find(patient => patient._id === user.value.profileId);
-});
+// Definir form ANTES de los watchers
+const form = ref({
+  patientId: "",
+  professionalId: "",
+  start: null,
+  end: null,
+  notes: ""
+})
+
+const dialog = ref(false)
+const editableNotes = ref('')
+
+const alert = reactive({
+  show: false,
+  message: '',
+  type: 'success',
+  messageCode: 'OPERATION_SUCCESS',
+  details: null,
+  params: {},
+})
+
+// Ahora SÍ podemos usar los watchers
+watch(() => user.value?.profileId, (newPatientId) => {
+  if (newPatientId) {
+    form.value.patientId = newPatientId
+  }
+}, { immediate: true })
+
+// Sincroniza la selección del v-select con el formulario
+watch(selectedProfessional, (newVal) => {
+  form.value.professionalId = newVal
+})
+
+// Watcher para actualizar el idioma del calendario
+watch(
+  () => props.calendarLocale,
+  (newLocale) => {
+    calendarOptions.value.locale = newLocale
+    // Forzar actualización del calendario
+    if (calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents();
+    }
+  }
+)
+
+// Watcher para recargar eventos cuando cambien los datos
+watch([professionals], () => {
+  if (isDataLoaded.value) {
+    reloadCalendarEvents()
+  }
+}, { deep: true })
 
 const availableProfessionals = computed(() => {
   if (!form.value.start || !form.value.end) {
@@ -149,7 +195,6 @@ const availableProfessionals = computed(() => {
     });
 
     const isAvailable = conflicts.length === 0;
-
     return isAvailable; // Solo devolver profesionales SIN conflictos
   });
 
@@ -190,56 +235,6 @@ const isPatientAvailable = computed(() => {
 
   return conflicts.length === 0;
 });
-
-const alert = reactive({
-  show: false,
-  message: '',
-  type: 'success',
-  messageCode: 'OPERATION_SUCCESS',
-  details: null,
-  params: {},
-})
-// Sincroniza la selección del v-select con el formulario
-watch(selectedProfessional, (newVal) => {
-  form.value.professionalId = newVal
-})
-
-// Watcher para asignar automáticamente el paciente logueado al formulario
-watch(loggedPatient, (newPatient) => {
-  if (newPatient && newPatient._id) {
-    form.value.patientId = newPatient._id
-  }
-}, { immediate: true })
-
-// Watcher para actualizar el idioma del calendario
-watch(
-  () => props.calendarLocale,
-  (newLocale) => {
-    calendarOptions.value.locale = newLocale
-    // Forzar actualización del calendario
-    if (calendarRef.value) {
-      calendarRef.value.getApi().refetchEvents();
-    }
-  }
-)
-// Watcher para recargar eventos cuando cambien los datos
-watch([patients, professionals], () => {
-  if (isDataLoaded.value) {
-    reloadCalendarEvents()
-  }
-}, { deep: true })
-
-const dialog = ref(false)
-
-const editableNotes = ref('')
-
-const form = ref({
-  patientId: "",
-  professionalId: "",
-  start: null,
-  end: null,
-  notes: ""
-})
 
 const resetAlert = () => {
   alert.show = false
@@ -296,7 +291,7 @@ const cancelAppointment = async () => {
     alert.message = t('messages.error.NETWORK_ERROR');
     alert.show = true;
   }
-    await fetchAppointments();
+  await fetchAppointments();
   calendarRef.value.getApi().refetchEvents();
 }
 
@@ -339,14 +334,18 @@ const saveAppointment = async () => {
     alert.show = true;
 
     // Solo resetear si fue exitoso
-    form.value = { patientId: "", professionalId: "", start: null, end: null, notes: "" };
+    form.value = { 
+      patientId: user.value?.profileId || "", 
+      professionalId: "", 
+      start: null, 
+      end: null, 
+      notes: "" 
+    };
     selectedProfessional.value = null;
     dialog.value = false;
     await fetchAppointments();
     calendarRef.value.getApi().refetchEvents();
-  }
-
-   catch (error) {
+  } catch (error) {
     console.error('Error:', error);
     
     alert.type = 'error';
@@ -379,14 +378,14 @@ const calendarOptions = ref({
 
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
-           if (!isDataLoaded.value) {
+      if (!isDataLoaded.value) {
         successCallback([])
         return
       }
       const response = await get("/appointment");
       const data = response.data || [];
 
-       // Validar que data sea un array
+      // Validar que data sea un array
       if (!Array.isArray(data)) {
         console.error('API response data is not an array:', data);
         successCallback([]);
@@ -397,7 +396,6 @@ const calendarOptions = ref({
       const filtered = data.filter(ev => !ev.status?.cancelled);
 
       const events = filtered.map(event => {
-        const patient = patients.value.find(p => p._id === event.patientId) || {};
         const professional = professionals.value.find(p => p._id === event.professionalId) || {};
         const isOwnAppointment = user.value?.profileId === event.patientId;
         
@@ -421,9 +419,6 @@ const calendarOptions = ref({
           textColor: isOwnAppointment ? undefined : '#424242',
           extendedProps: {
             patientId: event.patientId,
-            // Solo incluir datos del paciente si es la cita propia
-            patientFirstName: isOwnAppointment ? (patient.firstName || '') : '',
-            patientLastName: isOwnAppointment ? (patient.lastName || '') : '',
             professionalId: event.professionalId,
             professionalFirstName: professional.firstName || '',
             professionalLastName: professional.lastName || '',
@@ -488,28 +483,21 @@ const fetchProfessionals = async () => {
   }
 };
 
-const fetchPatients = async () => {
-  try {
-    const response = await get('/patients');
-    patients.value = response.data || [];
-  } catch (error) {
-    console.error('Error fetching patients:', error);
-  }
-};
-
 const reloadCalendarEvents = () => {
   if (calendarRef.value?.getApi) {
     calendarRef.value.getApi().refetchEvents()
   }
 }
-// Call fetchAppointments on component mount
+
 onMounted(async () => {
-try {
-    // Cargar todos los datos necesarios primero
-    await Promise.all([
-      fetchPatients(),
-      fetchProfessionals()
-    ])
+  try {
+    // Cargar solo los datos necesarios
+    await fetchProfessionals()
+    
+    // Asignar directamente el patientId del usuario logueado
+    if (user.value?.profileId) {
+      form.value.patientId = user.value.profileId
+    }
     
     // Marcar que los datos están cargados
     isDataLoaded.value = true
@@ -521,7 +509,6 @@ try {
     console.error('Error al cargar datos iniciales:', error)
   }
 });
-
 </script>
 
 <style scoped>

@@ -7,7 +7,7 @@
       <v-card>
         <v-card-title>{{ t('views.appointments.details') }}</v-card-title>
         <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
-          <div><strong>{{ t('views.appointments.patient') }}</strong> {{
+          <div v-if="canViewNotes"><strong>{{ t('views.appointments.patient') }}</strong> {{
             loggedPatient ? `${loggedPatient.lastName}, ${loggedPatient.firstName}` : ''
             }}</div>
           <div><strong>{{ t('views.appointments.professional') }}</strong> {{
@@ -22,7 +22,7 @@
               :color="selectedEvent.extendedProps.isCancelled ? 'red' : 'green'" 
               :variant="selectedEvent.extendedProps.isCancelled ? 'flat' : 'tonal'"
               size="small">
-              {{ selectedEvent.extendedProps.isCancelled ? t('views.appointments.cancelled') : t('views.appointments.completed') }}
+              {{ selectedEvent.extendedProps.isCancelled ? t('views.appointments.cancelled') : t('views.appointments.active') }}
             </v-chip>
           </div>
           
@@ -31,8 +31,8 @@
             <strong>{{ t('views.appointments.cancelledAt') }}</strong> {{ formatDate(selectedEvent.extendedProps.cancelledAt) }}
           </div>
           
-          <!-- Notas del paciente -->
-          <div v-if="selectedEvent.extendedProps.notes" class="mt-4">
+          <!-- Notas del paciente - Solo visible para profesionales -->
+          <div v-if="selectedEvent.extendedProps.notes && canViewNotes" class="mt-4">
             <strong>{{ t('views.appointments.notes') }}</strong>
             <v-textarea 
               :value="selectedEvent.extendedProps.notes" 
@@ -43,8 +43,8 @@
               class="mt-2" />
           </div>
           
-          <!-- Notas del profesional -->
-          <div v-if="selectedEvent.extendedProps.professionalNotes" class="mt-4">
+          <!-- Notas del profesional - Solo visible para profesionales -->
+          <div v-if="selectedEvent.extendedProps.professionalNotes && canViewNotes" class="mt-4">
             <strong>{{ t('views.appointments.professionalNotes') }}</strong>
             <v-textarea 
               :value="selectedEvent.extendedProps.professionalNotes" 
@@ -84,12 +84,19 @@ import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 
 const { t } = useI18n()
-const { user } = useAuth()
+const { user, isProfessional, isAdmin } = useAuth()
+
+// Computed para verificar si el usuario puede ver las notas
+const canViewNotes = computed(() => isProfessional.value || isAdmin.value)
 
 const props = defineProps({
   calendarLocale: {
     type: String,
     default: 'es'
+  },
+  patientId: {
+    type: String,
+    default: null
   }
 })
 
@@ -168,33 +175,39 @@ const calendarOptions = ref({
 
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
-         if (!isDataLoaded.value) {
+      if (!isDataLoaded.value) {
         successCallback([])
         return
       }
       const response = await get("/appointment");
       const data = response.data || [];
 
-       // Validar que data sea un array
       if (!Array.isArray(data)) {
         console.error('API response data is not an array:', data);
         successCallback([]);
         return;
       }
       
-      // Filtrar SOLO las citas del paciente logueado (incluyendo canceladas)
+      // Filtrar citas según el contexto
       const filtered = data.filter(ev => {
+        // Si es profesional y hay un paciente seleccionado, mostrar solo ese paciente
+        if (props.patientId) {
+          return ev.patientId === props.patientId;
+        }
+        // Si es paciente, mostrar solo sus citas
         return ev.patientId === user.value?.profileId;
       });
 
       const events = filtered.map(event => {
         const professional = professionals.value.find(p => p._id === event.professionalId) || {};
+        const patient = patients.value.find(p => p._id === event.patientId) || {};
         const isCancelled = event.status?.cancelled;
         
-        // Título para el paciente (solo mostrar el profesional)
+        // Título - siempre mostrar profesional
+        const professionalTitle = `Dr. ${professional.lastName}, ${professional.firstName}`;
         const title = isCancelled 
-          ? `[${t('views.appointments.cancelled')}] Dr. ${professional.lastName}, ${professional.firstName}`
-          : `Dr. ${professional.lastName}, ${professional.firstName}`;
+          ? `[${t('views.appointments.cancelled')}] ${professionalTitle}`
+          : professionalTitle;
           
         return {
           title: title,
@@ -210,6 +223,8 @@ const calendarOptions = ref({
             professionalId: event.professionalId,
             professionalFirstName: professional.firstName || '',
             professionalLastName: professional.lastName || '',
+            patientFirstName: patient.firstName || '',
+            patientLastName: patient.lastName || '',
             notes: event.notes || '',
             professionalNotes: event.professionalNotes || '',
             isCancelled: isCancelled,
@@ -280,6 +295,13 @@ try {
     console.error('Error al cargar datos iniciales:', error)
   }
 });
+
+// Watcher para recargar cuando cambie el paciente seleccionado
+watch(() => props.patientId, () => {
+  if (isDataLoaded.value) {
+    reloadCalendarEvents()
+  }
+})
 
 </script>
 

@@ -46,7 +46,7 @@
       "start": "Start time:",
       "end": "End time:",
       "cancelled": "Cancelled",
-      "completed": "Completed",
+      "active": "Active",
       "cancelledAt": "Cancelled on:",
       "professionalNotAvailable": "Professional not available",
       "patientNotAvailable": "Patient not available",
@@ -84,6 +84,14 @@
       "actions": {
         "login": "Login"
       }
+    },
+    "forbidden": {
+      "title": "Access Forbidden", 
+      "subtitle": "You don't have permission to access this page",
+      "description": "Your user role doesn't allow you to view this content. If you believe this is an error, please contact the administrator.",
+      "goBack": "Go Back",
+      "goMyAppointments": "Go to My Appointments",
+      "contactAdmin": "Contact Administrator"
     }
   },
 
@@ -125,6 +133,15 @@
       "error": "An error occurred",
       "success": "Operation completed successfully",
       "noData": "No data available"
+    },
+    "search": {
+      "placeholder": "Search...",
+      "patients": {
+        "placeholder": "Search patient by name or surname...",
+        "noResults": "No patients found",
+        "loading": "Searching patients...",
+        "clear": "Clear selection"
+      }
     },
     "pagination": {
       "itemsPerPage": "Items per page:"

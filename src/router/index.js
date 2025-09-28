@@ -7,6 +7,7 @@ import Appointments from '../views/AppointmentsView.vue'
 import Login from '../views/LoginView.vue'
 import MyAppointments from '../views/MyAppointmentsView.vue'
 import Users from '../views/UsersView.vue'
+import ForbiddenAccess from '../components/ForbiddenAccess.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,11 @@ const router = createRouter({
       name: 'users',
       component: Users,
       meta: { requiresAuth: true, requiredRole: ['admin'] }
+    },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: ForbiddenAccess
     }
   ],
 })
@@ -58,13 +64,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const { isAuthenticated, hasPermission } = useAuth()
   
+  // Verificar autenticación
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')
     return
   }
   
+  // Verificar permisos de rol
   if (to.meta.requiredRole && !hasPermission(to.meta.requiredRole)) {
-    next('/appointments') // Redirigir a página permitida
+    next('/forbidden') // Redirigir a página de acceso prohibido
     return
   }
   

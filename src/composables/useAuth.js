@@ -143,11 +143,25 @@ export function useAuth() {
   }
 
   // Función para verificar permisos
-  function hasPermission(requiredRole) {
+  function hasPermission(requiredRoles) {
     if (!isAuthenticated.value) return false
-    if (requiredRole === 'admin') return isAdmin.value
-    if (requiredRole === 'professional') return isProfessional.value || isAdmin.value
-    return true
+    
+    // Si requiredRoles es un array, verificar si el usuario tiene alguno de esos roles
+    if (Array.isArray(requiredRoles)) {
+      return requiredRoles.some(role => {
+        if (role === 'admin') return isAdmin.value
+        if (role === 'professional') return isProfessional.value || isAdmin.value
+        if (role === 'patient') return userRole.value === 'patient'
+        return false
+      })
+    }
+    
+    // Si requiredRoles es un string (compatibilidad hacia atrás)
+    if (requiredRoles === 'admin') return isAdmin.value
+    if (requiredRoles === 'professional') return isProfessional.value || isAdmin.value
+    if (requiredRoles === 'patient') return userRole.value === 'patient'
+    
+    return false
   }
 
   // Función para inicializar el estado desde localStorage

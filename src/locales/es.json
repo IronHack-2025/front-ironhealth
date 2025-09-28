@@ -51,7 +51,7 @@
       "start": "Hora de inicio:",
       "end": "Hora de fin:",
       "cancelled": "Cancelada",
-      "completed": "Completada",
+      "active": "Activa",
       "cancelledAt": "Cancelada el:",
       "privateInfo": "Información Privada",
       "privateAppointment": "Esta es una cita de otro paciente. Los detalles son confidenciales.",
@@ -89,6 +89,14 @@
         "forgotPassword": "¿Olvidaste tu contraseña?",
         "register": "Registrarse"
       }
+    },
+    "forbidden": {
+      "title": "Acceso Prohibido",
+      "subtitle": "No tienes permisos para acceder a esta página",
+      "description": "Tu rol de usuario no te permite ver este contenido. Si crees que esto es un error, contacta con el administrador.",
+      "goBack": "Volver",
+      "goMyAppointments": "Ir a Mis Citas",
+      "contactAdmin": "Contactar Administrador"
     }
   },
   "common": {
@@ -97,6 +105,7 @@
       "lastName": "Apellidos",
       "email": "Correo Electrónico",
       "phone": "Teléfono",
+      "dni": "DNI",
       "dateOfBirth": "Fecha de Nacimiento",
       "profession": "Profesión",
       "specialty": "Especialidad (Opcional)",
@@ -133,7 +142,13 @@
       "defaultTitle": "Lista"
     },
     "search": {
-      "placeholder": "Buscar..."
+      "placeholder": "Buscar...",
+      "patients": {
+        "placeholder": "Buscar paciente por nombre o apellido...",
+        "noResults": "No se encontraron pacientes",
+        "loading": "Buscando pacientes...",
+        "clear": "Limpiar selección"
+      }
     },
     "pagination": {
       "itemsPerPage": "Elementos por página:"
