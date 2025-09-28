@@ -7,6 +7,7 @@ import Appointments from '../views/AppointmentsView.vue'
 import Login from '../views/LoginView.vue'
 import MyAppointments from '../views/MyAppointmentsView.vue'
 import Users from '../views/UsersView.vue'
+import Profile from '../views/ProfileView.vue'
 import ForbiddenAccess from '../components/ForbiddenAccess.vue'
 
 const router = createRouter({
@@ -51,6 +52,12 @@ const router = createRouter({
       name: 'users',
       component: Users,
       meta: { requiresAuth: true, requiredRole: ['admin'] }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+      meta: { requiresAuth: true }
     },
     {
       path: '/forbidden',

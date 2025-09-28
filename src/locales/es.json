@@ -90,6 +90,7 @@
         "register": "Registrarse"
       }
     },
+
     "forbidden": {
       "title": "Acceso Prohibido",
       "subtitle": "No tienes permisos para acceder a esta página",
@@ -97,6 +98,31 @@
       "goBack": "Volver",
       "goMyAppointments": "Ir a Mis Citas",
       "contactAdmin": "Contactar Administrador"
+    },
+    "profile": {
+      "userInfo": {
+        "title": "Información del Usuario",
+        "role": "Rol"
+      },
+      "changePassword": {
+      "title": "Cambiar Contraseña",
+      "currentPassword": "Contraseña Actual",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Nueva Contraseña",
+      "actions": {
+        "change": "Cambiar Contraseña"
+      },
+      "messages": {
+        "success": "Contraseña cambiada exitosamente",
+        "currentPasswordRequired": "La contraseña actual es requerida",
+        "newPasswordRequired": "La nueva contraseña es requerida",
+        "confirmPasswordRequired": "Debe confirmar la nueva contraseña",
+        "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+        "passwordsNotMatch": "Las contraseñas no coinciden",
+        "changeError": "Error al cambiar la contraseña",
+        "networkError": "Error de conexión. Intenta nuevamente."
+      }
+    }
     }
   },
   "common": {
@@ -175,7 +201,8 @@
       "APPOINTMENT_RETRIEVED": "Citas recuperadas correctamente",
       "OPERATION_SUCCESS": "Operación realizada con éxito",
       "NOTES_UPDATED": "Notas guardadas correctamente",
-      "LOGIN_SUCCESS": "Inicio de sesión exitoso"
+      "LOGIN_SUCCESS": "Inicio de sesión exitoso",
+      "PASSWORD_CHANGED": "Contraseña cambiada exitosamente"
     },
     "error": {
       "VALIDATION_FAILED": "Revisa los siguientes campos:",

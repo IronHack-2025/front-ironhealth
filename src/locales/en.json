@@ -17,6 +17,7 @@
     "patients": {
       "title": "Patients Registration",
       "listTitle": "Patient List",
+      "subtitle": "Manage all patient records",
       "actions": {
         "add": "Add Patient",
         "edit": "Edit Patient",
@@ -26,6 +27,7 @@
     "professionals": {
       "title": "Healthcare Professionals Registration",
       "listTitle": "Professionals List",
+      "subtitle": "Manage medical staff",
       "actions": {
         "add": "Add Professional",
         "edit": "Edit Professional",
@@ -40,6 +42,9 @@
       "patients": "Patients:",
       "professionals": "Available Professionals:",
       "professional": "Professional:",
+      "professionalNotAvailable": "Professional not available",
+      "patientNotAvailable": "Patient not available",
+      "selectDifferentTime": "Please select a different time.",
       "notes": "Notes:",
       "professionalNotes": "Professional Notes:",
       "details": "Appointment Details",
@@ -48,9 +53,6 @@
       "cancelled": "Cancelled",
       "active": "Active",
       "cancelledAt": "Cancelled on:",
-      "professionalNotAvailable": "Professional not available",
-      "patientNotAvailable": "Patient not available",
-      "selectDifferentTime": "Please select a different time.",
       "privateInfo": "Private Information",
       "privateAppointment": "This is another patient's appointment. Details are confidential.",
       "actions": {
@@ -81,8 +83,11 @@
       "subtitle": "Access your account",
       "email": "Email",
       "password": "Password",
+      "resetPassword": "Reset Password",
       "actions": {
-        "login": "Login"
+        "login": "Login",
+        "forgotPassword": "Forgot your password?",
+        "register": "Register"
       }
     },
     "forbidden": {
@@ -92,6 +97,31 @@
       "goBack": "Go Back",
       "goMyAppointments": "Go to My Appointments",
       "contactAdmin": "Contact Administrator"
+    },
+    "profile": {
+      "userInfo": {
+        "title": "User Information",
+        "role": "Role"
+      },
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password", 
+        "confirmPassword": "Confirm New Password",
+        "actions": {
+          "change": "Change Password"
+        },
+        "messages": {
+          "success": "Password changed successfully",
+          "currentPasswordRequired": "Current password is required",
+          "newPasswordRequired": "New password is required",
+          "confirmPasswordRequired": "You must confirm the new password",
+          "passwordMinLength": "Password must be at least 6 characters long",
+          "passwordsNotMatch": "Passwords do not match",
+          "changeError": "Error changing password",
+          "networkError": "Connection error. Please try again."
+        }
+      }
     }
   },
 
@@ -168,7 +198,8 @@
       "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
       "OPERATION_SUCCESS": "Operation completed successfully",
       "NOTES_UPDATED": "Notes saved successfully",
-      "LOGIN_SUCCESS": "Login successful"
+      "LOGIN_SUCCESS": "Login successful",
+      "PASSWORD_CHANGED": "Password changed successfully"
     },
     "error": {
       "VALIDATION_FAILED": "Please check the entered data",
