@@ -230,7 +230,9 @@
         "LOGIN_FAILED": "Error de autenticación",
       "INVALID_CREDENTIALS": "Email o contraseña incorrectos",
       "USER_NOT_FOUND": "Usuario no encontrado",
-      "INVALID_PASSWORD": "Contraseña incorrecta"
+      "INVALID_PASSWORD": "Contraseña incorrecta",
+      "INCORRECT_PASSWORD": "Contraseña incorrecta",
+      "PASSWORD_CHANGE_FAILED": "Error al cambiar la contraseña"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Por favor complete todos los campos requeridos",

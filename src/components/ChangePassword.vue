@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-form ref="form" v-model="valid" @submit.prevent="handleSubmit">
       <v-text-field
         v-model="currentPassword"
@@ -37,7 +36,6 @@
         required
       />
      
-      
       <v-btn
         type="submit"
         color="primary"
@@ -48,12 +46,15 @@
       >
         {{ $t('views.profile.changePassword.actions.change') }}
       </v-btn> 
-      
+
       <AlertMessage 
-      :show="!!alertMessage" 
-      :type="alertType" 
-      :message="alertMessage" 
-    />
+        :show="alertMessage.show" 
+        :type="alertMessage.type" 
+        :message-code="alertMessage.messageCode" 
+        :details="alertMessage.details" 
+        :message-params="alertMessage.params" 
+        :fallback-message="alertMessage.message" 
+      />
     </v-form>
   </div>
 </template>
@@ -76,9 +77,14 @@ const newPassword = ref('')
 const confirmPassword = ref('')
 const form = ref(null)
 
-// Alert system
-const alertMessage = ref('')
-const alertType = ref('success')
+const alertMessage = reactive({
+  show: false,
+  message: '',
+  type: 'success',
+  messageCode: 'OPERATION_SUCCESS',
+  details: null,
+  params: {},
+})
 
 const errors = reactive({
   currentPassword: [],
@@ -100,9 +106,11 @@ const confirmPasswordRules = [
   v => v === newPassword.value || $t('views.profile.changePassword.messages.passwordsNotMatch')
 ]
 
-// Clear alert
+// Clear alertMessage
 const clearAlert = () => {
-  alertMessage.value = ''
+  alertMessage.show = false
+  alertMessage.message = ''
+  alertMessage.details = null
 }
 
 // Clear messages and errors
@@ -125,10 +133,13 @@ const handleSubmit = async () => {
       newPassword: newPassword.value
     })
 
-    // Handle success - using messageCode from backend
-    alertType.value = 'success'
-    alertMessage.value = response.messageCode || $t('views.profile.changePassword.messages.passwordChanged')
-
+    alertMessage.show = true
+    alertMessage.type = response.messageType || 'success'
+    alertMessage.messageCode = response.messageCode || 'OPERATION_SUCCESS'
+    alertMessage.details = Array.isArray(response.details) ? response.details : undefined
+    alertMessage.params = response.params || {}
+    alertMessage.message = $t(`messages.success.${response.messageCode}`)
+    
     // Reset form
     currentPassword.value = ''
     newPassword.value = ''
@@ -143,24 +154,27 @@ const handleSubmit = async () => {
   } catch (error) {
     console.error('Error changing password:', error)
     
-    // Handle validation errors from backend
+    // ✅ Manejar errores específicos de campo si existen
     if (error.details && Array.isArray(error.details)) {
       error.details.forEach(err => {
         if (err.field === 'currentPassword') {
-          errors.currentPassword.push($t('views.profile.changePassword.messages.currentPasswordRequired'))
+          errors.currentPassword.push($t('views.profile.changePassword.messages.invalidCurrentPassword'))
         } else if (err.field === 'newPassword') {
-          if (err.code === 'NAME_MIN_LENGTH') {
+          if (err.code === 'PASSWORD_MIN_LENGTH') {
             errors.newPassword.push($t('views.profile.changePassword.messages.passwordMinLength'))
           } else {
             errors.newPassword.push($t('views.profile.changePassword.messages.newPasswordRequired'))
           }
         }
       })
-    } else {
-      // Handle general errors using messageCode from api service
-      alertType.value = 'error'
-      alertMessage.value = error.messageCode || 'INTERNAL_SERVER_ERROR'
     }
+
+    alertMessage.show = true
+    alertMessage.type = error.messageType || 'error'
+    alertMessage.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
+    alertMessage.details = Array.isArray(error.details) ? error.details : undefined
+    alertMessage.params = error.params || {}
+    alertMessage.message = $t(`messages.error.${error.messageCode}`)
   } finally {
     loading.value = false
   }

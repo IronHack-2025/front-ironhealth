@@ -227,7 +227,9 @@
       "LOGIN_FAILED": "Authentication error",
       "INVALID_CREDENTIALS": "Invalid email or password",
       "USER_NOT_FOUND": "User not found",
-      "INVALID_PASSWORD": "Invalid password"
+      "INVALID_PASSWORD": "Invalid password",
+      "INCORRECT_PASSWORD": "Incorrect password",
+      "PASSWORD_CHANGE_FAILED": "Failed to change password"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Please fill in all required fields",
