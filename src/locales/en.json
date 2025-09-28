@@ -10,7 +10,7 @@
   },
   "views": {
     "patients": {
-      "title": "Patients Registration",
+      "title": "Patients",
       "listTitle": "Patient List",
       "actions": {
         "add": "Add Patient",
