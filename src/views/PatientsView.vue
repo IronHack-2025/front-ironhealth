@@ -1,63 +1,81 @@
-
 <template>
   <div class="container">
-    <div class="left">
-      <AddPatientForm
-        @patient-added="handlePatientAdded"
-        :btnTitle="$t('common.buttons.registerPatient')"
-      />
-    </div>
-    <div class="rigth">
-      <GenericList
-        :title="$t('views.patients.listTitle')"
-        :items="patients"
-        :headers="headers"
-        :loading="loading"
-        :error="error"
-        :search-placeholder="$t('common.forms.search')"
-        :canEdit="true"
-        :canDelete="false"
-        @edit="onEdit"
-        @delete="onDelete"
-      />
-      <AlertMessage
-        v-if="alert.show"
-        :show="alert.show"
-        :type="alert.type"
-        :message-code="alert.messageCode"
-        :message="alert.message"
-        class="mx-4 mt-4"
-      />
-      <v-dialog v-model="dialog" max-width="800px" persistent>
-        <v-card class="elevation-6 rounded-xl pa-2">
-          <v-btn icon @click="dialog = false" absolute right top>
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-card-text class="pa-0">
-            <AddPatientForm
-              @patient-added="handlePatientAdded"
-              @patient-updated="handlePatientUpdated"
-              :btnTitle="$t('common.buttons.editPatient')"
-              :items="editingPatient"
-              :mode="edit ? 'edit' : 'create'"
-            />
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </div>
+    <!-- Formulario -->
+    <AddPatientForm
+      :btnTitle="$t('common.buttons.registerPatient')"
+      @patient-added="handlePatientAdded"
+    />
+
+    <!-- Listado de pacientes -->
+    <GenericList
+      :title="$t('views.patients.listTitle')"
+      :items="patients"
+      :headers="headers"
+      :loading="loading"
+      :error="error"
+      :search-placeholder="$t('common.forms.search')"
+      :canEdit="true"
+      :canDelete="false"
+      @edit="onEdit"
+      @delete="onDelete"
+    />
+
+    <!-- Alertas -->
+    <AlertMessage
+      v-if="alert.show"
+      :show="alert.show"
+      :type="alert.type"
+      :message-code="alert.messageCode"
+      :message="alert.message"
+      class="mx-4 mt-4"
+    />
+
+    <!-- Modal de edición -->
+    <v-dialog v-model="dialog" max-width="800px" persistent>
+      <v-card class="elevation-8 rounded-xl pa-2">
+        <v-btn icon @click="dialog = false" absolute right top>
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+
+        <v-card-text class="pa-0">
+          <v-row justify="center" class="mb-4" v-if="editingPatient?.imageUrl">
+            <v-col cols="auto">
+              <v-avatar size="140">
+                <v-img :src="editingPatient.imageUrl" alt="Patient Photo" cover />
+              </v-avatar>
+            </v-col>
+          </v-row>
+
+          <AddPatientForm
+            :btnTitle="$t('common.buttons.editPatient')"
+            :items="editingPatient"
+            :mode="edit ? 'edit' : 'create'"
+            @patient-added="handlePatientAdded"
+            @patient-updated="handlePatientUpdated"
+          />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, reactive } from 'vue'
-import GenericList from '@/components/GenericList.vue'
-import AddPatientForm from '@/components/AddPatientForm.vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { get } from '@/services/api'
+import GenericList from '@/components/GenericList.vue'
+import AddPatientForm from '@/components/AddPatientForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
+
+const { t } = useI18n()
+const patients = ref([])
+const loading = ref(false)
+const error = ref('')
 const dialog = ref(false)
 const edit = ref(false)
 const editingPatient = ref(null)
+
+// Alertas
 const alert = reactive({
   show: false,
   type: 'success',
@@ -65,12 +83,7 @@ const alert = reactive({
   message: '',
 })
 
-const { t } = useI18n()
-
-const patients = ref([])
-const loading = ref(false)
-const error = ref('')
-
+// Encabezados de la tabla
 const headers = computed(() => [
   { title: t('common.forms.actions'), key: 'actions' },
   { title: t('common.forms.photo'), key: 'imageUrl' },
@@ -80,38 +93,36 @@ const headers = computed(() => [
   { title: t('common.forms.email'), key: 'email' },
 ])
 
+// Obtener lista de pacientes
 const fetchPatients = async () => {
-  console.log('Fetching patients...')
   loading.value = true
   error.value = ''
   try {
     const resp = await get('/patients') // { success, messageCode, data }
-    console.log('Patients response:', resp)
     const arr = Array.isArray(resp?.data) ? resp.data : (resp?.data?.items ?? [])
-    console.log('Patients array:', arr)
     patients.value = arr
   } catch (e) {
-    console.error('Error fetching patients:', e)
     patients.value = []
     error.value = e.message || 'Error desconocido'
   } finally {
     loading.value = false
   }
 }
-
 onMounted(fetchPatients)
 
+// Paciente agregado
 const handlePatientAdded = () => {
-  console.log('Patient added - refreshing list...')
   fetchPatients()
 }
+
+// Paciente actualizado
 const handlePatientUpdated = () => {
   fetchPatients()
-
   alert.show = true
   alert.type = 'success'
   alert.messageCode = 'PATIENT_UPDATED'
   alert.message = t('messages.success.PATIENT_UPDATED')
+
   setTimeout(() => {
     dialog.value = false
     alert.show = false
@@ -120,10 +131,10 @@ const handlePatientUpdated = () => {
   }, 3000)
 }
 
-async function onEdit(id) {
+// Editar paciente
+const onEdit = async (id) => {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/patients/${id}/edit`)
-
     const response = await res.json()
     const data = response.data
 
@@ -136,6 +147,7 @@ async function onEdit(id) {
       birthDate: data.birthDate || '',
       imageUrl: data.imageUrl || '',
     }
+
     edit.value = true
     dialog.value = true
   } catch (error) {
@@ -150,7 +162,8 @@ async function onEdit(id) {
   }
 }
 
-async function onDelete(id) {
+// Eliminar paciente
+const onDelete = async (id) => {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/patients/${id}/delete`, {
       method: 'PUT',
@@ -161,9 +174,9 @@ async function onDelete(id) {
       throw new Error(errorData.message || 'Error al eliminar')
     }
 
-    const data = await res.json()
-    console.log(data)
+    await res.json()
     fetchPatients()
+
     alert.show = true
     alert.type = 'success'
     alert.messageCode = 'PATIENTS_DELETED'

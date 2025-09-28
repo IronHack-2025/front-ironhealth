@@ -4,7 +4,9 @@
       <v-col cols="12">
         <v-card class="elevation-6 rounded-xl">
           <v-toolbar flat color="primary" class="rounded-t-xl">
-            <v-toolbar-title class="text-white">{{ title }}</v-toolbar-title>
+            <v-toolbar-title class="text-white">
+              {{ title }}
+            </v-toolbar-title>
             <v-spacer />
             <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
               <v-text-field
@@ -29,6 +31,7 @@
             :message="alert.message"
             class="mx-4 mt-4"
           />
+          
           <v-data-table
             :headers="headers"
             :items="items"
@@ -50,8 +53,9 @@
               </v-avatar>
             </template>
 
+            <!-- Botones según lo que enviemos por props -->
             <template v-slot:item.actions="{ item }">
-                <v-btn
+              <v-btn
                 v-if="canEdit"
                 icon="mdi-pencil"
                 size="small"
@@ -73,17 +77,17 @@
           <v-dialog v-model="deleteDialog" max-width="500">
             <v-card>
               <v-card-title class="text-h6">
-                {{ $t('common.confirmations.deleteTitle') || 'Confirmar eliminación' }}
+                {{ $t('common.confirmations.deleteTitle') }}
               </v-card-title>
               <v-card-text>
-                {{ $t('common.confirmations.deleteMessage') || '¿Estás seguro de que quieres eliminar este elemento?' }}
+                {{ $t('common.confirmations.deleteMessage') }}
               </v-card-text>
               <v-card-actions class="justify-end">
                 <v-btn text @click="deleteDialog = false">
-                  {{ $t('common.buttons.cancel') || 'Cancelar' }}
+                  {{ $t('common.buttons.cancel') }}
                 </v-btn>
                 <v-btn color="error" @click="executeDelete">
-                  {{ $t('common.buttons.delete') || 'Eliminar' }}
+                  {{ $t('common.buttons.delete') }}
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -118,7 +122,7 @@ const props = defineProps({
   searchPlaceholder: { type: String, default: '' },
   canEdit: { type: Boolean, default: false },
   canDelete: { type: Boolean, default: false },
-  form:{ type: String, default: '' },
+  form: { type: String, default: '' },
 })
 const search = ref('')
 const deleteDialog = ref(false)
