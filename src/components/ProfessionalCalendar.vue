@@ -110,7 +110,7 @@ const selectedEvent = ref(null)
 const showEventDialog = ref(false)
 const calendarRef = ref(null)
 const appointments = ref([])
-
+const isDataLoaded = ref(false)
 // Función para verificar si el profesional logueado está disponible en el horario seleccionado
 const isProfessionalAvailable = computed(() => {
   if (!form.value.start || !form.value.end || !user.value?.profileId) {
@@ -193,12 +193,12 @@ watch(
     }
   }
 )
-
-watch(
-  () => props.calendarLocale,
-  (newLocale) => {
-    calendarOptions.value.locale = newLocale
-  })
+// Watcher para recargar eventos cuando cambien los datos
+watch([patients, professionals], () => {
+  if (isDataLoaded.value) {
+    reloadCalendarEvents()
+  }
+}, { deep: true })
 
 const dialog = ref(false)
 
@@ -483,6 +483,10 @@ const calendarOptions = ref({
 
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
+       if (!isDataLoaded.value) {
+        successCallback([])
+        return
+      }
       const response = await get("/appointment");
       const data = response.data || [];
 
@@ -595,15 +599,29 @@ const fetchPatients = async () => {
     console.error('Error fetching patients:', error);
   }
 };
+
+const reloadCalendarEvents = () => {
+  if (calendarRef.value?.getApi) {
+    calendarRef.value.getApi().refetchEvents()
+  }
+}
 // Call fetchAppointments on component mount
 onMounted(async () => {
-
-  await fetchProfessionals();
-  await fetchPatients();
-  await fetchAppointments();
-
-  if (calendarRef.value) {
-    calendarRef.value.getApi().refetchEvents();
+try {
+    // Cargar todos los datos necesarios primero
+    await Promise.all([
+      fetchPatients(),
+      fetchProfessionals()
+    ])
+    
+    // Marcar que los datos están cargados
+    isDataLoaded.value = true
+    
+    // Recargar los eventos del calendario
+    reloadCalendarEvents()
+    
+  } catch (error) {
+    console.error('Error al cargar datos iniciales:', error)
   }
 });
 

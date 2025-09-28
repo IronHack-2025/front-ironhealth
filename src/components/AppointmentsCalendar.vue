@@ -75,6 +75,7 @@ import Alert from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 
+
 const { t } = useI18n()
 
 const props = defineProps({
@@ -83,7 +84,7 @@ const props = defineProps({
     default: 'es'
   }
 })
-
+const isDataLoaded = ref(false)
 const patients = ref([])
 const professionals = ref([])
 const selectedPatient = ref(null)
@@ -196,11 +197,12 @@ watch(
   }
 )
 
-watch(
-  () => props.calendarLocale,
-  (newLocale) => {
-    calendarOptions.value.locale = newLocale
-  })
+// Watcher para recargar eventos cuando cambien los datos
+watch([patients, professionals], () => {
+  if (isDataLoaded.value) {
+    reloadCalendarEvents()
+  }
+}, { deep: true })
 
 const dialog = ref(false)
 
@@ -396,7 +398,7 @@ const saveAppointment = async () => {
 
 const updateNotes = async () => {
   const token = localStorage.getItem('authToken');
-  
+
   try {
     const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}/notes`, {
       method: 'PATCH',
@@ -467,6 +469,10 @@ const calendarOptions = ref({
 
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
+         if (!isDataLoaded.value) {
+        successCallback([])
+        return
+      }
       const response = await get("/appointment");
       const data = response.data || [];
 
@@ -561,15 +567,28 @@ const fetchAppointments = async () => {
     console.error('Error fetching appointments:', error);
   }
 };
+const reloadCalendarEvents = () => {
+  if (calendarRef.value?.getApi) {
+    calendarRef.value.getApi().refetchEvents()
+  }
+}
 // Call fetchAppointments on component mount
 onMounted(async () => {
-
-  await fetchProfessionals();
-  await fetchPatients();
-  await fetchAppointments();
-
-  if (calendarRef.value) {
-    calendarRef.value.getApi().refetchEvents();
+try {
+    // Cargar todos los datos necesarios primero
+    await Promise.all([
+      fetchPatients(),
+      fetchProfessionals()
+    ])
+    
+    // Marcar que los datos están cargados
+    isDataLoaded.value = true
+    
+    // Recargar los eventos del calendario
+    reloadCalendarEvents()
+    
+  } catch (error) {
+    console.error('Error al cargar datos iniciales:', error)
   }
 });
 
