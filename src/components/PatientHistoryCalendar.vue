@@ -7,9 +7,12 @@
       <v-card>
         <v-card-title>{{ t('views.appointments.details') }}</v-card-title>
         <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
-          <div v-if="canViewNotes"><strong>{{ t('views.appointments.patient') }}</strong> {{
-            loggedPatient ? `${loggedPatient.lastName}, ${loggedPatient.firstName}` : ''
-            }}</div>
+          <!-- Mostrar información del paciente solo si es visible para profesionales y hay datos -->
+          <div v-if="canViewNotes && (selectedEvent.extendedProps.patientFirstName || selectedEvent.extendedProps.patientLastName)">
+            <strong>{{ t('views.appointments.patient') }}</strong> 
+            {{ `${selectedEvent.extendedProps.patientLastName}, ${selectedEvent.extendedProps.patientFirstName}` }}
+          </div>
+          
           <div><strong>{{ t('views.appointments.professional') }}</strong> {{
             `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
             }}</div>
@@ -100,19 +103,12 @@ const props = defineProps({
   }
 })
 
-const patients = ref([])
 const professionals = ref([])
 const selectedEvent = ref(null)
 const showEventDialog = ref(false)
 const calendarRef = ref(null)
 const appointments = ref([])
 const isDataLoaded = ref(false)
-
-// Computed para obtener el paciente logueado del array de patients
-const loggedPatient = computed(() => {
-  if (!user.value?.profileId || !patients.value.length) return null;
-  return patients.value.find(patient => patient._id === user.value.profileId);
-});
 
 const alert = reactive({
   show: false,
@@ -134,8 +130,9 @@ watch(
     }
   }
 )
-// Watcher para recargar eventos cuando cambien los datos
-watch([patients, professionals], () => {
+
+// Actualizar watcher para eliminar patients
+watch([professionals], () => {
   if (isDataLoaded.value) {
     reloadCalendarEvents()
   }
@@ -200,7 +197,7 @@ const calendarOptions = ref({
 
       const events = filtered.map(event => {
         const professional = professionals.value.find(p => p._id === event.professionalId) || {};
-        const patient = patients.value.find(p => p._id === event.patientId) || {};
+        // Usar directamente los datos del evento en lugar de buscar en patients array
         const isCancelled = event.status?.cancelled;
         
         // Título - siempre mostrar profesional
@@ -223,8 +220,9 @@ const calendarOptions = ref({
             professionalId: event.professionalId,
             professionalFirstName: professional.firstName || '',
             professionalLastName: professional.lastName || '',
-            patientFirstName: patient.firstName || '',
-            patientLastName: patient.lastName || '',
+            // Usar directamente los datos del evento si están disponibles
+            patientFirstName: event.patient?.firstName || '',
+            patientLastName: event.patient?.lastName || '',
             notes: event.notes || '',
             professionalNotes: event.professionalNotes || '',
             isCancelled: isCancelled,
@@ -253,7 +251,6 @@ const calendarOptions = ref({
   }
 })
 
-
 const fetchProfessionals = async () => {
   try {
     const response = await get('/professionals');
@@ -263,27 +260,16 @@ const fetchProfessionals = async () => {
   }
 };
 
-const fetchPatients = async () => {
-  try {
-    const response = await get('/patients');
-    patients.value = response.data || [];
-  } catch (error) {
-    console.error('Error fetching patients:', error);
-  }
-};
 const reloadCalendarEvents = () => {
   if (calendarRef.value?.getApi) {
     calendarRef.value.getApi().refetchEvents()
   }
 }
-// Call fetchAppointments on component mount
+
 onMounted(async () => {
-try {
-    // Cargar todos los datos necesarios primero
-    await Promise.all([
-      fetchPatients(),
-      fetchProfessionals()
-    ])
+  try {
+    // Cargar solo los datos necesarios
+    await fetchProfessionals()
     
     // Marcar que los datos están cargados
     isDataLoaded.value = true
@@ -302,7 +288,6 @@ watch(() => props.patientId, () => {
     reloadCalendarEvents()
   }
 })
-
 </script>
 
 <style scoped>
