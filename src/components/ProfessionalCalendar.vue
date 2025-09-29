@@ -1,5 +1,6 @@
 <template>
   <v-container>
+  
     <v-card class="pa-4">
       <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%;" />
     </v-card>
@@ -481,6 +482,72 @@ const calendarOptions = ref({
   expandRows: false,
   height: 'auto',
 
+  // ✅ Personalizar el contenido del evento
+  eventContent: (arg) => {
+    const { event, view } = arg;
+    
+    // Solo añadir botón en vista de lista
+    if (view.type === 'listWeek') {
+      const container = document.createElement('div');
+      container.style.display = 'flex';
+      container.style.justifyContent = 'space-between';
+      container.style.alignItems = 'center';
+      container.style.width = '100%';
+      
+      // Título del evento
+      const title = document.createElement('span');
+      title.textContent = event.title;
+      title.style.flex = '1';
+      title.style.paddingRight = '8px';
+      
+      // Botón de historial
+      const historyBtn = document.createElement('button');
+      historyBtn.innerHTML = `📋 ${t('views.appointments.viewHistory')}`;
+      historyBtn.className = 'v-btn v-btn--size-small v-btn--variant-tonal';
+      historyBtn.style.marginLeft = '8px';
+      historyBtn.style.padding = '4px 8px';
+      historyBtn.style.fontSize = '12px';
+      historyBtn.style.minWidth = 'auto';
+      historyBtn.style.height = 'auto';
+      historyBtn.style.backgroundColor = 'rgb(var(--v-theme-primary))';
+      historyBtn.style.color = 'white';
+      historyBtn.style.border = '1px solid rgb(var(--v-theme-primary))';
+      historyBtn.style.borderRadius = '4px';
+      historyBtn.style.cursor = 'pointer';
+      historyBtn.style.transition = 'all 0.2s ease';
+      
+      // Hover effects
+      historyBtn.addEventListener('mouseenter', () => {
+        historyBtn.style.backgroundColor = 'rgb(var(--v-theme-primary))';
+        historyBtn.style.color = 'rgb(var(--v-theme-on-primary))';
+        historyBtn.style.transform = 'translateY(-1px)';
+        historyBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+      });
+      
+      historyBtn.addEventListener('mouseleave', () => {
+        historyBtn.style.backgroundColor = 'rgb(var(--v-theme-primary))';
+        historyBtn.style.color = 'white';
+        historyBtn.style.transform = 'translateY(0)';
+        historyBtn.style.boxShadow = 'none';
+      });
+      
+      // Evento click del botón usando la función ya definida
+      historyBtn.onclick = (e) => {
+        e.stopPropagation(); // Evitar que se abra el modal del evento
+        const patientId = event.extendedProps.patientId;
+        goToPatientHistory(patientId); // Usar la función ya definida
+      };
+      
+      container.appendChild(title);
+      container.appendChild(historyBtn);
+      
+      return { domNodes: [container] };
+    }
+    
+    // Para otras vistas, usar el contenido por defecto
+    return { html: event.title };
+  },
+
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
        if (!isDataLoaded.value) {
@@ -568,6 +635,15 @@ const calendarOptions = ref({
   eventDrop: handleEventDrop,
 })
 
+// ✅ Función para navegar al historial del paciente
+const goToPatientHistory = (patientId) => {
+  // Emitir evento al componente padre para mostrar PatientHistoryCalendar
+  emit('openPatientHistory', patientId);
+}
+
+// ✅ Definir emit para el componente PatientHistoryCalendar
+const emit = defineEmits(['openPatientHistory']);
+
 // Ensure appointments are fetched and displayed correctly
 const fetchAppointments = async () => {
   try {
@@ -632,5 +708,15 @@ try {
 .equal-slot-height .fc-timegrid-slot {
   height: 40px !important;
   /* Ajusta el valor según lo que necesites */
+}
+
+/* ✅ Estilos para los eventos del calendario */
+:deep(.fc-list-event) {
+  position: relative;
+}
+
+/* Asegurar que el texto del evento no se superponga con el botón */
+:deep(.fc-list-event-title) {
+  padding-right: 60px;
 }
 </style>

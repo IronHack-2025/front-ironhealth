@@ -1,16 +1,21 @@
 <template>
   <div v-if="isProfessional">
-    <ProfessionalCalendar :calendar-locale="calendarLocale" />
-    <PatientSearch 
-      v-model="selectedPatient" 
-      @patient-selected="onPatientSelected"
-      @patient-cleared="onPatientCleared" 
-    />
-    <div v-if="selectedPatient" class="mt-4">
-      <PatientHistoryCalendar 
-        :calendar-locale="calendarLocale" 
-        :patient-id="selectedPatient._id || selectedPatient.id"
-      />  
+    <ProfessionalCalendar :calendar-locale="calendarLocale" @openPatientHistory="handleOpenPatientHistory" />
+
+    <v-card class="pa-4" elevation="2">
+      <PatientSearch
+        v-model="selectedPatientFromSearch"
+        @patient-selected="onPatientSelected"
+        @patient-cleared="onPatientCleared"
+      />
+    </v-card>
+    <div v-if="selectedPatientForHistory" class="mt-4 patient-history-section">
+      <v-card class="pa-4" elevation="2">     
+        <PatientHistoryCalendar 
+          :calendar-locale="calendarLocale" 
+          :patient-id="selectedPatientForHistory._id || selectedPatientForHistory.id"
+        />
+      </v-card>
     </div>
   </div>
   <div v-else>
@@ -27,7 +32,11 @@ import { ref } from 'vue';
 
 const { isProfessional } = useAuth()
 
-const selectedPatient = ref(null);
+// ✅ Variable separada para el buscador (no se ve afectada por el emit)
+const selectedPatientFromSearch = ref(null);
+
+// ✅ Variable para el historial (se actualiza desde el buscador O desde el emit)
+const selectedPatientForHistory = ref(null);
 
 const props = defineProps({
   calendarLocale: {
@@ -37,12 +46,29 @@ const props = defineProps({
 })
 
 const onPatientSelected = (patient) => {
-  selectedPatient.value = patient;
+  console.log('🔍 onPatientSelected called with:', patient);
+  selectedPatientFromSearch.value = patient;
+  selectedPatientForHistory.value = patient; // También actualizar el historial
+  console.log('📊 State after selection:', {
+    selectedPatientFromSearch: selectedPatientFromSearch.value,
+    selectedPatientForHistory: selectedPatientForHistory.value
+  });
 };
 
 const onPatientCleared = () => {
-  selectedPatient.value = null;
+  console.log('🧹 onPatientCleared called');
+  selectedPatientFromSearch.value = null;
+  selectedPatientForHistory.value = null; // También limpiar el historial
+  console.log('📊 State after clear:', {
+    selectedPatientFromSearch: selectedPatientFromSearch.value,
+    selectedPatientForHistory: selectedPatientForHistory.value
+  });
 };
+
+const handleOpenPatientHistory = async (patientId) => {
+ 
+selectedPatientForHistory.value = { _id: patientId }; // Simplicidad: solo ID
+}
 </script>
 
 <style scoped>

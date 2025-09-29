@@ -55,11 +55,17 @@
       "cancelledAt": "Cancelled on:",
       "privateInfo": "Private Information",
       "privateAppointment": "This is another patient's appointment. Details are confidential.",
+      "viewHistory": "History",
       "actions": {
         "schedule": "Schedule Appointment",
         "reschedule": "Reschedule",
         "cancel": "Cancel Appointment"
       }
+    },
+    "myAppointments": {
+      "title": "My Appointments",
+      "patientHistorySearch": "Search Patient History",
+      "selectedPatientHistory": "Appointment History for {name}"
     },
     "users": {
       "title": "User Management",

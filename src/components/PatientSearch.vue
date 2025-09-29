@@ -1,6 +1,6 @@
 <template>
   <div class="patient-search-container">
-    <!-- Campo de búsqueda con Vuetify -->
+    <h2 class="text-h5 my-4">{{ $t('views.myAppointments.patientHistorySearch') }}</h2>
     <v-autocomplete
       ref="searchInput"
       v-model="selectedPatient"
@@ -192,7 +192,7 @@ onMounted(() => {
 
 <style scoped>
 .patient-search-container {
-  width: 82%;
+  width: 100%;
   align-self: center;
   justify-self: center;
 }

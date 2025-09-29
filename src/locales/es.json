@@ -55,11 +55,17 @@
       "cancelledAt": "Cancelada el:",
       "privateInfo": "Información Privada",
       "privateAppointment": "Esta es una cita de otro paciente. Los detalles son confidenciales.",
+      "viewHistory": "Historial",
       "actions": {
         "schedule": "Programar Cita",
         "reschedule": "Reprogramar",
         "cancel": "Cancelar Cita"
       }
+    },
+    "myAppointments": {
+      "title": "Mis Citas",
+      "patientHistorySearch": "Buscar Historial del Paciente",
+      "selectedPatientHistory": "Historial de Citas de {name}"
     },
     "users": {
       "title": "Gestión de Usuarios",
