@@ -143,6 +143,7 @@ const form = reactive({
   email: '',
   phone: '',
   birthDate: '',
+  dni: '',
   imageUrl: '',
 })
 const alert = reactive({

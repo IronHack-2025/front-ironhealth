@@ -4,6 +4,7 @@
     <AddProfessionalsForm
       :btnTitle="$t('common.buttons.registerProfessional')"
       @professional-added="handleProfessionalAdded"
+       v-if="isAdmin"
     />
 
     <!-- Listado de profesionales -->
@@ -14,8 +15,8 @@
       :loading="loading"
       :error="error"
       :search-placeholder="$t('common.forms.search')"
-      :canEdit="true"
-      :canDelete="true"
+      :canEdit="isAdmin" 
+      :canDelete="isAdmin"
       @refresh="fetchProfessionals"
       @edit="onEdit"
       @delete="onDelete"
@@ -72,6 +73,9 @@ import professionsData from '@/assets/data/professions.json'
 import GenericList from '@/components/GenericList.vue'
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
+import { useAuth } from '@/composables/useAuth.js'
+
+const { isAdmin } = useAuth()
 
 const { t, locale } = useI18n()
 const professionals = ref([])

@@ -160,6 +160,7 @@ const form = reactive({
   email: '',
   profession: '',
   specialty: '',
+  dni: '',
   professionLicenceNumber: '',
   imageUrl: '',
 })
@@ -337,6 +338,12 @@ const rules = computed(() => ({
     return (
       (value.length >= min && value.length <= max) || t('common.forms.validLength', { min, max })
     )
+  },
+  // Agregar validación de DNI para Vuetify
+  dni: (value) => {
+    if (!value) return t('common.forms.required')
+    const pattern = /^\d{7,8}[A-Za-z]$/i
+    return pattern.test(value) || t('common.forms.invalidDNI')
   },
 }))
 </script>

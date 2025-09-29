@@ -193,3 +193,20 @@ const onDelete = async (id) => {
   }
 }
 </script>
+<<<<<<< HEAD
+=======
+
+<!-- <style scoped>
+.container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+}
+
+.left .right {
+  padding: 20px;
+  overflow-y: auto
+}
+
+</style> -->
+>>>>>>> main

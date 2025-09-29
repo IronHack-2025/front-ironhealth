@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { watch } from 'vue'
 
 // Configuración de i18n
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 
 // Props para v-model
 const props = defineProps({
@@ -39,12 +39,12 @@ const handleLanguageChange = (newValue) => {
 <template>
   <div class="language-selector">
     <v-select
+      prepend-icon="mdi-translate"
       :model-value="locale"
       @update:model-value="handleLanguageChange"
       :items="languages"
       item-title="label"
       item-value="code"
-      :label="t('navbar.selectLang')"
       variant="outlined"
       density="compact"
     ></v-select>
@@ -53,6 +53,6 @@ const handleLanguageChange = (newValue) => {
 
 <style scoped>
 .language-selector {
-  margin-bottom: 1rem;
+  margin-top: 1.5rem;
 }
 </style>

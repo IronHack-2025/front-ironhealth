@@ -4,14 +4,20 @@
     "professionals": "Professionals",
     "appointments": "Appointments",
     "dashboard": "Dashboard",
+    "myAppointments": "My Appointments",
     "reports": "Reports",
     "settings": "Settings",
-    "selectLang": "Languages"
+    "users": "Users",
+    "selectLang": "Languages",
+    "profile": "User profile",
+    "login": "Login",
+    "logout": "Logout"
   },
   "views": {
     "patients": {
       "title": "Patients",
       "listTitle": "Patient List",
+      "subtitle": "Manage all patient records",
       "actions": {
         "add": "Add Patient",
         "edit": "Edit Patient",
@@ -21,6 +27,7 @@
     "professionals": {
       "title": "Healthcare Professionals",
       "listTitle": "Professionals List",
+      "subtitle": "Manage medical staff",
       "actions": {
         "add": "Add Professional",
         "edit": "Edit Professional",
@@ -35,14 +42,91 @@
       "patients": "Patients:",
       "professionals": "Available Professionals:",
       "professional": "Professional:",
+      "professionalNotAvailable": "Professional not available",
+      "patientNotAvailable": "Patient not available",
+      "selectDifferentTime": "Please select a different time.",
       "notes": "Notes:",
+      "professionalNotes": "Professional Notes:",
       "details": "Appointment Details",
       "start": "Start time:",
       "end": "End time:",
+      "cancelled": "Cancelled",
+      "active": "Active",
+      "cancelledAt": "Cancelled on:",
+      "privateInfo": "Private Information",
+      "privateAppointment": "This is another patient's appointment. Details are confidential.",
+      "viewHistory": "History",
       "actions": {
         "schedule": "Schedule Appointment",
         "reschedule": "Reschedule",
         "cancel": "Cancel Appointment"
+      }
+    },
+    "myAppointments": {
+      "title": "My Appointments",
+      "patientHistorySearch": "Search Patient History",
+      "selectedPatientHistory": "Appointment History for {name}"
+    },
+    "users": {
+      "title": "User Management",
+      "searchPlaceholder": "Search users...",
+      "noData": "No users found",
+      "table": {
+        "email": "Email",
+        "role": "Role",
+        "profileModel": "Profile Type",
+        "isActive": "Status Active",
+        "createdAt": "Registration Date"
+      },
+      "roles": {
+        "admin": "Administrator",
+        "professional": "Professional",
+        "patient": "Patient"
+      }
+    },
+    "login": {
+      "title": "User Login",
+      "subtitle": "Access your account",
+      "email": "Email",
+      "password": "Password",
+      "resetPassword": "Reset Password",
+      "actions": {
+        "login": "Login",
+        "forgotPassword": "Forgot your password?",
+        "register": "Register"
+      }
+    },
+    "forbidden": {
+      "title": "Access Forbidden",
+      "subtitle": "You don't have permission to access this page",
+      "description": "Your user role doesn't allow you to view this content. If you believe this is an error, please contact the administrator.",
+      "goBack": "Go Back",
+      "goMyAppointments": "Go to My Appointments",
+      "contactAdmin": "Contact Administrator"
+    },
+    "profile": {
+      "userInfo": {
+        "title": "User Information",
+        "role": "Role"
+      },
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "actions": {
+          "change": "Change Password"
+        },
+        "messages": {
+          "success": "Password changed successfully",
+          "currentPasswordRequired": "Current password is required",
+          "newPasswordRequired": "New password is required",
+          "confirmPasswordRequired": "You must confirm the new password",
+          "passwordMinLength": "Password must be at least 6 characters long",
+          "passwordsNotMatch": "Passwords do not match",
+          "changeError": "Error changing password",
+          "networkError": "Connection error. Please try again."
+        }
       }
     }
   },
@@ -54,6 +138,7 @@
       "dateOfBirth": "Date of Birth",
       "email": "Email",
       "phone": "Phone Number",
+      "dni": "DNI",
       "profession": "Profession",
       "specialty": "Specialty(Optional)",
       "professionalLicenseNumber": "Professional license Number(Optional)",
@@ -65,7 +150,8 @@
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",
       "validLength": "This field must be between {min} and {max} characters.",
-      "imageRequired": "Image upload is required."
+      "imageRequired": "Image upload is required.",
+      "invalidDNI": "DNI must be 7 or 8 digits followed by a letter"
     },
     "confirmations": {
       "deleteTitle": "Confirm deletion",
@@ -91,9 +177,20 @@
       "success": "Operation completed successfully",
       "noData": "No data available"
     },
+    "search": {
+      "placeholder": "Search...",
+      "patients": {
+        "placeholder": "Search patient by name or surname...",
+        "noResults": "No patients found",
+        "loading": "Searching patients...",
+        "clear": "Clear selection"
+      }
+    },
     "pagination": {
       "itemsPerPage": "Items per page:"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "messages": {
     "success": {
@@ -108,11 +205,15 @@
       "APPOINTMENT_UPDATED": "Appointment updated successfully",
       "APPOINTMENT_DELETED": "Appointment deleted successfully",
       "APPOINTMENT_CANCELLED": "Appointment cancelled successfully",
+      "APPOINTMENT_RESCHEDULED": "Appointment rescheduled successfully",
+      "APPOINTMENT_NOTES_UPDATED": "Appointment notes updated successfully",
       "PATIENTS_RETRIEVED": "Patients retrieved successfully",
       "PROFESSIONALS_RETRIEVED": "Professionals retrieved successfully",
       "APPOINTMENT_RETRIEVED": "Appointment retrieved successfully",
       "OPERATION_SUCCESS": "Operation completed successfully",
-      "NOTES_UPDATED": "Notes saved successfully"
+      "NOTES_UPDATED": "Notes saved successfully",
+      "LOGIN_SUCCESS": "Login successful",
+      "PASSWORD_CHANGED": "Password changed successfully"
     },
     "error": {
       "VALIDATION_FAILED": "Please check the entered data",
@@ -124,7 +225,25 @@
       "INTERNAL_SERVER_ERROR": "Internal server error",
       "APPOINTMENT_CONFLICT": "Appointment time conflict",
       "NETWORK_ERROR": "Network connection error",
-      "PATIENT_CREATION_FAILED": "Failed to create patient"
+      "PATIENT_CREATION_FAILED": "Failed to create patient",
+      "PROFESSIONAL_CREATION_FAILED": "Failed to create professional",
+      "APPOINTMENT_CREATION_FAILED": "Failed to create appointment",
+      "APPOINTMENT_CREATE_FAILED": "Failed to create appointment",
+      "APPOINTMENT_RESCHEDULE_FAILED": "Failed to reschedule appointment",
+      "APPOINTMENT_CANCEL_FAILED": "Failed to cancel appointment",
+      "APPOINTMENT_NOTES_UPDATE_FAILED": "Failed to update appointment notes",
+      "PROFESSIONAL_NOT_AVAILABLE": "Professional is not available at this time",
+      "UNAUTHORIZED": "Unauthorized access",
+      "INVALID_TOKEN": "Invalid or expired token",
+      "TOKEN_NOT_PROVIDED": "Token not provided",
+      "INSUFFICIENT_PERMISSIONS": "Insufficient permissions",
+      "UNAUTHORIZED_PROFILE_ACCESS": "You do not have permission to access this profile",
+      "LOGIN_FAILED": "Authentication error",
+      "INVALID_CREDENTIALS": "Invalid email or password",
+      "USER_NOT_FOUND": "User not found",
+      "INVALID_PASSWORD": "Invalid password",
+      "INCORRECT_PASSWORD": "Incorrect password",
+      "PASSWORD_CHANGE_FAILED": "Failed to change password"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Please fill in all required fields",
@@ -134,12 +253,19 @@
       "NAME_INVALID_CHARACTERS": "Name contains invalid characters",
       "EMAIL_INVALID_FORMAT": "Please enter a valid email address",
       "PHONE_INVALID_FORMAT": "Please enter a valid phone number",
+      "END_TIME_BEFORE_START_TIME": "End time must be after start time",
+      "APPOINTMENT_IN_PAST": "Appointment time cannot be in the past",
+      "APPOINTMENT_CONFLICT": "The selected time slot is already booked",
       "BIRTHDATE_INVALID": "Please enter a valid date of birth",
       "EMAIL_ALREADY_EXISTS": "This email is already registered",
       "PHONE_ALREADY_EXISTS": "This phone number is already registered",
       "NOTES_HTML_NOT_ALLOWED": "Notes cannot contain HTML",
       "NOTES_TOO_LONG": "Notes cannot exceed {max} characters",
-      "ID_INVALID_FORMAT": "Invalid ID"
+      "ID_INVALID_FORMAT": "Invalid ID",
+      "PASSWORD_LENGTH": "Password must be at least 6 characters long",
+      "PASSWORD_INCORRECT": "Incorrect password",
+      "DNI_ALREADY_EXISTS": "This DNI is already registered",
+      "DNI_INVALID_FORMAT": "DNI must be 7 or 8 digits"
     },
     "fields": {
       "firstName": "First name",
