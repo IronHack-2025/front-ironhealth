@@ -7,7 +7,7 @@ const { t, locale } = useI18n()
 
 // Props para v-model
 const props = defineProps({
-  modelValue: String
+  modelValue: String,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -15,15 +15,18 @@ const emit = defineEmits(['update:modelValue'])
 // Opciones de idioma
 const languages = [
   { code: 'en', label: 'English' },
-  { code: 'es', label: 'Español' }
+  { code: 'es', label: 'Español' },
 ]
 
 // Si el padre cambia el v-model desde fuera, sincronizamos el i18n.locale
-watch(() => props.modelValue, (newVal) => {
-  if (newVal && newVal !== locale.value) {
-    locale.value = newVal   // Añadido (sincronización)
-  }
-})
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal && newVal !== locale.value) {
+      locale.value = newVal // Añadido (sincronización)
+    }
+  },
+)
 
 // Función para manejar cambios
 const handleLanguageChange = (newValue) => {
@@ -31,29 +34,25 @@ const handleLanguageChange = (newValue) => {
   localStorage.setItem('lang', newValue) // Añadido (persistencia)
   emit('update:modelValue', newValue)
 }
-
 </script>
 
 <template>
-<div class="language-selector">
+  <div class="language-selector">
     <v-select
-     prepend-icon="mdi-translate"
-        :model-value="locale"
-        @update:model-value="handleLanguageChange"
-        :items="languages"
-        item-title="label"
-        item-value="code"
-        variant="outlined"
-        density="compact"
+      prepend-icon="mdi-translate"
+      :model-value="locale"
+      @update:model-value="handleLanguageChange"
+      :items="languages"
+      item-title="label"
+      item-value="code"
+      variant="outlined"
+      density="compact"
     ></v-select>
-</div>
-
+  </div>
 </template>
 
 <style scoped>
 .language-selector {
   margin-top: 1.5rem;
 }
-
-
 </style>

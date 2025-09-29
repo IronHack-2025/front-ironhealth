@@ -6,5 +6,4 @@ import SelectLanguage from '@/components/SelectLanguage.vue'
 <template>
   <Dashboard />
   <SelectLanguage />
-
 </template>

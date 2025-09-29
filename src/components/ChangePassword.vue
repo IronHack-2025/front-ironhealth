@@ -12,7 +12,7 @@
         class="mb-3"
         required
       />
-      
+
       <v-text-field
         v-model="newPassword"
         :label="$t('views.profile.changePassword.newPassword')"
@@ -24,7 +24,7 @@
         class="mb-3"
         required
       />
-      
+
       <v-text-field
         v-model="confirmPassword"
         :label="$t('views.profile.changePassword.confirmPassword')"
@@ -35,7 +35,7 @@
         class="mb-4"
         required
       />
-     
+
       <v-btn
         type="submit"
         color="primary"
@@ -45,15 +45,15 @@
         size="large"
       >
         {{ $t('views.profile.changePassword.actions.change') }}
-      </v-btn> 
+      </v-btn>
 
-      <AlertMessage 
-        :show="alertMessage.show" 
-        :type="alertMessage.type" 
-        :message-code="alertMessage.messageCode" 
-        :details="alertMessage.details" 
-        :message-params="alertMessage.params" 
-        :fallback-message="alertMessage.message" 
+      <AlertMessage
+        :show="alertMessage.show"
+        :type="alertMessage.type"
+        :message-code="alertMessage.messageCode"
+        :details="alertMessage.details"
+        :message-params="alertMessage.params"
+        :fallback-message="alertMessage.message"
       />
     </v-form>
   </div>
@@ -88,22 +88,22 @@ const alertMessage = reactive({
 
 const errors = reactive({
   currentPassword: [],
-  newPassword: []
+  newPassword: [],
 })
 
 // Validation rules
 const currentPasswordRules = [
-  v => !!v || $t('views.profile.changePassword.messages.currentPasswordRequired')
+  (v) => !!v || $t('views.profile.changePassword.messages.currentPasswordRequired'),
 ]
 
 const newPasswordRules = [
-  v => !!v || $t('views.profile.changePassword.messages.newPasswordRequired'),
-  v => (v && v.length >= 6) || $t('views.profile.changePassword.messages.passwordMinLength')
+  (v) => !!v || $t('views.profile.changePassword.messages.newPasswordRequired'),
+  (v) => (v && v.length >= 6) || $t('views.profile.changePassword.messages.passwordMinLength'),
 ]
 
 const confirmPasswordRules = [
-  v => !!v || $t('views.profile.changePassword.messages.confirmPasswordRequired'),
-  v => v === newPassword.value || $t('views.profile.changePassword.messages.passwordsNotMatch')
+  (v) => !!v || $t('views.profile.changePassword.messages.confirmPasswordRequired'),
+  (v) => v === newPassword.value || $t('views.profile.changePassword.messages.passwordsNotMatch'),
 ]
 
 // Clear alertMessage
@@ -123,14 +123,14 @@ const clearMessages = () => {
 // Handle form submission
 const handleSubmit = async () => {
   if (!valid.value) return
-  
+
   clearMessages()
   loading.value = true
-  
+
   try {
     const response = await post('/change-password', {
       currentPassword: currentPassword.value,
-      newPassword: newPassword.value
+      newPassword: newPassword.value,
     })
 
     alertMessage.show = true
@@ -139,26 +139,27 @@ const handleSubmit = async () => {
     alertMessage.details = Array.isArray(response.details) ? response.details : undefined
     alertMessage.params = response.params || {}
     alertMessage.message = $t(`messages.success.${response.messageCode}`)
-    
+
     // Reset form
     currentPassword.value = ''
     newPassword.value = ''
     confirmPassword.value = ''
     form.value?.reset()
-    
+
     // Redirect after success
     setTimeout(() => {
       router.push('/profile')
     }, 2000)
-    
   } catch (error) {
     console.error('Error changing password:', error)
-    
+
     // ✅ Manejar errores específicos de campo si existen
     if (error.details && Array.isArray(error.details)) {
-      error.details.forEach(err => {
+      error.details.forEach((err) => {
         if (err.field === 'currentPassword') {
-          errors.currentPassword.push($t('views.profile.changePassword.messages.invalidCurrentPassword'))
+          errors.currentPassword.push(
+            $t('views.profile.changePassword.messages.invalidCurrentPassword'),
+          )
         } else if (err.field === 'newPassword') {
           if (err.code === 'PASSWORD_MIN_LENGTH') {
             errors.newPassword.push($t('views.profile.changePassword.messages.passwordMinLength'))

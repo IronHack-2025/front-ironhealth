@@ -50,7 +50,9 @@
       <v-card-text class="pa-3">
         <div class="d-flex align-center">
           <v-avatar color="primary" size="48" class="me-3">
-            <span class="text-white font-weight-bold">{{ getPatientInitials(selectedPatient) }}</span>
+            <span class="text-white font-weight-bold">{{
+              getPatientInitials(selectedPatient)
+            }}</span>
           </v-avatar>
           <div class="flex-grow-1">
             <div class="text-h6 font-weight-medium">{{ getPatientName(selectedPatient) }}</div>
@@ -70,124 +72,126 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { get } from '@/services/api.js';
+import { ref, computed, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { get } from '@/services/api.js'
 
-const { t } = useI18n();
+const { t } = useI18n()
 
-const emit = defineEmits(['patient-selected', 'patient-cleared', 'update:modelValue']);
+const emit = defineEmits(['patient-selected', 'patient-cleared', 'update:modelValue'])
 
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: null
-  }
-});
+    default: null,
+  },
+})
 
-const searchTerm = ref('');
-const patients = ref([]);
-const selectedPatient = ref(props.modelValue);
-const isLoading = ref(false);
-const searchInput = ref(null);
+const searchTerm = ref('')
+const patients = ref([])
+const selectedPatient = ref(props.modelValue)
+const isLoading = ref(false)
+const searchInput = ref(null)
 
 // Función para obtener el nombre completo del paciente
 const getPatientName = (patient) => {
-  if (!patient) return '';
-  
-  const firstName = patient.firstName ||  '';
-  const lastName = patient.lastName ||  '';
-  
-  return `${firstName} ${lastName}`.trim();
-};
+  if (!patient) return ''
+
+  const firstName = patient.firstName || ''
+  const lastName = patient.lastName || ''
+
+  return `${firstName} ${lastName}`.trim()
+}
 
 // Función para obtener las iniciales del paciente
 const getPatientInitials = (patient) => {
-  if (!patient) return '';
-  
-  const firstName = patient.firstName ||  '';
-  const lastName = patient.lastName || '';
-  
-  const firstInitial = firstName.charAt(0).toUpperCase() || '';
-  const lastInitial = lastName.charAt(0).toUpperCase() || '';
-  
-  return `${firstInitial}${lastInitial}`;
-};
+  if (!patient) return ''
+
+  const firstName = patient.firstName || ''
+  const lastName = patient.lastName || ''
+
+  const firstInitial = firstName.charAt(0).toUpperCase() || ''
+  const lastInitial = lastName.charAt(0).toUpperCase() || ''
+
+  return `${firstInitial}${lastInitial}`
+}
 
 // Computed para preparar los pacientes con nombres completos para el autocomplete
 const filteredPatients = computed(() => {
-  if (searchTerm.value.length < 2) return [];
-  
-  const term = searchTerm.value.toLowerCase();
-  
+  if (searchTerm.value.length < 2) return []
+
+  const term = searchTerm.value.toLowerCase()
+
   return patients.value
-    .filter(patient => {
-      const firstName = (patient.firstName || patient.name || '').toLowerCase();
-      const lastName = (patient.lastName || patient.surname || '').toLowerCase();
-      const email = (patient.email || '').toLowerCase();
-      
-      return firstName.includes(term) || 
-             lastName.includes(term) || 
-             email.includes(term);
+    .filter((patient) => {
+      const firstName = (patient.firstName || patient.name || '').toLowerCase()
+      const lastName = (patient.lastName || patient.surname || '').toLowerCase()
+      const email = (patient.email || '').toLowerCase()
+
+      return firstName.includes(term) || lastName.includes(term) || email.includes(term)
     })
-    .map(patient => ({
+    .map((patient) => ({
       ...patient,
       id: patient._id || patient.id,
-      fullName: getPatientName(patient)
+      fullName: getPatientName(patient),
     }))
-    .slice(0, 8);
-});
+    .slice(0, 8)
+})
 
 const loadPatients = async () => {
   try {
-    isLoading.value = true;
-    const response = await get('/patients');
-    patients.value = response.data || [];
+    isLoading.value = true
+    const response = await get('/patients')
+    patients.value = response.data || []
   } catch (error) {
-    console.error(t('messages.error'), error);
+    console.error(t('messages.error'), error)
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
 
 const handlePatientSelect = (patient) => {
   if (patient) {
-    selectedPatient.value = patient;
-    emit('patient-selected', patient);
-    emit('update:modelValue', patient);
+    selectedPatient.value = patient
+    emit('patient-selected', patient)
+    emit('update:modelValue', patient)
   }
-};
+}
 
 const clearSelection = () => {
-  selectedPatient.value = null;
-  searchTerm.value = '';
-  emit('patient-cleared');
-  emit('update:modelValue', null);
-};
+  selectedPatient.value = null
+  searchTerm.value = ''
+  emit('patient-cleared')
+  emit('update:modelValue', null)
+}
 
 const handleKeydown = (event) => {
   // Manejar teclas especiales si es necesario
   if (event.key === 'Escape') {
-    searchInput.value?.blur();
+    searchInput.value?.blur()
   }
-};
+}
 
 // Watcher para sincronizar con v-model
-watch(() => props.modelValue, (newValue) => {
-  selectedPatient.value = newValue;
-}, { immediate: true });
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    selectedPatient.value = newValue
+  },
+  { immediate: true },
+)
 
 // Watcher para limpiar la búsqueda cuando se selecciona un paciente
 watch(selectedPatient, (newValue) => {
   if (newValue) {
     // Limpiar el término de búsqueda cuando se selecciona un paciente
-    searchTerm.value = '';
+    searchTerm.value = ''
   }
-});
+})
 
 onMounted(() => {
-  loadPatients();
-});
+  loadPatients()
+})
 </script>
 
 <style scoped>

@@ -26,13 +26,17 @@ export function useAuth() {
     }
   })
 
-  watch(user, (newUser) => {
-    if (newUser) {
-      localStorage.setItem('user', JSON.stringify(newUser))
-    } else {
-      localStorage.removeItem('user')
-    }
-  }, { deep: true })
+  watch(
+    user,
+    (newUser) => {
+      if (newUser) {
+        localStorage.setItem('user', JSON.stringify(newUser))
+      } else {
+        localStorage.removeItem('user')
+      }
+    },
+    { deep: true },
+  )
 
   watch(userRole, (newRole) => {
     if (newRole) {
@@ -50,16 +54,16 @@ export function useAuth() {
     try {
       const response = await post('/login', {
         email: credentials.email,
-        password: credentials.password
+        password: credentials.password,
       })
 
       const { data } = response
-      
+
       // Establecer estado de autenticación
       authToken.value = data.token
       user.value = data.user
       userRole.value = data.user?.role || null
-      
+
       // También guardar profileId y userId si existen
       if (data.user?.profileId) {
         localStorage.setItem('profileId', data.user.profileId)
@@ -70,25 +74,24 @@ export function useAuth() {
 
       return {
         success: true,
-        data: data
+        data: data,
       }
-
     } catch (error) {
       console.error('Login error:', error)
-      
+
       // ✅ Mapear errores específicos de login
       let errorCode = error.messageCode || 'LOGIN_FAILED'
-      
+
       // Si es un 401 en login, siempre mostrar credenciales inválidas
       if (error.statusCode === 401) {
         errorCode = 'INVALID_CREDENTIALS'
       }
-      
+
       loginError.value = errorCode
-      
+
       return {
         success: false,
-        error: errorCode
+        error: errorCode,
       }
     } finally {
       loading.value = false
@@ -111,7 +114,9 @@ export function useAuth() {
           } else if (error.messageCode === 'NETWORK_ERROR') {
             console.info('ℹ️ Network error during logout - proceeding with local cleanup only')
           } else {
-            console.info(`ℹ️ Server logout error (${error.messageCode || error.message}) - proceeding with local cleanup`)
+            console.info(
+              `ℹ️ Server logout error (${error.messageCode || error.message}) - proceeding with local cleanup`,
+            )
           }
         }
       }
@@ -123,15 +128,15 @@ export function useAuth() {
       user.value = null
       userRole.value = null
       loginError.value = null
-      
+
       // 3. Limpiar otros datos relacionados
       localStorage.removeItem('profileId')
       localStorage.removeItem('userId')
       localStorage.removeItem('token')
-      
+
       // 4. Limpiar cookies si las usas
       document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      
+
       // 5. Redirigir a login
       router.push('/login')
     }
@@ -145,22 +150,22 @@ export function useAuth() {
   // Función para verificar permisos
   function hasPermission(requiredRoles) {
     if (!isAuthenticated.value) return false
-    
+
     // Si requiredRoles es un array, verificar si el usuario tiene alguno de esos roles
     if (Array.isArray(requiredRoles)) {
-      return requiredRoles.some(role => {
+      return requiredRoles.some((role) => {
         if (role === 'admin') return isAdmin.value
         if (role === 'professional') return isProfessional.value || isAdmin.value
         if (role === 'patient') return userRole.value === 'patient'
         return false
       })
     }
-    
+
     // Si requiredRoles es un string (compatibilidad hacia atrás)
     if (requiredRoles === 'admin') return isAdmin.value
     if (requiredRoles === 'professional') return isProfessional.value || isAdmin.value
     if (requiredRoles === 'patient') return userRole.value === 'patient'
-    
+
     return false
   }
 
@@ -169,7 +174,7 @@ export function useAuth() {
     const storedToken = localStorage.getItem('authToken')
     const storedUser = localStorage.getItem('user')
     const storedRole = localStorage.getItem('userRole')
-    
+
     if (storedToken) authToken.value = storedToken
     if (storedUser) {
       try {
@@ -189,17 +194,17 @@ export function useAuth() {
     userRole,
     loading,
     loginError,
-    
+
     // Computed
     isAuthenticated,
     isAdmin,
     isProfessional,
-    
+
     // Métodos
     login,
     logout,
     clearLoginError,
     hasPermission,
-    initializeAuth
+    initializeAuth,
   }
 }

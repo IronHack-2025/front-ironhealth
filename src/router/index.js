@@ -22,67 +22,67 @@ const router = createRouter({
       path: '/patients',
       name: 'patients',
       component: Patients,
-      meta: { requiresAuth: true, requiredRole: ['admin', 'professional'] }
+      meta: { requiresAuth: true, requiredRole: ['admin', 'professional'] },
     },
     {
       path: '/professionals',
       name: 'professionals',
       component: Professionals,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/appointments',
       name: 'appointments',
       component: Appointments,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
       name: 'login',
       component: Login,
     },
-     {
+    {
       path: '/my-appointments',
       name: 'my-appointments',
       component: MyAppointments,
-      meta: { requiresAuth: true , requiredRole: ['patient', 'professional']}
+      meta: { requiresAuth: true, requiredRole: ['patient', 'professional'] },
     },
-      {
+    {
       path: '/users',
       name: 'users',
       component: Users,
-      meta: { requiresAuth: true, requiredRole: ['admin'] }
+      meta: { requiresAuth: true, requiredRole: ['admin'] },
     },
     {
       path: '/profile',
       name: 'profile',
       component: Profile,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/forbidden',
       name: 'forbidden',
-      component: ForbiddenAccess
-    }
+      component: ForbiddenAccess,
+    },
   ],
 })
 
 // Guard de autenticación mejorado
 router.beforeEach((to, from, next) => {
   const { isAuthenticated, hasPermission } = useAuth()
-  
+
   // Verificar autenticación
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')
     return
   }
-  
+
   // Verificar permisos de rol
   if (to.meta.requiredRole && !hasPermission(to.meta.requiredRole)) {
     next('/forbidden') // Redirigir a página de acceso prohibido
     return
   }
-  
+
   next()
 })
 

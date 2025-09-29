@@ -5,20 +5,19 @@ import es from './es.json'
 // Lista de idiomas soportados en la app
 const SUPPORTED = ['en', 'es']
 
-function detectLocale () {
+function detectLocale() {
   // 1) Preferencia del usuario si existe
   const saved = localStorage.getItem('lang')
   if (saved && SUPPORTED.includes(saved)) return saved
 
   // 2) Idioma del navegador (languages > language)
-  const nav = (navigator.languages && navigator.languages.length)
-    ? navigator.languages
-    : [navigator.language]
+  const nav =
+    navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]
 
   // Normalizamos: 'es-ES' -> 'es'
   const firstMatch = nav
-    .map(l => (typeof l === 'string' ? l.slice(0, 2) : ''))
-    .find(code => SUPPORTED.includes(code))
+    .map((l) => (typeof l === 'string' ? l.slice(0, 2) : ''))
+    .find((code) => SUPPORTED.includes(code))
 
   // 3) Fallback
   return firstMatch || 'en'
@@ -32,8 +31,8 @@ const i18n = createI18n({
   globalInjection: true,
   messages: {
     en,
-    es
-  }
+    es,
+  },
 })
 
 export default i18n

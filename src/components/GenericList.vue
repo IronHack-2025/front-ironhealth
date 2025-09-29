@@ -21,13 +21,13 @@
             </v-col>
           </v-toolbar>
 
-            <Alert 
-            v-if="error" 
+          <Alert
+            v-if="error"
             :show="true"
-            type="error" 
+            type="error"
             :messageCode="error"
             :fallbackMessage="error"
-            class="mx-4 mt-4" 
+            class="mx-4 mt-4"
           />
 
           <v-data-table
@@ -43,17 +43,14 @@
             density="comfortable"
             fixed-header
             height="500px"
-
           >
-           <!-- Slot para renderizar la imageUrln -->
+            <!-- Slot para renderizar la imageUrln -->
             <template v-slot:item.imageUrl="{ item }">
               <v-avatar size="70">
-                <v-img :src="item.imageUrl"
-                  alt="Foto paciente"/>
+                <v-img :src="item.imageUrl" alt="Foto paciente" />
               </v-avatar>
             </template>
-         
-</v-data-table>
+          </v-data-table>
         </v-card>
       </v-col>
     </v-row>
@@ -74,7 +71,7 @@ const props = defineProps({
   headers: { type: Array, required: true },
   loadingText: { type: String, default: '' },
   noDataText: { type: String, default: '' },
-  searchPlaceholder: { type: String, default: '' }
+  searchPlaceholder: { type: String, default: '' },
 })
 
 const search = ref('')

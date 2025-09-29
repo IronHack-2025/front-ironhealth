@@ -74,7 +74,7 @@
       "table": {
         "email": "Correo Electrónico",
         "role": "Rol",
-        "profileModel": "Tipo de Perfil", 
+        "profileModel": "Tipo de Perfil",
         "isActive": "Estado Activo",
         "createdAt": "Fecha de Registro"
       },
@@ -111,24 +111,24 @@
         "role": "Rol"
       },
       "changePassword": {
-      "title": "Cambiar Contraseña",
-      "currentPassword": "Contraseña Actual",
-      "newPassword": "Nueva Contraseña",
-      "confirmPassword": "Confirmar Nueva Contraseña",
-      "actions": {
-        "change": "Cambiar Contraseña"
-      },
-      "messages": {
-        "success": "Contraseña cambiada exitosamente",
-        "currentPasswordRequired": "La contraseña actual es requerida",
-        "newPasswordRequired": "La nueva contraseña es requerida",
-        "confirmPasswordRequired": "Debe confirmar la nueva contraseña",
-        "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
-        "passwordsNotMatch": "Las contraseñas no coinciden",
-        "changeError": "Error al cambiar la contraseña",
-        "networkError": "Error de conexión. Intenta nuevamente."
+        "title": "Cambiar Contraseña",
+        "currentPassword": "Contraseña Actual",
+        "newPassword": "Nueva Contraseña",
+        "confirmPassword": "Confirmar Nueva Contraseña",
+        "actions": {
+          "change": "Cambiar Contraseña"
+        },
+        "messages": {
+          "success": "Contraseña cambiada exitosamente",
+          "currentPasswordRequired": "La contraseña actual es requerida",
+          "newPasswordRequired": "La nueva contraseña es requerida",
+          "confirmPasswordRequired": "Debe confirmar la nueva contraseña",
+          "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+          "passwordsNotMatch": "Las contraseñas no coinciden",
+          "changeError": "Error al cambiar la contraseña",
+          "networkError": "Error de conexión. Intenta nuevamente."
+        }
       }
-    }
     }
   },
   "common": {
@@ -233,7 +233,7 @@
       "TOKEN_NOT_PROVIDED": "Token no proporcionado",
       "INSUFFICIENT_PERMISSIONS": "Permisos insuficientes",
       "UNAUTHORIZED_PROFILE_ACCESS": "No tienes permiso para acceder a este perfil",
-        "LOGIN_FAILED": "Error de autenticación",
+      "LOGIN_FAILED": "Error de autenticación",
       "INVALID_CREDENTIALS": "Email o contraseña incorrectos",
       "USER_NOT_FOUND": "Usuario no encontrado",
       "INVALID_PASSWORD": "Contraseña incorrecta",

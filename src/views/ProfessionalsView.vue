@@ -1,11 +1,17 @@
 <template>
   <div class="container">
     <div class="left">
-      <AddProfessionalsForm @professional-added="handleProfessionalAdded" v-if="isAdmin"/>
+      <AddProfessionalsForm @professional-added="handleProfessionalAdded" v-if="isAdmin" />
     </div>
     <div class="rigth">
-      <GenericList :title="$t('views.professionals.listTitle')" :items="professionals" :headers="headers"
-        :loading="loading" :error="error" :search-placeholder="$t('common.forms.search')" />
+      <GenericList
+        :title="$t('views.professionals.listTitle')"
+        :items="professionals"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+      />
     </div>
   </div>
 </template>

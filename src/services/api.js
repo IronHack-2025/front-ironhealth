@@ -7,7 +7,7 @@ const getAuthHeaders = () => {
   const token = getAuthToken()
   return {
     'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` })
+    ...(token && { Authorization: `Bearer ${token}` }),
   }
 }
 
@@ -23,7 +23,7 @@ async function handleResponse(response) {
     error.statusCode = 401
     throw error
   }
-  
+
   if (response.status === 403) {
     const error = new Error('Insufficient permissions')
     error.messageCode = 'INSUFFICIENT_PERMISSIONS'
@@ -95,7 +95,7 @@ async function handleResponse(response) {
     try {
       const errorData = await response.json()
       console.error('❌ API Error Response:', errorData)
-      
+
       // ¡IMPORTANTE! Mostrar los detalles de validación
       if (errorData.details && Array.isArray(errorData.details)) {
         console.error('📋 Validation Details:', errorData.details)
@@ -114,9 +114,9 @@ async function handleResponse(response) {
       if (parseError.messageCode) {
         throw parseError
       }
-      
+
       console.error('❌ Could not parse error response:', parseError)
-      
+
       // Si no se puede parsear el JSON del error
       const error = new Error(`HTTP ${response.status}: ${response.statusText}`)
       error.messageCode = 'HTTP_ERROR'
@@ -160,12 +160,12 @@ export const post = async (endpoint, data) => {
 // Añadimos GET con el mismo manejo
 export const get = async (endpoint) => {
   try {
-    const response = await fetch(`${apiBaseUrl}${endpoint}`,{
+    const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
-      }
+      },
     })
     return handleResponse(response)
   } catch (error) {

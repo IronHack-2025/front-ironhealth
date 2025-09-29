@@ -12,13 +12,13 @@ const loading = ref(false)
 const error = ref('')
 
 // Computed para procesar los usuarios con traducciones reactivas
-const users = computed(() => 
-  rawUsers.value.map(user => ({
+const users = computed(() =>
+  rawUsers.value.map((user) => ({
     ...user,
     isActive: user.isActive ? t('common.yes') : t('common.no'),
     createdAt: new Date(user.createdAt).toLocaleDateString(),
-    role: t(`views.users.roles.${user.role}`)
-  }))
+    role: t(`views.users.roles.${user.role}`),
+  })),
 )
 
 // Configuración reactiva de headers para la tabla de usuarios
@@ -27,32 +27,32 @@ const headers = computed(() => [
     title: t('views.users.table.email'),
     key: 'email',
     align: 'start',
-    sortable: true
+    sortable: true,
   },
   {
     title: t('views.users.table.role'),
-    key: 'role', 
+    key: 'role',
     align: 'center',
-    sortable: true
+    sortable: true,
   },
   {
     title: t('views.users.table.profileModel'),
     key: 'profileModel',
     align: 'center',
-    sortable: true
+    sortable: true,
   },
   {
     title: t('views.users.table.isActive'),
     key: 'isActive',
     align: 'center',
-    sortable: true
+    sortable: true,
   },
   {
     title: t('views.users.table.createdAt'),
     key: 'createdAt',
     align: 'center',
-    sortable: true
-  }
+    sortable: true,
+  },
 ])
 
 // Función para obtener los usuarios
@@ -60,12 +60,11 @@ const fetchUsers = async () => {
   try {
     loading.value = true
     error.value = ''
-    
+
     const response = await get('/users')
-    
+
     // Almacenar los datos sin procesar
     rawUsers.value = response.data
-    
   } catch (err) {
     console.error('Error fetching users:', err)
     error.value = err.messageCode || 'FETCH_USERS_FAILED'

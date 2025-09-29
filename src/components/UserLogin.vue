@@ -34,7 +34,7 @@
               class="mb-4"
             />
 
-             <v-btn
+            <v-btn
               type="submit"
               color="primary"
               block
@@ -45,14 +45,12 @@
             >
               {{ $t('views.login.actions.login') }}
             </v-btn>
-
-           
           </v-form>
 
-          <AlertMessage 
-            :show="alert.show" 
-            :type="alert.type" 
-            :message="alert.message" 
+          <AlertMessage
+            :show="alert.show"
+            :type="alert.type"
+            :message="alert.message"
             @close="resetAlert"
           />
         </v-card>
@@ -77,24 +75,24 @@ const showPassword = ref(false)
 
 const form = reactive({
   email: '',
-  password: ''
+  password: '',
 })
 
 const alert = reactive({
   show: false,
   message: '',
-  type: 'success'
+  type: 'success',
 })
 
 // Validation rules
 const emailRules = [
-  v => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
-  v => /.+@.+\..+/.test(v) || t('messages.validation.EMAIL_INVALID_FORMAT')
+  (v) => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
+  (v) => /.+@.+\..+/.test(v) || t('messages.validation.EMAIL_INVALID_FORMAT'),
 ]
 
 const passwordRules = [
-  v => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
-  v => (v && v.length >= 6) || t('messages.validation.PASSWORD_LENGTH')
+  (v) => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
+  (v) => (v && v.length >= 6) || t('messages.validation.PASSWORD_LENGTH'),
 ]
 
 const resetAlert = () => {
@@ -112,14 +110,14 @@ const handleLogin = async () => {
   try {
     const result = await login({
       email: form.email,
-      password: form.password
+      password: form.password,
     })
 
     if (result.success) {
       alert.show = true
       alert.type = 'success'
       alert.message = t('messages.success.LOGIN_SUCCESS')
-      
+
       setTimeout(() => {
         router.push('/appointments')
       }, 1000)
@@ -138,7 +136,6 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-
 .v-card {
   border-radius: 16px !important;
 }

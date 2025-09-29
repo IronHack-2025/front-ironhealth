@@ -1,35 +1,59 @@
 <template>
   <v-container>
     <v-card class="pa-4">
-      <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%;" />
+      <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%" />
     </v-card>
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
         <v-card-title>📅 {{ t('views.appointments.newAppointment') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="form.start"
-            :value="form.start && form.end ? `${formatDate(form.start)} - ${formatDate(form.end)}` : ''"
-            :label="t('views.appointments.time')" outlined dense required readonly />
-          <v-select v-model="selectedProfessional" :items="availableProfessionals" item-value="_id"
-            :item-title="item => `${item.lastName}, ${item.firstName}`" item-disabled="disabled"
-            :label="t('views.appointments.professionals')" outlined dense></v-select>
-          <v-alert 
+          <v-text-field
+            v-model="form.start"
+            :value="
+              form.start && form.end ? `${formatDate(form.start)} - ${formatDate(form.end)}` : ''
+            "
+            :label="t('views.appointments.time')"
+            outlined
+            dense
+            required
+            readonly
+          />
+          <v-select
+            v-model="selectedProfessional"
+            :items="availableProfessionals"
+            item-value="_id"
+            :item-title="(item) => `${item.lastName}, ${item.firstName}`"
+            item-disabled="disabled"
+            :label="t('views.appointments.professionals')"
+            outlined
+            dense
+          ></v-select>
+          <v-alert
             v-if="form.start && form.end && !isPatientAvailable"
             type="warning"
             dense
-            class="mt-2">
+            class="mt-2"
+          >
             {{ t('views.appointments.patientNotAvailable') }}
           </v-alert>
-          <v-text-field v-model="form.notes" :label="t('views.appointments.notes')" outlined dense maxlength="500" />
-
+          <v-text-field
+            v-model="form.notes"
+            :label="t('views.appointments.notes')"
+            outlined
+            dense
+            maxlength="500"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" variant="tonal" @click="dialog = false">{{ t('common.buttons.close') }}</v-btn>
-          <v-btn 
-            color="primary" 
+          <v-btn color="red" variant="tonal" @click="dialog = false">{{
+            t('common.buttons.close')
+          }}</v-btn>
+          <v-btn
+            color="primary"
             @click="saveAppointment"
-            :disabled="!selectedProfessional || !isPatientAvailable">
+            :disabled="!selectedProfessional || !isPatientAvailable"
+          >
             {{ t('common.buttons.save') }}
           </v-btn>
         </v-card-actions>
@@ -43,22 +67,39 @@
         <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
           <!-- Mostrar detalles solo si es cita propia -->
           <div v-if="selectedEvent.extendedProps.isOwnAppointment">
-           
-            <div><strong>{{ t('views.appointments.professional') }}</strong> {{
-              `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
-              }}</div>
-            <div><strong>{{ t('views.appointments.start') }}</strong> {{ formatDate(selectedEvent.start) }}</div>
-            <div><strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}</div>
-           
+            <div>
+              <strong>{{ t('views.appointments.professional') }}</strong>
+              {{
+                `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
+              }}
+            </div>
+            <div>
+              <strong>{{ t('views.appointments.start') }}</strong>
+              {{ formatDate(selectedEvent.start) }}
+            </div>
+            <div>
+              <strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}
+            </div>
           </div>
           <!-- Mostrar información limitada para citas de otros pacientes -->
           <div v-else>
-            <div><strong>{{ t('views.appointments.patient') }}</strong> {{ t('views.appointments.privateInfo') }}</div>
-            <div><strong>{{ t('views.appointments.professional') }}</strong> {{
-              `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
-              }}</div>
-            <div><strong>{{ t('views.appointments.start') }}</strong> {{ formatDate(selectedEvent.start) }}</div>
-            <div><strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}</div>
+            <div>
+              <strong>{{ t('views.appointments.patient') }}</strong>
+              {{ t('views.appointments.privateInfo') }}
+            </div>
+            <div>
+              <strong>{{ t('views.appointments.professional') }}</strong>
+              {{
+                `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
+              }}
+            </div>
+            <div>
+              <strong>{{ t('views.appointments.start') }}</strong>
+              {{ formatDate(selectedEvent.start) }}
+            </div>
+            <div>
+              <strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}
+            </div>
             <v-alert type="info" dense class="mt-4">
               {{ t('views.appointments.privateAppointment') }}
             </v-alert>
@@ -71,17 +112,24 @@
           <v-spacer />
           <!-- Botones solo para citas propias -->
           <template v-if="selectedEvent && selectedEvent.extendedProps.isOwnAppointment">
-            <v-btn color="red" variant="tonal" @click="cancelAppointment">{{ t('common.buttons.cancel') }}</v-btn>
-        
+            <v-btn color="red" variant="tonal" @click="cancelAppointment">{{
+              t('common.buttons.cancel')
+            }}</v-btn>
           </template>
-          <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{ t('common.buttons.close')
+          <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
+            t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
-         <Alert :show="alert.show" :type="alert.type" :message-code="alert.messageCode" 
-               :details="alert.details" :message-params="alert.params" :fallback-message="alert.message" />
+        <Alert
+          :show="alert.show"
+          :type="alert.type"
+          :message-code="alert.messageCode"
+          :details="alert.details"
+          :message-params="alert.params"
+          :fallback-message="alert.message"
+        />
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -104,8 +152,8 @@ const { user } = useAuth()
 const props = defineProps({
   calendarLocale: {
     type: String,
-    default: 'es'
-  }
+    default: 'es',
+  },
 })
 
 // Remover patients ya que no es necesario
@@ -119,11 +167,11 @@ const isDataLoaded = ref(false)
 
 // Definir form ANTES de los watchers
 const form = ref({
-  patientId: "",
-  professionalId: "",
+  patientId: '',
+  professionalId: '',
   start: null,
   end: null,
-  notes: ""
+  notes: '',
 })
 
 const dialog = ref(false)
@@ -139,11 +187,15 @@ const alert = reactive({
 })
 
 // Ahora SÍ podemos usar los watchers
-watch(() => user.value?.profileId, (newPatientId) => {
-  if (newPatientId) {
-    form.value.patientId = newPatientId
-  }
-}, { immediate: true })
+watch(
+  () => user.value?.profileId,
+  (newPatientId) => {
+    if (newPatientId) {
+      form.value.patientId = newPatientId
+    }
+  },
+  { immediate: true },
+)
 
 // Sincroniza la selección del v-select con el formulario
 watch(selectedProfessional, (newVal) => {
@@ -157,84 +209,90 @@ watch(
     calendarOptions.value.locale = newLocale
     // Forzar actualización del calendario
     if (calendarRef.value) {
-      calendarRef.value.getApi().refetchEvents();
+      calendarRef.value.getApi().refetchEvents()
     }
-  }
+  },
 )
 
 // Watcher para recargar eventos cuando cambien los datos
-watch([professionals], () => {
-  if (isDataLoaded.value) {
-    reloadCalendarEvents()
-  }
-}, { deep: true })
+watch(
+  [professionals],
+  () => {
+    if (isDataLoaded.value) {
+      reloadCalendarEvents()
+    }
+  },
+  { deep: true },
+)
 
 const availableProfessionals = computed(() => {
   if (!form.value.start || !form.value.end) {
-    return professionals.value.map(pro => ({ ...pro, disabled: false }));
+    return professionals.value.map((pro) => ({ ...pro, disabled: false }))
   }
 
   // Convertir las fechas del formulario a timestamps para comparación más robusta
-  const formStart = new Date(form.value.start).getTime();
-  const formEnd = new Date(form.value.end).getTime();
+  const formStart = new Date(form.value.start).getTime()
+  const formEnd = new Date(form.value.end).getTime()
 
   // Filtrar para mostrar solo profesionales disponibles
-  const availableProfessionals = professionals.value.filter(pro => {
+  const availableProfessionals = professionals.value.filter((pro) => {
     // Buscar conflictos para este profesional
-    const conflicts = appointments.value.filter(appointment => {
-      if (appointment.status?.cancelled) return false;
-      if (appointment.professionalId !== pro._id) return false;
+    const conflicts = appointments.value.filter((appointment) => {
+      if (appointment.status?.cancelled) return false
+      if (appointment.professionalId !== pro._id) return false
 
-      const appointmentStart = new Date(appointment.startDate).getTime();
-      const appointmentEnd = new Date(appointment.endDate).getTime();
+      const appointmentStart = new Date(appointment.startDate).getTime()
+      const appointmentEnd = new Date(appointment.endDate).getTime()
 
       // Detectar solapamiento: nuevo inicio < cita fin Y nuevo fin > cita inicio
-      const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart;
+      const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart
 
-      return hasOverlap;
-    });
+      return hasOverlap
+    })
 
-    const isAvailable = conflicts.length === 0;
-    return isAvailable; // Solo devolver profesionales SIN conflictos
-  });
+    const isAvailable = conflicts.length === 0
+    return isAvailable // Solo devolver profesionales SIN conflictos
+  })
 
   // Si no hay profesionales disponibles, mostrar mensaje
   if (availableProfessionals.length === 0) {
-    return [{
-      _id: null,
-      firstName: 'try different time.',
-      lastName: 'No available professionals',
-      disabled: true
-    }];
+    return [
+      {
+        _id: null,
+        firstName: 'try different time.',
+        lastName: 'No available professionals',
+        disabled: true,
+      },
+    ]
   }
 
-  return availableProfessionals;
-});
+  return availableProfessionals
+})
 
 // Computed para verificar si el paciente logueado está disponible en el horario seleccionado
 const isPatientAvailable = computed(() => {
   if (!form.value.start || !form.value.end || !user.value?.profileId) {
-    return true;
+    return true
   }
 
-  const formStart = new Date(form.value.start).getTime();
-  const formEnd = new Date(form.value.end).getTime();
-  const patientId = user.value.profileId;
+  const formStart = new Date(form.value.start).getTime()
+  const formEnd = new Date(form.value.end).getTime()
+  const patientId = user.value.profileId
 
-  const conflicts = appointments.value.filter(appointment => {
-    if (appointment.status?.cancelled) return false;
-    if (appointment.patientId !== patientId) return false;
+  const conflicts = appointments.value.filter((appointment) => {
+    if (appointment.status?.cancelled) return false
+    if (appointment.patientId !== patientId) return false
 
-    const appointmentStart = new Date(appointment.startDate).getTime();
-    const appointmentEnd = new Date(appointment.endDate).getTime();
+    const appointmentStart = new Date(appointment.startDate).getTime()
+    const appointmentEnd = new Date(appointment.endDate).getTime()
 
     // Detectar solapamiento
-    const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart;
-    return hasOverlap;
-  });
+    const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart
+    return hasOverlap
+  })
 
-  return conflicts.length === 0;
-});
+  return conflicts.length === 0
+})
 
 const resetAlert = () => {
   alert.show = false
@@ -247,73 +305,73 @@ const resetAlert = () => {
 
 const cancelAppointment = async () => {
   try {
-    const token = localStorage.getItem('authToken');
-    const response = await fetch(`http://localhost:3000/api/appointment/${selectedEvent.value.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+    const token = localStorage.getItem('authToken')
+    const response = await fetch(
+      `http://localhost:3000/api/appointment/${selectedEvent.value.id}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          status: {
+            cancelled: true,
+            timestamp: new Date(),
+          },
+        }),
       },
-      body: JSON.stringify({
-        status: {
-          cancelled: true,
-          timestamp: new Date()
-        }
-      }),
-    })
+    )
 
     if (response.ok) {
-      const result = await response.json();
-      
-      alert.type = 'success';
-      alert.messageCode = result.messageCode || 'APPOINTMENT_CANCELLED';
-      alert.details = null;
-      alert.params = {};
-      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_CANCELLED'}`);
-      alert.show = true;
+      const result = await response.json()
 
+      alert.type = 'success'
+      alert.messageCode = result.messageCode || 'APPOINTMENT_CANCELLED'
+      alert.details = null
+      alert.params = {}
+      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_CANCELLED'}`)
+      alert.show = true
     } else {
-      const errorData = await response.json();
-      
-      alert.type = 'error';
-      alert.messageCode = errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED';
-      alert.details = errorData.details || null;
-      alert.params = {};
-      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'}`);
-      alert.show = true;
+      const errorData = await response.json()
+
+      alert.type = 'error'
+      alert.messageCode = errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'
+      alert.details = errorData.details || null
+      alert.params = {}
+      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'}`)
+      alert.show = true
     }
   } catch (error) {
-    console.error('Error de conexión al cancelar la cita:', error);
-    
-    alert.type = 'error';
-    alert.messageCode = 'NETWORK_ERROR';
-    alert.details = null;
-    alert.params = {};
-    alert.message = t('messages.error.NETWORK_ERROR');
-    alert.show = true;
+    console.error('Error de conexión al cancelar la cita:', error)
+
+    alert.type = 'error'
+    alert.messageCode = 'NETWORK_ERROR'
+    alert.details = null
+    alert.params = {}
+    alert.message = t('messages.error.NETWORK_ERROR')
+    alert.show = true
   }
-  await fetchAppointments();
-  calendarRef.value.getApi().refetchEvents();
+  await fetchAppointments()
+  calendarRef.value.getApi().refetchEvents()
 }
 
 const saveAppointment = async () => {
   if (!form.value.professionalId) return
-  
+
   // Asegurar que el patientId está asignado para pacientes logueados
   if (user.value?.profileId && !form.value.patientId) {
     form.value.patientId = user.value.profileId
   }
-  
+
   if (!form.value.patientId) return
-  
+
   // Verificar disponibilidad del paciente logueado
   if (!isPatientAvailable.value) {
-    alert.type = 'error';
-    alert.messageCode = 'PATIENT_NOT_AVAILABLE';
-    alert.details = null;
-    alert.params = {};
-    alert.message = '';
-    alert.show = true;
-    return;
+    alert.type = 'error'
+    alert.messageCode = 'PATIENT_NOT_AVAILABLE'
+    alert.details = null
+    alert.params = {}
+    alert.message = ''
+    alert.show = true
+    return
   }
 
   const event = {
@@ -321,49 +379,49 @@ const saveAppointment = async () => {
     endDate: form.value.end,
     patientId: form.value.patientId,
     professionalId: form.value.professionalId,
-    notes: form.value.notes || ""
+    notes: form.value.notes || '',
   }
   try {
     const response = await post('/appointment', event)
 
-    alert.type = 'success';
-    alert.messageCode = response.messageCode || 'APPOINTMENT_CREATED';
-    alert.details = null;
-    alert.params = {};
-    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_CREATED'}`);
-    alert.show = true;
+    alert.type = 'success'
+    alert.messageCode = response.messageCode || 'APPOINTMENT_CREATED'
+    alert.details = null
+    alert.params = {}
+    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_CREATED'}`)
+    alert.show = true
 
     // Solo resetear si fue exitoso
-    form.value = { 
-      patientId: user.value?.profileId || "", 
-      professionalId: "", 
-      start: null, 
-      end: null, 
-      notes: "" 
-    };
-    selectedProfessional.value = null;
-    dialog.value = false;
-    await fetchAppointments();
-    calendarRef.value.getApi().refetchEvents();
+    form.value = {
+      patientId: user.value?.profileId || '',
+      professionalId: '',
+      start: null,
+      end: null,
+      notes: '',
+    }
+    selectedProfessional.value = null
+    dialog.value = false
+    await fetchAppointments()
+    calendarRef.value.getApi().refetchEvents()
   } catch (error) {
-    console.error('Error:', error);
-    
-    alert.type = 'error';
-    alert.messageCode = error.messageCode || 'APPOINTMENT_CREATE_FAILED';
-    alert.details = error.details || null;
-    alert.params = {};
-    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_CREATE_FAILED'}`);
-    alert.show = true;
+    console.error('Error:', error)
+
+    alert.type = 'error'
+    alert.messageCode = error.messageCode || 'APPOINTMENT_CREATE_FAILED'
+    alert.details = error.details || null
+    alert.params = {}
+    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_CREATE_FAILED'}`)
+    alert.show = true
   }
 }
 
 const formatDate = (date) => {
-  if (!date) return '';
-  const d = new Date(date);
+  if (!date) return ''
+  const d = new Date(date)
   // Día y hora (ejemplo: "lun, 10:30")
-  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' };
-  return d.toLocaleString('es-ES', options);
-};
+  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' }
+  return d.toLocaleString('es-ES', options)
+}
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
@@ -382,39 +440,39 @@ const calendarOptions = ref({
         successCallback([])
         return
       }
-      const response = await get("/appointment");
-      const data = response.data || [];
+      const response = await get('/appointment')
+      const data = response.data || []
 
       // Validar que data sea un array
       if (!Array.isArray(data)) {
-        console.error('API response data is not an array:', data);
-        successCallback([]);
-        return;
+        console.error('API response data is not an array:', data)
+        successCallback([])
+        return
       }
-      
-      // Filtrar eventos no cancelados
-      const filtered = data.filter(ev => !ev.status?.cancelled);
 
-      const events = filtered.map(event => {
-        const professional = professionals.value.find(p => p._id === event.professionalId) || {};
-        const isOwnAppointment = user.value?.profileId === event.patientId;
-        
+      // Filtrar eventos no cancelados
+      const filtered = data.filter((ev) => !ev.status?.cancelled)
+
+      const events = filtered.map((event) => {
+        const professional = professionals.value.find((p) => p._id === event.professionalId) || {}
+        const isOwnAppointment = user.value?.profileId === event.patientId
+
         // Determinar el título según si es cita propia o de otro paciente
-        let title;
+        let title
         if (isOwnAppointment) {
           // Cita propia: mostrar solo el profesional
-          title = `Dr. ${professional.lastName}, ${professional.firstName}`;
+          title = `Dr. ${professional.lastName}, ${professional.firstName}`
         } else {
           // Cita de otro paciente: ocultar datos del paciente
-          title = `Cita ocupada - Dr. ${professional.lastName}`;
+          title = `Cita ocupada - Dr. ${professional.lastName}`
         }
-          
+
         return {
           title: title,
           id: event._id,
           start: event.startDate,
           end: event.endDate,
-          backgroundColor: isOwnAppointment ? (professional.color || '#1976d2') : '#9e9e9e',
+          backgroundColor: isOwnAppointment ? professional.color || '#1976d2' : '#9e9e9e',
           borderColor: isOwnAppointment ? undefined : '#757575',
           textColor: isOwnAppointment ? undefined : '#424242',
           extendedProps: {
@@ -422,14 +480,14 @@ const calendarOptions = ref({
             professionalId: event.professionalId,
             professionalFirstName: professional.firstName || '',
             professionalLastName: professional.lastName || '',
-            notes: isOwnAppointment ? (event.notes || '') : '',
-            isOwnAppointment: isOwnAppointment
-          }
-        };
-      });
-      successCallback(events);
+            notes: isOwnAppointment ? event.notes || '' : '',
+            isOwnAppointment: isOwnAppointment,
+          },
+        }
+      })
+      successCallback(events)
     } catch (error) {
-      failureCallback(error);
+      failureCallback(error)
     }
   },
 
@@ -441,8 +499,8 @@ const calendarOptions = ref({
     if (user.value?.profileId) {
       form.value.patientId = user.value.profileId
     }
-    await fetchAppointments();
-    dialog.value = true;
+    await fetchAppointments()
+    dialog.value = true
   },
   firstDay: 1,
   headerToolbar: {
@@ -457,31 +515,31 @@ const calendarOptions = ref({
     selectedEvent.value = info.event
     editableNotes.value = info.event.extendedProps.notes || ''
     showEventDialog.value = true
-  }
+  },
 })
 
 // Ensure appointments are fetched and displayed correctly
 const fetchAppointments = async () => {
   try {
-    const response = await get('/appointment');
-    appointments.value = response.data || [];
-     
+    const response = await get('/appointment')
+    appointments.value = response.data || []
+
     if (calendarRef.value) {
-      calendarRef.value.getApi().refetchEvents();
+      calendarRef.value.getApi().refetchEvents()
     }
   } catch (error) {
-    console.error('Error fetching appointments:', error);
+    console.error('Error fetching appointments:', error)
   }
-};
+}
 
 const fetchProfessionals = async () => {
   try {
-    const response = await get('/professionals');
-    professionals.value = response.data || [];
+    const response = await get('/professionals')
+    professionals.value = response.data || []
   } catch (error) {
-    console.error('Error fetching professionals:', error);
+    console.error('Error fetching professionals:', error)
   }
-};
+}
 
 const reloadCalendarEvents = () => {
   if (calendarRef.value?.getApi) {
@@ -493,22 +551,21 @@ onMounted(async () => {
   try {
     // Cargar solo los datos necesarios
     await fetchProfessionals()
-    
+
     // Asignar directamente el patientId del usuario logueado
     if (user.value?.profileId) {
       form.value.patientId = user.value.profileId
     }
-    
+
     // Marcar que los datos están cargados
     isDataLoaded.value = true
-    
+
     // Recargar los eventos del calendario
     reloadCalendarEvents()
-    
   } catch (error) {
     console.error('Error al cargar datos iniciales:', error)
   }
-});
+})
 </script>
 
 <style scoped>
