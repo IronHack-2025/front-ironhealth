@@ -113,13 +113,7 @@
               />
 
               <!-- Botón principal -->
-              <v-btn
-                block
-                color="primary"
-                class="mt-6"
-                size="large"
-                @click="submitForm"
-              >
+              <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
                 {{ btnTitle }}
               </v-btn>
             </v-form>
@@ -202,13 +196,11 @@ const professionsList = computed(() =>
   professionsData.professions.map((p) => ({
     title: getText(p.text),
     value: p.code,
-  }))
+  })),
 )
 const specialtiesList = computed(() => {
   if (!selectedProfession.value) return []
-  const professionObj = professionsData.professions.find(
-    (p) => p.code === selectedProfession.value
-  )
+  const professionObj = professionsData.professions.find((p) => p.code === selectedProfession.value)
   if (!professionObj?.specialty) return []
   return [
     { title: 'Sin especificar', value: '' },
@@ -280,14 +272,11 @@ async function submitForm() {
       })
     } else {
       if (!props.items?.id) throw new Error('No se puede editar: falta el ID')
-      response = await fetch(
-        `${apiBaseUrl}/professionals/${props.items.id}/edit`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        }
-      )
+      response = await fetch(`${apiBaseUrl}/professionals/${props.items.id}/edit`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
     }
 
     const data = await response.json()
@@ -343,10 +332,10 @@ const rules = computed(() => ({
   },
   acceptedLength: (value) => {
     if (!value) return true
-    const min = 3, max = 50
+    const min = 3,
+      max = 50
     return (
-      (value.length >= min && value.length <= max) ||
-      t('common.forms.validLength', { min, max })
+      (value.length >= min && value.length <= max) || t('common.forms.validLength', { min, max })
     )
   },
 }))

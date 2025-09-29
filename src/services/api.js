@@ -117,7 +117,6 @@ export const get = async (endpoint) => {
   }
 }
 
-
 // Añadimos PUT con el mismo manejo
 export const put = async (endpoint, data) => {
   try {

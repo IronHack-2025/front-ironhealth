@@ -103,7 +103,7 @@ const fetchPatients = async () => {
     patients.value = arr
   } catch (e) {
     patients.value = []
-    error.value = e.message 
+    error.value = e.message
   } finally {
     loading.value = false
   }

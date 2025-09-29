@@ -1,21 +1,18 @@
 <template>
-    <div>
-        <AppointmentsCalendar :calendar-locale="calendarLocale" />
-    </div>
+  <div>
+    <AppointmentsCalendar :calendar-locale="calendarLocale" />
+  </div>
 </template>
 
 <script setup>
-import AppointmentsCalendar from '@/components/AppointmentsCalendar.vue';
+import AppointmentsCalendar from '@/components/AppointmentsCalendar.vue'
 
- defineProps({
+defineProps({
   calendarLocale: {
     type: String,
-    default: 'es'
-  }
+    default: 'es',
+  },
 })
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

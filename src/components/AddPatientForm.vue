@@ -97,13 +97,7 @@
               />
 
               <!-- Botón -->
-              <v-btn
-                block
-                color="primary"
-                class="mt-6"
-                size="large"
-                @click="newPatient"
-              >
+              <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
                 {{ btnTitle }}
               </v-btn>
             </v-form>
@@ -184,10 +178,10 @@ const rules = {
   },
   acceptedLength: (value) => {
     if (!value) return true
-    const min = 3, max = 50
+    const min = 3,
+      max = 50
     return (
-      (value.length >= min && value.length <= max) ||
-      t('common.forms.validLength', { min, max })
+      (value.length >= min && value.length <= max) || t('common.forms.validLength', { min, max })
     )
   },
 }
@@ -225,9 +219,8 @@ async function newPatient() {
 
   const formData = {
     ...form,
-    birthDate: form.birthDate instanceof Date
-      ? form.birthDate.toISOString().split('T')[0]
-      : form.birthDate,
+    birthDate:
+      form.birthDate instanceof Date ? form.birthDate.toISOString().split('T')[0] : form.birthDate,
   }
 
   try {
@@ -276,12 +269,11 @@ function showSuccess(responseData) {
   alert.show = true
   alert.type = 'success'
   alert.messageCode =
-    responseData?.messageCode ||
-    (props.mode === 'create' ? 'PATIENT_CREATED' : 'PATIENT_UPDATED')
+    responseData?.messageCode || (props.mode === 'create' ? 'PATIENT_CREATED' : 'PATIENT_UPDATED')
   alert.message = t(
     props.mode === 'create'
       ? 'messages.success.PATIENT_CREATED'
-      : 'messages.success.PATIENT_UPDATED'
+      : 'messages.success.PATIENT_UPDATED',
   )
 }
 function showError(error) {

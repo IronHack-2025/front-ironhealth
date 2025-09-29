@@ -31,7 +31,7 @@
             :message="alert.message"
             class="mx-4 mt-4"
           />
-          
+
           <v-data-table
             :headers="headers"
             :items="items"
@@ -109,7 +109,7 @@ const alert = reactive({
 })
 const emit = defineEmits(['refresh', 'edit', 'delete'])
 
- defineProps({
+defineProps({
   title: { type: String, default: '' },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },

@@ -185,7 +185,7 @@ const onEdit = async (id) => {
       profession: data.profession || '',
       specialty: data.specialty || '',
       professionLicenceNumber: data.professionLicenceNumber || '',
-      imageUrl: data.imageUrl || '', 
+      imageUrl: data.imageUrl || '',
     }
 
     edit.value = true

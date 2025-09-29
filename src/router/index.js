@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/appointments',
       name: 'appointments',
       component: Appointments,
-    }
+    },
   ],
 })
 

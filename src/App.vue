@@ -8,9 +8,12 @@ const { locale } = useI18n()
 const currentLocale = ref(locale.value)
 
 // Sincronizar cambios de idioma entre i18n y currentLocale
-watch(() => locale.value, (newLocale) => {
-  currentLocale.value = newLocale
-})
+watch(
+  () => locale.value,
+  (newLocale) => {
+    currentLocale.value = newLocale
+  },
+)
 
 watch(currentLocale, (newLocale) => {
   locale.value = newLocale
@@ -35,12 +38,15 @@ watch(currentLocale, (newLocale) => {
             prepend-icon="mdi-doctor"
             :title="$t('navbar.professionals')"
           ></v-list-item>
-          <v-list-item to="/appointments" prepend-icon="mdi-calendar-blank" :title="$t('navbar.appointments')">
-
+          <v-list-item
+            to="/appointments"
+            prepend-icon="mdi-calendar-blank"
+            :title="$t('navbar.appointments')"
+          >
           </v-list-item>
         </v-list>
 
-        <SelectLanguage v-model="currentLocale"/>
+        <SelectLanguage v-model="currentLocale" />
       </v-navigation-drawer>
 
       <v-main>
