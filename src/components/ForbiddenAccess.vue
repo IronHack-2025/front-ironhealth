@@ -71,10 +71,8 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useAuth } from '@/composables/useAuth.js'
 
-const { t } = useI18n()
 const router = useRouter()
 const { user } = useAuth()
 
@@ -98,8 +96,6 @@ const goBack = () => {
   // Si hay historial, volver atrás, sino ir a home
   if (window.history.length > 1) {
     router.go(-1)
-  } else {
-    goHome()
   }
 }
 

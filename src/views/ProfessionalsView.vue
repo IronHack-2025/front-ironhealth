@@ -25,7 +25,7 @@ import { useI18n } from 'vue-i18n'
 import { get } from '@/services/api'
 import { useAuth } from '@/composables/useAuth.js'
 
-const { isAuthenticated, isAdmin, isProfessional } = useAuth()
+const { isAdmin } = useAuth()
 
 const { t, locale } = useI18n()
 

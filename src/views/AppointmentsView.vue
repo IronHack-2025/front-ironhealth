@@ -14,7 +14,7 @@ import { useAuth } from '@/composables/useAuth.js'
 
 const { isAdmin, isProfessional } = useAuth()
 
-const props = defineProps({
+defineProps({
   calendarLocale: {
     type: String,
     default: 'es',

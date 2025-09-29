@@ -121,7 +121,7 @@ export function useAuth() {
         }
       }
     } catch (error) {
-      console.info('ℹ️ Local logout proceeding despite server error')
+      console.info('ℹ️ Local logout proceeding despite server error', error)
     } finally {
       // 2. Limpiar estado reactivo
       authToken.value = null

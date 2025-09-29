@@ -68,7 +68,7 @@ import AlertMessage from './AlertMessage.vue'
 
 const { t } = useI18n()
 const router = useRouter()
-const { login, loading, loginError, clearLoginError } = useAuth()
+const { login, loading, clearLoginError } = useAuth()
 
 const valid = ref(false)
 const showPassword = ref(false)

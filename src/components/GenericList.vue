@@ -44,8 +44,8 @@
             fixed-header
             height="500px"
           >
-            <!-- Slot para renderizar la imageUrln -->
-            <template v-slot:item.imageUrl="{ item }">
+            <!-- Slot para renderizar la imageUrl -->
+            <template #item.imageUrl="{ item }">
               <v-avatar size="70">
                 <v-img :src="item.imageUrl" alt="Foto paciente" />
               </v-avatar>
@@ -58,12 +58,9 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
 
-const { t } = useI18n()
-
-const props = defineProps({
+defineProps({
   title: { type: String, default: '' },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },

@@ -123,7 +123,7 @@
   </v-container>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Alert from './AlertMessage.vue'
 import { post } from '@/services/api'
@@ -291,45 +291,6 @@ const newPatient = async () => {
     alert.details = e.details || null
     alert.params = {}
     alert.message = t('common.messages.error')
-  }
-}
-
-onMounted(() => {
-  if (!window.cloudinary) {
-    const script = document.createElement('script')
-    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js'
-    script.async = true
-    script.onload = () => {
-      initWidget()
-    }
-    document.head.appendChild(script)
-  } else {
-    initWidget()
-  }
-})
-
-function initWidget() {
-  const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-
-  const myWidget = window.cloudinary.createUploadWidget(
-    {
-      cloudName: CLOUD_NAME,
-      uploadPreset: UPLOAD_PRESET,
-    },
-    (error, result) => {
-      if (!error && result && result.event === 'success') {
-        imageUrl.value = result.info.secure_url
-        form.imageUrl = result.info.secure_url // <-- Cambia aquí a imageUrl
-        console.log('Imagen subida:', result.info)
-      }
-    },
-  )
-}
-
-function openCloudinaryWidget() {
-  if (myWidget) {
-    myWidget.open()
   }
 }
 </script>

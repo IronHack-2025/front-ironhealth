@@ -1,12 +1,11 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
-import { RouterView, useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterView } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '@/composables/useAuth.js'
 import SelectLanguage from '@/components/SelectLanguage.vue'
 
 const { locale } = useI18n()
-const router = useRouter()
 const currentLocale = ref(locale.value)
 
 // Usar el composable useAuth en lugar de computed locales

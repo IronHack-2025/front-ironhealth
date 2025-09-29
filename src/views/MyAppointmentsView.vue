@@ -41,7 +41,7 @@ const selectedPatientFromSearch = ref(null)
 // ✅ Variable para el historial (se actualiza desde el buscador O desde el emit)
 const selectedPatientForHistory = ref(null)
 
-const props = defineProps({
+defineProps({
   calendarLocale: {
     type: String,
     default: 'es',

@@ -142,7 +142,6 @@ const professionals = ref([])
 const selectedEvent = ref(null)
 const showEventDialog = ref(false)
 const calendarRef = ref(null)
-const appointments = ref([])
 const isDataLoaded = ref(false)
 
 const alert = reactive({

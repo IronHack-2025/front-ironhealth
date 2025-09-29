@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { watch } from 'vue'
 
 // Configuración de i18n
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 
 // Props para v-model
 const props = defineProps({
