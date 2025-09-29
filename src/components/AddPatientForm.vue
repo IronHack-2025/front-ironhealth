@@ -60,11 +60,7 @@
               <v-select v-model="form.nationality" :label="$t('common.forms.nationality')"
                 prepend-inner-icon="mdi-earth" :items="nationalitiesList" item-title="title" item-value="value"
                 variant="outlined" :rules="[rules.required]" :error-messages="fieldErrors.nationality || []" />
-
-
               
-              
-
               <v-text-field v-model="form.emergencyContact" :label="$t('common.forms.emergencyContact')"
                 prepend-inner-icon="mdi-phone-alert" :rules="[rules.required, rules.phone]" variant="outlined"
                 class="mt-2" maxlength="15" :error-messages="fieldErrors.emergencyContact || []"
@@ -103,7 +99,7 @@ import nationalitiesData from '@/assets/data/nationalities.json'
 const cloudinaryRef = ref(null)
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const emit = defineEmits(['patient-added'])
 
 const formRef = ref(null)
@@ -125,17 +121,20 @@ const form = reactive({
 
 })
 
-const gendersList = [
+// Canvia gendersList d'array estàtic a computed reactiu
+const gendersList = computed(() => [
   { value: 'male', title: t('common.genders.genderMan') },
   { value: 'female', title: t('common.genders.genderWoman') },
   { value: 'non-binary', title: t('common.genders.genderNonBinary') }
-]
+])
+
 const nationalitiesList = computed(() =>
   nationalitiesData.map((n) => ({
     value: n.code,
-    title: n.name
+    title: n.name[locale.value] || n.name.en // usa l'idioma actual
   }))
 )
+
 const alert = reactive({
   show: false,
   type: 'success',                 // 'success' | 'error' | ...

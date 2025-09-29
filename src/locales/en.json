@@ -11,7 +11,9 @@
   "views": {
     "patients": {
       "title": "Patients Registration",
+      "subtitle":"Handle patient sign up",
       "listTitle": "Patient List",
+      "description": "Patient",
       "actions": {
         "add": "Add Patient",
         "edit": "Edit Patient",

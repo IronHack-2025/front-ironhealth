@@ -1,7 +1,7 @@
 <template>
   <v-card class="pa-4 d-flex align-center" rounded="xl" elevation="2" >
     <v-avatar size="80" class="me-4">
-      <v-img :src="photoSrc" alt="Foto del paciente" cover />
+      <v-img :src="photoSrc" alt="Patient picture" cover />
     </v-avatar>
 
     <div class="min-w-0">

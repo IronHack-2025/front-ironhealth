@@ -13,6 +13,7 @@
       "title": "Registro de Pacientes",
       "listTitle": "Listado de Pacientes",
       "subtitle": "Gestionar todos los registros de pacientes",
+      "description": "Paciente",
       "actions": {
         "add": "Agregar Paciente",
         "edit": "Editar Paciente",
@@ -72,7 +73,6 @@
       "gender": "Género",
       "emergencyContact": "Contacto de emergencia",
       "nationality": "Nacionalidad"
-      
     },
     "buttons": {
       "save": "Guardar",

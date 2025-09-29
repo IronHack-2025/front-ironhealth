@@ -20,7 +20,7 @@
                         :first-name="patientData.firstName" 
                         :last-name="patientData.lastName"
                         :image-url="patientData.imageUrl" 
-                        subtitle="Paciente" 
+                        :subtitle="$t('views.patients.description')" 
                         class="mb-4" /> <!-- Margen inferior -->
                     
                     <ContactInfoCard 
