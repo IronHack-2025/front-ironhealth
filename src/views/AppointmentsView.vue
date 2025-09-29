@@ -7,7 +7,7 @@
 <script setup>
 import AppointmentsCalendar from '@/components/AppointmentsCalendar.vue';
 
-const props = defineProps({
+ defineProps({
   calendarLocale: {
     type: String,
     default: 'es'

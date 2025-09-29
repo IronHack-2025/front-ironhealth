@@ -15,7 +15,7 @@
       :error="error"
       :search-placeholder="$t('common.forms.search')"
       :canEdit="true"
-      :canDelete="false"
+      :canDelete="true"
       @edit="onEdit"
       @delete="onDelete"
     />

@@ -99,10 +99,8 @@
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { useI18n } from 'vue-i18n'
 import AlertMessage from './AlertMessage.vue'
 
-const { t } = useI18n()
 const alert = reactive({
   show: false,
   type: 'success',
@@ -111,7 +109,7 @@ const alert = reactive({
 })
 const emit = defineEmits(['refresh', 'edit', 'delete'])
 
-const props = defineProps({
+ defineProps({
   title: { type: String, default: '' },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
