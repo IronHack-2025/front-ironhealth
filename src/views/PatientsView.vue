@@ -4,8 +4,14 @@
       <AddPatient @patient-added="handlePatientAdded" />
     </div>
     <div class="rigth">
-      <GenericList :title="$t('views.patients.listTitle')" :items="patients" :headers="headers" :loading="loading"
-        :error="error" :search-placeholder="$t('common.forms.search')" />
+      <GenericList
+        :title="$t('views.patients.listTitle')"
+        :items="patients"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+      />
     </div>
   </div>
 </template>
@@ -24,11 +30,11 @@ const loading = ref(false)
 const error = ref('')
 
 const headers = computed(() => [
-  {title: t('common.forms.photo'), key: 'imageUrl'},
+  { title: t('common.forms.photo'), key: 'imageUrl' },
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.phone'), key: 'phone' },
-  { title: t('common.forms.email'), key: 'email' }
+  { title: t('common.forms.email'), key: 'email' },
 ])
 
 const fetchPatients = async () => {
@@ -52,7 +58,6 @@ const handlePatientAdded = () => {
   fetchPatients()
 }
 </script>
-
 
 <!-- <style scoped>
 .container{

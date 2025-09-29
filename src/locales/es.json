@@ -3,10 +3,15 @@
     "patients": "Pacientes",
     "professionals": "Profesionales",
     "appointments": "Citas",
+    "myAppointments": "Mis Citas",
     "dashboard": "Dashboard",
     "reports": "Reportes",
+    "users": "Usuarios",
     "settings": "Configuración",
-    "selectLang": "Idiomas"
+    "selectLang": "Idiomas",
+    "profile": "Perfil de Usuario",
+    "login": "Inicio de Sesión",
+    "logout": "Cerrar Sesión"
   },
   "views": {
     "patients": {
@@ -37,14 +42,92 @@
       "patients": "Pacientes:",
       "professionals": "Profesionales Disponibles:",
       "professional": "Profesional:",
+      "professionalNotAvailable": "Profesional no disponible",
+      "patientNotAvailable": "Paciente no disponible",
+      "selectDifferentTime": "Por favor, selecciona un horario diferente.",
       "notes": "Notas:",
+      "professionalNotes": "Notas del Profesional:",
       "details": "Detalles de la Cita",
       "start": "Hora de inicio:",
       "end": "Hora de fin:",
+      "cancelled": "Cancelada",
+      "active": "Activa",
+      "cancelledAt": "Cancelada el:",
+      "privateInfo": "Información Privada",
+      "privateAppointment": "Esta es una cita de otro paciente. Los detalles son confidenciales.",
+      "viewHistory": "Historial",
       "actions": {
         "schedule": "Programar Cita",
         "reschedule": "Reprogramar",
         "cancel": "Cancelar Cita"
+      }
+    },
+    "myAppointments": {
+      "title": "Mis Citas",
+      "patientHistorySearch": "Buscar Historial del Paciente",
+      "selectedPatientHistory": "Historial de Citas de {name}"
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "searchPlaceholder": "Buscar usuarios...",
+      "noData": "No hay usuarios registrados",
+      "table": {
+        "email": "Correo Electrónico",
+        "role": "Rol",
+        "profileModel": "Tipo de Perfil",
+        "isActive": "Estado Activo",
+        "createdAt": "Fecha de Registro"
+      },
+      "roles": {
+        "admin": "Administrador",
+        "professional": "Profesional",
+        "patient": "Paciente"
+      }
+    },
+    "login": {
+      "title": "Inicio de Sesión",
+      "subtitle": "Accede a tu cuenta",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "resetPassword": "Restablecer Contraseña",
+      "actions": {
+        "login": "Iniciar Sesión",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "register": "Registrarse"
+      }
+    },
+
+    "forbidden": {
+      "title": "Acceso Prohibido",
+      "subtitle": "No tienes permisos para acceder a esta página",
+      "description": "Tu rol de usuario no te permite ver este contenido. Si crees que esto es un error, contacta con el administrador.",
+      "goBack": "Volver",
+      "goMyAppointments": "Ir a Mis Citas",
+      "contactAdmin": "Contactar Administrador"
+    },
+    "profile": {
+      "userInfo": {
+        "title": "Información del Usuario",
+        "role": "Rol"
+      },
+      "changePassword": {
+        "title": "Cambiar Contraseña",
+        "currentPassword": "Contraseña Actual",
+        "newPassword": "Nueva Contraseña",
+        "confirmPassword": "Confirmar Nueva Contraseña",
+        "actions": {
+          "change": "Cambiar Contraseña"
+        },
+        "messages": {
+          "success": "Contraseña cambiada exitosamente",
+          "currentPasswordRequired": "La contraseña actual es requerida",
+          "newPasswordRequired": "La nueva contraseña es requerida",
+          "confirmPasswordRequired": "Debe confirmar la nueva contraseña",
+          "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+          "passwordsNotMatch": "Las contraseñas no coinciden",
+          "changeError": "Error al cambiar la contraseña",
+          "networkError": "Error de conexión. Intenta nuevamente."
+        }
       }
     }
   },
@@ -54,6 +137,7 @@
       "lastName": "Apellidos",
       "email": "Correo Electrónico",
       "phone": "Teléfono",
+      "dni": "DNI",
       "dateOfBirth": "Fecha de Nacimiento",
       "profession": "Profesión",
       "specialty": "Especialidad (Opcional)",
@@ -64,7 +148,9 @@
       "invalidPhone": "Por favor ingrese un número de teléfono válido",
       "invalidDate": "Fecha inválida",
       "validLength": "Debe tener entre {min} y {max} caracteres",
-      "search": "Buscar..."
+      "search": "Buscar...",
+      "invalidDNI": "El DNI debe tener 7 u 8 dígitos seguidos de una letra",
+      "imageRequired": "La carga de imagen es obligatoria."
     },
     "buttons": {
       "save": "Guardar",
@@ -88,11 +174,19 @@
       "defaultTitle": "Lista"
     },
     "search": {
-      "placeholder": "Buscar..."
+      "placeholder": "Buscar...",
+      "patients": {
+        "placeholder": "Buscar paciente por nombre o apellido...",
+        "noResults": "No se encontraron pacientes",
+        "loading": "Buscando pacientes...",
+        "clear": "Limpiar selección"
+      }
     },
     "pagination": {
       "itemsPerPage": "Elementos por página:"
-    }
+    },
+    "yes": "Sí",
+    "no": "No"
   },
   "messages": {
     "success": {
@@ -106,11 +200,15 @@
       "APPOINTMENT_UPDATED": "Cita actualizada correctamente",
       "APPOINTMENT_DELETED": "Cita eliminada correctamente",
       "APPOINTMENT_CANCELLED": "Cita cancelada correctamente",
+      "APPOINTMENT_RESCHEDULED": "Cita reprogramada correctamente",
+      "APPOINTMENT_NOTES_UPDATED": "Notas de la cita actualizadas correctamente",
       "PATIENTS_RETRIEVED": "Pacientes recuperados con éxito",
       "PROFESSIONALS_RETRIEVED": "Profesionales recuperados con éxito",
       "APPOINTMENT_RETRIEVED": "Citas recuperadas correctamente",
       "OPERATION_SUCCESS": "Operación realizada con éxito",
-      "NOTES_UPDATED": "Notas guardadas correctamente"
+      "NOTES_UPDATED": "Notas guardadas correctamente",
+      "LOGIN_SUCCESS": "Inicio de sesión exitoso",
+      "PASSWORD_CHANGED": "Contraseña cambiada exitosamente"
     },
     "error": {
       "VALIDATION_FAILED": "Revisa los siguientes campos:",
@@ -122,7 +220,25 @@
       "INTERNAL_SERVER_ERROR": "Error interno del servidor",
       "APPOINTMENT_CONFLICT": "Conflicto de horarios de citas",
       "NETWORK_ERROR": "Error de conexión de red",
-      "PATIENT_CREATION_FAILED": "Error al crear el paciente"
+      "PATIENT_CREATION_FAILED": "Error al crear el paciente",
+      "PROFESSIONAL_CREATION_FAILED": "Error al crear el profesional",
+      "APPOINTMENT_CREATION_FAILED": "Error al crear la cita",
+      "APPOINTMENT_CREATE_FAILED": "Error al crear la cita",
+      "APPOINTMENT_RESCHEDULE_FAILED": "Error al reprogramar la cita",
+      "APPOINTMENT_CANCEL_FAILED": "Error al cancelar la cita",
+      "APPOINTMENT_NOTES_UPDATE_FAILED": "Error al actualizar las notas de la cita",
+      "PROFESSIONAL_NOT_AVAILABLE": "El profesional no está disponible en este horario",
+      "UNAUTHORIZED": "Acceso no autorizado",
+      "INVALID_TOKEN": "Token inválido o expirado",
+      "TOKEN_NOT_PROVIDED": "Token no proporcionado",
+      "INSUFFICIENT_PERMISSIONS": "Permisos insuficientes",
+      "UNAUTHORIZED_PROFILE_ACCESS": "No tienes permiso para acceder a este perfil",
+      "LOGIN_FAILED": "Error de autenticación",
+      "INVALID_CREDENTIALS": "Email o contraseña incorrectos",
+      "USER_NOT_FOUND": "Usuario no encontrado",
+      "INVALID_PASSWORD": "Contraseña incorrecta",
+      "INCORRECT_PASSWORD": "Contraseña incorrecta",
+      "PASSWORD_CHANGE_FAILED": "Error al cambiar la contraseña"
     },
     "validation": {
       "FORM_FIELDS_REQUIRED": "Por favor complete todos los campos requeridos",
@@ -132,12 +248,17 @@
       "NAME_INVALID_CHARACTERS": "El valor contiene caracteres no permitidos",
       "EMAIL_INVALID_FORMAT": "El email no tiene un formato válido",
       "PHONE_INVALID_FORMAT": "Introduzca un número de teléfono válido",
+      "END_TIME_BEFORE_START_TIME": "La hora de fin debe ser posterior a la de inicio",
+      "APPOINTMENT_IN_PAST": "La hora de la cita no puede estar en el pasado",
+      "APPOINTMENT_CONFLICT": "El intervalo de tiempo seleccionado ya está reservado",
       "BIRTHDATE_INVALID": "Introduzca una fecha de nacimiento válida",
       "EMAIL_ALREADY_EXISTS": "Este email ya está registrado",
       "PHONE_ALREADY_EXISTS": "Este número de teléfono ya está registrado",
       "NOTES_HTML_NOT_ALLOWED": "Las notas no pueden contener HTML",
       "NOTES_TOO_LONG": "Las notas no pueden exceder los {max} caracteres",
-      "ID_INVALID_FORMAT": "ID inválido"
+      "ID_INVALID_FORMAT": "ID inválido",
+      "PASSWORD_LENGTH": "La contraseña debe tener al menos 6 caracteres",
+      "PASSWORD_INCORRECT": "Contraseña incorrecta"
     },
     "fields": {
       "firstName": "Nombre",

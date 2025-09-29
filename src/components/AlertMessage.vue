@@ -1,10 +1,14 @@
 <template>
-  <v-alert v-if="show && (translatedMessage || validationItems.length)" :type="type" variant="tonal" border="start"
-    prominent class="mt-4">
-
+  <v-alert
+    v-if="show && (translatedMessage || validationItems.length)"
+    :type="type"
+    variant="tonal"
+    border="start"
+    prominent
+    class="mt-4"
+  >
     <!-- Si es un error de validación con múltiples campos -->
     <div v-if="isValidationError && validationItems.length">
-
       <!-- Usamos validationTitle con fallback a common.messages.error -->
       <div class="font-weight-bold mb-2">{{ validationTitle }}</div>
       <ul class="pl-4">
@@ -31,8 +35,8 @@ const props = defineProps({
   show: { type: Boolean, default: false },
   type: {
     type: String,
-    validator: v => ['success', 'error', 'warning', 'info'].includes(v),
-    default: 'success'
+    validator: (v) => ['success', 'error', 'warning', 'info'].includes(v),
+    default: 'success',
   },
   // messageCode estructurado (ej: 'PROFESSIONAL_CREATED' o 'VALIDATION_FAILED')
   messageCode: { type: String, default: '' },
@@ -41,15 +45,18 @@ const props = defineProps({
   // detalles de validación [{ field?, code, meta? }, ...]
   details: { type: Array, default: null },
   // params opcionales para el mensaje principal (placeholders)
-  messageParams: { type: Object, default: () => ({}) }
+  messageParams: { type: Object, default: () => ({}) },
 })
 
 // Emit para comunicar los fieldErrors al componente padre
 const emit = defineEmits(['field-errors-updated'])
 
 // ¿Es un error de validación con lista?
-const isValidationError = computed(() =>
-  props.messageCode === 'VALIDATION_FAILED' && Array.isArray(props.details) && props.details.length > 0
+const isValidationError = computed(
+  () =>
+    props.messageCode === 'VALIDATION_FAILED' &&
+    Array.isArray(props.details) &&
+    props.details.length > 0,
 )
 
 // Título de la sección de validación con fallback a common.messages.error
@@ -83,16 +90,16 @@ const translatedMessage = computed(() => {
 // Convierte details[] a lista de textos traducidos
 const validationItems = computed(() => {
   if (!Array.isArray(props.details)) return []
-  return props.details.map(detail => {
+  return props.details.map((detail) => {
     const textKey = `messages.validation.${detail.code}`
     const text = t(textKey, detail.meta || {})
-    const resolved = (text === textKey) ? detail.code : text
+    const resolved = text === textKey ? detail.code : text
 
     // Si viene el nombre del campo, añadimos su etiqueta traducida si existe
     if (detail.field) {
       const fieldKey = `messages.fields.${detail.field}`
       const label = t(fieldKey)
-      return (label === fieldKey) ? resolved : `${label}: ${resolved}`
+      return label === fieldKey ? resolved : `${label}: ${resolved}`
     }
     return resolved
   })
@@ -102,22 +109,26 @@ const validationItems = computed(() => {
 const fieldErrors = computed(() => {
   const errors = {}
   if (!Array.isArray(props.details)) return errors
-  
-  props.details.forEach(detail => {
+
+  props.details.forEach((detail) => {
     if (!detail.field) return
     const textKey = `messages.validation.${detail.code}`
     const text = t(textKey, detail.meta || {})
-    const resolved = (text === textKey) ? detail.code : text
-    
+    const resolved = text === textKey ? detail.code : text
+
     if (!errors[detail.field]) errors[detail.field] = []
     errors[detail.field].push(resolved)
   })
-  
+
   return errors
 })
 
 // Emitir los fieldErrors cuando cambien
-watch(fieldErrors, (newErrors) => {
-  emit('field-errors-updated', newErrors)
-}, { immediate: true, deep: true })
+watch(
+  fieldErrors,
+  (newErrors) => {
+    emit('field-errors-updated', newErrors)
+  },
+  { immediate: true, deep: true },
+)
 </script>

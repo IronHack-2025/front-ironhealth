@@ -1,11 +1,17 @@
 <template>
   <div class="container">
     <div class="left">
-      <AddProfessionalsForm @professional-added="handleProfessionalAdded" />
+      <AddProfessionalsForm @professional-added="handleProfessionalAdded" v-if="isAdmin" />
     </div>
     <div class="rigth">
-      <GenericList :title="$t('views.professionals.listTitle')" :items="professionals" :headers="headers"
-        :loading="loading" :error="error" :search-placeholder="$t('common.forms.search')" />
+      <GenericList
+        :title="$t('views.professionals.listTitle')"
+        :items="professionals"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+      />
     </div>
   </div>
 </template>
@@ -17,6 +23,9 @@ import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import professionsData from '@/assets/data/professions.json'
 import { useI18n } from 'vue-i18n'
 import { get } from '@/services/api'
+import { useAuth } from '@/composables/useAuth.js'
+
+const { isAdmin } = useAuth()
 
 const { t, locale } = useI18n()
 

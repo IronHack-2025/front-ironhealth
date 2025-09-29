@@ -12,11 +12,17 @@
           "specialty-code": "ALR"
         },
         {
-          "specialty-name": { "en": "Anesthesiology and Resuscitation", "es": "Anestesiología y Reanimación" },
+          "specialty-name": {
+            "en": "Anesthesiology and Resuscitation",
+            "es": "Anestesiología y Reanimación"
+          },
           "specialty-code": "ANR"
         },
         {
-          "specialty-name": { "en": "Angiology and Vascular Surgery", "es": "Angiología y Cirugía Vascular" },
+          "specialty-name": {
+            "en": "Angiology and Vascular Surgery",
+            "es": "Angiología y Cirugía Vascular"
+          },
           "specialty-code": "ANG"
         },
         {
@@ -32,15 +38,24 @@
           "specialty-code": "CIC"
         },
         {
-          "specialty-name": { "en": "General and Digestive System Surgery", "es": "Cirugía General y del Aparato Digestivo" },
+          "specialty-name": {
+            "en": "General and Digestive System Surgery",
+            "es": "Cirugía General y del Aparato Digestivo"
+          },
           "specialty-code": "CIG"
         },
         {
-          "specialty-name": { "en": "Oral and Maxillofacial Surgery", "es": "Cirugía Oral y Maxilofacial" },
+          "specialty-name": {
+            "en": "Oral and Maxillofacial Surgery",
+            "es": "Cirugía Oral y Maxilofacial"
+          },
           "specialty-code": "CIM"
         },
         {
-          "specialty-name": { "en": "Orthopedic and Traumatology Surgery", "es": "Cirugía Ortopédica y Traumatología" },
+          "specialty-name": {
+            "en": "Orthopedic and Traumatology Surgery",
+            "es": "Cirugía Ortopédica y Traumatología"
+          },
           "specialty-code": "CIT"
         },
         {
@@ -48,7 +63,10 @@
           "specialty-code": "CIP"
         },
         {
-          "specialty-name": { "en": "Plastic, Aesthetic and Reconstructive Surgery", "es": "Cirugía Plástica, Estética y Reparadora" },
+          "specialty-name": {
+            "en": "Plastic, Aesthetic and Reconstructive Surgery",
+            "es": "Cirugía Plástica, Estética y Reparadora"
+          },
           "specialty-code": "CPL"
         },
         {
@@ -56,11 +74,17 @@
           "specialty-code": "CTR"
         },
         {
-          "specialty-name": { "en": "Medical-Surgical Dermatology and Venereology", "es": "Dermatología Médico-Quirúrgica y Venereología" },
+          "specialty-name": {
+            "en": "Medical-Surgical Dermatology and Venereology",
+            "es": "Dermatología Médico-Quirúrgica y Venereología"
+          },
           "specialty-code": "DER"
         },
         {
-          "specialty-name": { "en": "Endocrinology and Nutrition", "es": "Endocrinología y Nutrición" },
+          "specialty-name": {
+            "en": "Endocrinology and Nutrition",
+            "es": "Endocrinología y Nutrición"
+          },
           "specialty-code": "END"
         },
         {
@@ -72,7 +96,10 @@
           "specialty-code": "GER"
         },
         {
-          "specialty-name": { "en": "Hematology and Hemotherapy", "es": "Hematología y Hemoterapia" },
+          "specialty-name": {
+            "en": "Hematology and Hemotherapy",
+            "es": "Hematología y Hemoterapia"
+          },
           "specialty-code": "HEM"
         },
         {
@@ -84,11 +111,17 @@
           "specialty-code": "MTR"
         },
         {
-          "specialty-name": { "en": "Family and Community Medicine", "es": "Medicina Familiar y Comunitaria" },
+          "specialty-name": {
+            "en": "Family and Community Medicine",
+            "es": "Medicina Familiar y Comunitaria"
+          },
           "specialty-code": "MFY"
         },
         {
-          "specialty-name": { "en": "Physical and Rehabilitation Medicine", "es": "Medicina Física y Rehabilitación" },
+          "specialty-name": {
+            "en": "Physical and Rehabilitation Medicine",
+            "es": "Medicina Física y Rehabilitación"
+          },
           "specialty-code": "MFR"
         },
         {
@@ -104,7 +137,10 @@
           "specialty-code": "MNU"
         },
         {
-          "specialty-name": { "en": "Preventive Medicine and Public Health", "es": "Medicina Preventiva y Salud Pública" },
+          "specialty-name": {
+            "en": "Preventive Medicine and Public Health",
+            "es": "Medicina Preventiva y Salud Pública"
+          },
           "specialty-code": "MSP"
         },
         {
@@ -124,7 +160,10 @@
           "specialty-code": "NEU"
         },
         {
-          "specialty-name": { "en": "Obstetrics and Gynecology", "es": "Obstetricia y Ginecología" },
+          "specialty-name": {
+            "en": "Obstetrics and Gynecology",
+            "es": "Obstetricia y Ginecología"
+          },
           "specialty-code": "OBG"
         },
         {
@@ -166,7 +205,7 @@
       ]
     },
     {
-     "text": {
+      "text": {
         "en": "Pharmacist",
         "es": "Farmacéutico"
       },
@@ -181,11 +220,17 @@
           "specialty-code": "FAR-HOSP"
         },
         {
-          "specialty-name": { "en": "Industrial and Galenic Pharmacy", "es": "Farmacia Industrial y Galénica" },
+          "specialty-name": {
+            "en": "Industrial and Galenic Pharmacy",
+            "es": "Farmacia Industrial y Galénica"
+          },
           "specialty-code": "FAR-IND"
         },
         {
-          "specialty-name": { "en": "Microbiology and Parasitology", "es": "Microbiología y Parasitología" },
+          "specialty-name": {
+            "en": "Microbiology and Parasitology",
+            "es": "Microbiología y Parasitología"
+          },
           "specialty-code": "FAR-MIC"
         },
         {
@@ -234,16 +279,22 @@
     {
       "code": "2121",
       "text": {
-        "en": "Nurse", 
+        "en": "Nurse",
         "es": "Enfermero/a"
       },
       "specialty": [
         {
-          "specialty-name": { "en": "Medical-Surgical Nursing", "es": "Enfermería Médico-Quirúrgica" },
+          "specialty-name": {
+            "en": "Medical-Surgical Nursing",
+            "es": "Enfermería Médico-Quirúrgica"
+          },
           "specialty-code": "ENF-MEQ"
         },
         {
-          "specialty-name": { "en": "Obstetric-Gynecological Nursing (Midwife)", "es": "Enfermería Obstétrico-Ginecológica (Matrona)" },
+          "specialty-name": {
+            "en": "Obstetric-Gynecological Nursing (Midwife)",
+            "es": "Enfermería Obstétrico-Ginecológica (Matrona)"
+          },
           "specialty-code": "ENF-MAT"
         },
         {
@@ -255,7 +306,10 @@
           "specialty-code": "ENF-PED"
         },
         {
-          "specialty-name": { "en": "Family and Community Nursing", "es": "Enfermería Familiar y Comunitaria" },
+          "specialty-name": {
+            "en": "Family and Community Nursing",
+            "es": "Enfermería Familiar y Comunitaria"
+          },
           "specialty-code": "ENF-COM"
         },
         {
@@ -267,28 +321,40 @@
           "specialty-code": "ENF-LAB"
         },
         {
-          "specialty-name": { "en": "Critical Care and Emergency Nursing", "es": "Enfermería en Cuidados Críticos y Urgencias" },
+          "specialty-name": {
+            "en": "Critical Care and Emergency Nursing",
+            "es": "Enfermería en Cuidados Críticos y Urgencias"
+          },
           "specialty-code": "ENF-CUR"
         }
       ]
     },
     {
       "text": {
-        "en": "Physiotherapist", 
+        "en": "Physiotherapist",
         "es": "Fisioterapeuta"
       },
       "code": "2152",
       "specialty": [
         {
-          "specialty-name": { "en": "Traumatological Physiotherapy", "es": "Fisioterapia Traumatológica" },
+          "specialty-name": {
+            "en": "Traumatological Physiotherapy",
+            "es": "Fisioterapia Traumatológica"
+          },
           "specialty-code": "FIS-MSC"
         },
         {
-          "specialty-name": { "en": "Neurological Physiotherapy", "es": "Fisioterapia Neurológica" },
+          "specialty-name": {
+            "en": "Neurological Physiotherapy",
+            "es": "Fisioterapia Neurológica"
+          },
           "specialty-code": "FIS-NEU"
         },
         {
-          "specialty-name": { "en": "Respiratory Physiotherapy", "es": "Fisioterapia Respiratoria" },
+          "specialty-name": {
+            "en": "Respiratory Physiotherapy",
+            "es": "Fisioterapia Respiratoria"
+          },
           "specialty-code": "FIS-RES"
         },
         {
@@ -307,38 +373,53 @@
     },
     {
       "text": {
-        "en": "Ocupational therapist", 
+        "en": "Ocupational therapist",
         "es": "Terapeuta Ocupacional"
       },
       "code": "2156",
       "specialty": [
         {
-          "specialty-name": { "en": "Geriatric Occupational Therapy", "es": "Terapia Ocupacional Geriátrica" },
+          "specialty-name": {
+            "en": "Geriatric Occupational Therapy",
+            "es": "Terapia Ocupacional Geriátrica"
+          },
           "specialty-code": "TOC-GER"
         },
         {
-          "specialty-name": { "en": "Neurological Occupational Therapy", "es": "Terapia Ocupacional Neurológica" },
+          "specialty-name": {
+            "en": "Neurological Occupational Therapy",
+            "es": "Terapia Ocupacional Neurológica"
+          },
           "specialty-code": "TOC-NEU"
         },
         {
-          "specialty-name": { "en": "Mental Health Occupational Therapy", "es": "Terapia Ocupacional en Salud Mental" },
+          "specialty-name": {
+            "en": "Mental Health Occupational Therapy",
+            "es": "Terapia Ocupacional en Salud Mental"
+          },
           "specialty-code": "TOC-SALM"
         },
         {
-          "specialty-name": { "en": "Pediatric Occupational Therapy", "es": "Terapia Ocupacional en Pediatría" },
+          "specialty-name": {
+            "en": "Pediatric Occupational Therapy",
+            "es": "Terapia Ocupacional en Pediatría"
+          },
           "specialty-code": "TOC-PED"
         },
         {
-          "specialty-name": { "en": "Physical Rehabilitation Occupational Therapy", "es": "Terapia Ocupacional en Rehabilitación Física" },
+          "specialty-name": {
+            "en": "Physical Rehabilitation Occupational Therapy",
+            "es": "Terapia Ocupacional en Rehabilitación Física"
+          },
           "specialty-code": "TOC-REF"
         }
       ]
     },
     {
       "text": {
-        "en": "Podiatrist", 
+        "en": "Podiatrist",
         "es": "Podólogo"
-      }, 
+      },
       "code": "2157",
       "specialty": [
         {
@@ -360,9 +441,10 @@
       ]
     },
     {
-       "text": {
-        "en": "Optometrist", 
-        "es": "Óptico-optometrista" },
+      "text": {
+        "en": "Optometrist",
+        "es": "Óptico-optometrista"
+      },
       "code": "2155",
       "specialty": [
         {
@@ -378,19 +460,26 @@
           "specialty-code": "OPT-CON"
         },
         {
-          "specialty-name": { "en": "Low Vision and Visual Rehabilitation", "es": "Baja Visión y Rehabilitación Visual" },
+          "specialty-name": {
+            "en": "Low Vision and Visual Rehabilitation",
+            "es": "Baja Visión y Rehabilitación Visual"
+          },
           "specialty-code": "OPT-REB"
         }
       ]
     },
     {
       "text": {
-        "en": "Speech Therapist", 
-        "es": "Logopeda" },
+        "en": "Speech Therapist",
+        "es": "Logopeda"
+      },
       "code": "2154",
       "specialty": [
         {
-          "specialty-name": { "en": "Speech Therapy in Language Disorders", "es": "Logopedia en Trastornos del Lenguaje" },
+          "specialty-name": {
+            "en": "Speech Therapy in Language Disorders",
+            "es": "Logopedia en Trastornos del Lenguaje"
+          },
           "specialty-code": "LOG-LEN"
         },
         {
@@ -402,19 +491,26 @@
           "specialty-code": "LOG-INF"
         },
         {
-          "specialty-name": { "en": "Speech Therapy in Neurological Damage", "es": "Logopedia en Daño Neurológico" },
+          "specialty-name": {
+            "en": "Speech Therapy in Neurological Damage",
+            "es": "Logopedia en Daño Neurológico"
+          },
           "specialty-code": "LOG-NEU"
         },
         {
-          "specialty-name": { "en": "Voice and Phoniatrics", "es": "Logopedia de la Voz y Foniatría" },
+          "specialty-name": {
+            "en": "Voice and Phoniatrics",
+            "es": "Logopedia de la Voz y Foniatría"
+          },
           "specialty-code": "LOG-VOZ"
         }
       ]
     },
     {
       "text": {
-        "en": "Nutricionist", 
-        "es": "Dietista-Nutricionista" },
+        "en": "Nutricionist",
+        "es": "Dietista-Nutricionista"
+      },
       "code": "2153",
       "specialty": [
         {
@@ -426,15 +522,19 @@
           "specialty-code": "NUT-DEP"
         },
         {
-          "specialty-name": { "en": "Community and Public Health Nutrition", "es": "Nutrición Comunitaria y Salud Pública" },
+          "specialty-name": {
+            "en": "Community and Public Health Nutrition",
+            "es": "Nutrición Comunitaria y Salud Pública"
+          },
           "specialty-code": "NUT-PUB"
         }
       ]
     },
     {
       "text": {
-        "en": "Clinical Analysis Specialist", 
-        "es": "Especialista en Análisis Clínicos" },
+        "en": "Clinical Analysis Specialist",
+        "es": "Especialista en Análisis Clínicos"
+      },
       "code": "2159-1",
       "specialty": [
         {
@@ -471,7 +571,10 @@
           "specialty-code": "BIO-GEN"
         },
         {
-          "specialty-name": { "en": "Clinical Molecular Biochemistry", "es": "Bioquímica Molecular Clínica" },
+          "specialty-name": {
+            "en": "Clinical Molecular Biochemistry",
+            "es": "Bioquímica Molecular Clínica"
+          },
           "specialty-code": "BIO-MOL"
         }
       ]
@@ -488,7 +591,10 @@
           "specialty-code": "PSI-CLI"
         },
         {
-          "specialty-name": { "en": "Child and Adolescent Psychology", "es": "Psicología Infanto-Juvenil" },
+          "specialty-name": {
+            "en": "Child and Adolescent Psychology",
+            "es": "Psicología Infanto-Juvenil"
+          },
           "specialty-code": "PSI-INF"
         },
         {
