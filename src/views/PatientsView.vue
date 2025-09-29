@@ -103,7 +103,7 @@ const fetchPatients = async () => {
     patients.value = arr
   } catch (e) {
     patients.value = []
-    error.value = e.message || 'Error desconocido'
+    error.value = e.message 
   } finally {
     loading.value = false
   }
@@ -171,7 +171,7 @@ const onDelete = async (id) => {
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
-      throw new Error(errorData.message || 'Error al eliminar')
+      throw new Error(errorData.message)
     }
 
     await res.json()

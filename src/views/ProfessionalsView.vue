@@ -142,7 +142,7 @@ const fetchProfessionals = async () => {
     professionals.value = arr
   } catch (e) {
     professionals.value = []
-    error.value = e.message || 'Error desconocido'
+    error.value = e.message
   } finally {
     loading.value = false
   }
@@ -174,8 +174,6 @@ const handleProfessionalUpdated = () => {
 const onEdit = async (id) => {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/edit`)
-    if (!res.ok) throw new Error('No se pudo cargar el profesional')
-
     const response = await res.json()
     const data = response.data
 
