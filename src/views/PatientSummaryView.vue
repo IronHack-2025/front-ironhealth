@@ -16,24 +16,18 @@
         <template v-else-if="patientData">
             <v-row>
                 <v-col cols="12" md="6">
-                    <PatientIdCard 
-                        :first-name="patientData.firstName" 
-                        :last-name="patientData.lastName"
-                        :image-url="patientData.imageUrl" 
-                        :subtitle="$t('views.patients.description')" 
-                        class="mb-4" /> <!-- Margen inferior -->
-                    
-                    <ContactInfoCard 
-                        :patient="patientData" 
-                        class="mb-4" /> <!-- Margen inferior -->
-                    
-                    <PersonalInfoCard 
-                        :patient="patientData" 
-                        class="mb-4" /> <!-- Margen inferior -->
+                    <PatientIdCard :first-name="patientData.firstName" :last-name="patientData.lastName"
+                        :image-url="patientData.imageUrl" :subtitle="$t('views.patients.description')" class="mb-4" />
+                    <!-- Margen inferior -->
+
+                    <ContactInfoCard :patient="patientData" class="mb-4" /> <!-- Margen inferior -->
+
+                    <PersonalInfoCard :patient="patientData" class="mb-4" /> <!-- Margen inferior -->
                 </v-col>
 
                 <v-col>
-                    <GenericList />
+                    <!-- Historial paciente -->
+                    <PatientHistoryCalendar :patient-id="patientData._id" :show-patient-info="false" />
                 </v-col>
             </v-row>
         </template>
@@ -45,6 +39,7 @@ import GenericList from '@/components/GenericList.vue'
 import ContactInfoCard from '@/components/patient/ContactInfoCard.vue'
 import PatientIdCard from '@/components/patient/PatientIdCard.vue'
 import PersonalInfoCard from '@/components/patient/PersonalInfoCard.vue'
+import PatientHistoryCalendar from '@/components/PatientHistoryCalendar.vue'
 import { get } from '@/services/api'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
