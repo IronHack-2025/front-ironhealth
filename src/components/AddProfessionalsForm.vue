@@ -117,7 +117,6 @@
               <!-- Imagen -->
               <CloudinaryUpload
                 ref="cloudinaryRef"
-                :preset="uploadPreset"
                 folder="professionals"
                 :buttonText="$t('common.buttons.uploadImage')"
                 :api-url="`${apiBaseUrl}/signature`"

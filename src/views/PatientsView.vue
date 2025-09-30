@@ -22,11 +22,11 @@
 
     <!-- Alertas -->
     <AlertMessage
-      v-if="alert.show"
-      :show="alert.show"
-      :type="alert.type"
-      :message-code="alert.messageCode"
-      :message="alert.message"
+      v-if="alertView.show"
+      :show="alertView.show"
+      :type="alertView.type"
+      :message-code="alertView.messageCode"
+      :message="alertView.message"
       class="mx-4 mt-4"
     />
 
@@ -76,7 +76,7 @@ const edit = ref(false)
 const editingPatient = ref(null)
 
 // Alertas
-const alert = reactive({
+const alertView = reactive({
   show: false,
   type: 'success',
   messageCode: '',
@@ -118,14 +118,14 @@ const handlePatientAdded = () => {
 // Paciente actualizado
 const handlePatientUpdated = () => {
   fetchPatients()
-  alert.show = true
-  alert.type = 'success'
-  alert.messageCode = 'PATIENT_UPDATED'
-  alert.message = t('messages.success.PATIENT_UPDATED')
+  alertView.show = true
+  alertView.type = 'success'
+  alertView.messageCode = 'PATIENT_UPDATED'
+  alertView.message = t('messages.success.PATIENT_UPDATED')
 
   setTimeout(() => {
     dialog.value = false
-    alert.show = false
+    alertView.show = false
     edit.value = false
     editingPatient.value = null
   }, 3000)
@@ -150,13 +150,13 @@ const onEdit = async (id) => {
     edit.value = true
     dialog.value = true
   } catch (error) {
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = 'INTERNAL_SERVER_ERROR'
-    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+    alertView.show = true
+    alertView.type = 'error'
+    alertView.messageCode = 'INTERNAL_SERVER_ERROR'
+    alertView.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
 
     setTimeout(() => {
-      alert.show = false
+      alertView.show = false
     }, 5000)
   }
 }
@@ -167,18 +167,18 @@ const onDelete = async (id) => {
     const response = await put(`/patients/${id}/delete`)
     fetchPatients()
 
-    alert.show = true
-    alert.type = 'success'
-    alert.messageCode = response.messageCode || 'PATIENTS_DELETED'
-    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+    alertView.show = true
+    alertView.type = 'success'
+    alertView.messageCode = response.messageCode || 'PATIENTS_DELETED'
+    alertView.message = '' // Dejar vacío para que AlertMessage use messageCode
   } catch (error) {
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
-    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+    alertView.show = true
+    alertView.type = 'error'
+    alertView.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
+    alertView.message = '' // Dejar vacío para que AlertMessage use messageCode
   } finally {
     setTimeout(() => {
-      alert.show = false
+      alertView.show = false
     }, 5000)
   }
 }

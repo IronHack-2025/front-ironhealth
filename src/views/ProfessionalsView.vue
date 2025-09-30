@@ -4,7 +4,7 @@
     <AddProfessionalsForm
       :btnTitle="$t('common.buttons.registerProfessional')"
       @professional-added="handleProfessionalAdded"
-       v-if="isAdmin"
+      v-if="isAdmin"
     />
 
     <!-- Listado de profesionales -->
@@ -15,7 +15,7 @@
       :loading="loading"
       :error="error"
       :search-placeholder="$t('common.forms.search')"
-      :canEdit="isAdmin" 
+      :canEdit="isAdmin"
       :canDelete="isAdmin"
       @refresh="fetchProfessionals"
       @edit="onEdit"
@@ -75,7 +75,7 @@ import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { useAuth } from '@/composables/useAuth.js'
 
-const { isAdmin } = useAuth()
+const { isAdmin, isProfessional } = useAuth()
 
 const { t, locale } = useI18n()
 const professionals = ref([])
@@ -94,23 +94,29 @@ const alert = reactive({
 })
 
 // Encabezados de la tabla
-const headers = computed(() => [
-  { title: t('common.forms.actions'), key: 'actions' },
-  { title: t('common.forms.photo'), key: 'imageUrl' },
-  { title: t('common.forms.firstName'), key: 'firstName' },
-  { title: t('common.forms.lastName'), key: 'lastName' },
-  { title: t('common.forms.email'), key: 'email' },
-  {
-    title: t('common.forms.profession'),
-    key: 'profession',
-    value: (item) => getProfessionName(item.profession),
-  },
-  {
-    title: t('common.forms.specialty'),
-    key: 'specialty',
-    value: (item) => getSpecialtyName(item.specialty),
-  },
-])
+
+const headers = computed(() => {
+  const headersTable = [
+    { title: t('common.forms.photo'), key: 'imageUrl' },
+    { title: t('common.forms.firstName'), key: 'firstName' },
+    { title: t('common.forms.lastName'), key: 'lastName' },
+    { title: t('common.forms.email'), key: 'email' },
+    {
+      title: t('common.forms.profession'),
+      key: 'profession',
+      value: (item) => getProfessionName(item.profession),
+    },
+    {
+      title: t('common.forms.specialty'),
+      key: 'specialty',
+      value: (item) => getSpecialtyName(item.specialty),
+    },
+  ]
+  if (isAdmin.value ) {
+    headersTable.unshift({ title: t('common.forms.actions'), key: 'actions' })
+  }
+  return headersTable
+})
 
 // Helpers para multilenguaje
 const getText = (val) => {
@@ -192,7 +198,7 @@ const onEdit = async (id) => {
     edit.value = true
     dialog.value = true
   } catch (error) {
-    console.log("error:", error)
+    console.log('error:', error)
     alert.show = true
     alert.type = 'error'
     alert.messageCode = 'INTERNAL_SERVER_ERROR'
