@@ -4,8 +4,14 @@
       <AddProfessionalsForm @professional-added="handleProfessionalAdded" />
     </div>
     <div class="rigth">
-      <GenericList :title="$t('views.professionals.listTitle')" :items="professionals" :headers="headers"
-        :loading="loading" :error="error" :search-placeholder="$t('common.forms.search')" />
+      <GenericList
+        :title="$t('views.professionals.listTitle')"
+        :items="professionals"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+      />
     </div>
   </div>
 </template>

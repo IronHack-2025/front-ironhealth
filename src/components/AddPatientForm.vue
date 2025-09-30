@@ -9,80 +9,176 @@
 
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
-
               <!-- Nombre y apellidos -->
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.firstName" :label="$t('common.forms.firstName')"
-                    prepend-inner-icon="mdi-account" :rules="[rules.required, rules.acceptedLength]" variant="outlined"
-                    maxlength="50" :error-messages="fieldErrors.firstName || []" @focus="hideAlertOnFocus"
-                    @input="hideAlertOnInput" />
+                  <v-text-field
+                    v-model="form.firstName"
+                    :label="$t('common.forms.firstName')"
+                    prepend-inner-icon="mdi-account"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                    :error-messages="fieldErrors.firstName || []"
+                    @focus="hideAlertOnFocus"
+                    @input="hideAlertOnInput"
+                  />
                 </v-col>
 
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.lastName" :label="$t('common.forms.lastName')"
-                    prepend-inner-icon="mdi-account-details" :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []"
-                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                  <v-text-field
+                    v-model="form.lastName"
+                    :label="$t('common.forms.lastName')"
+                    prepend-inner-icon="mdi-account-details"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                    :error-messages="fieldErrors.lastName || []"
+                    @focus="hideAlertOnFocus"
+                    @input="hideAlertOnInput"
+                  />
                 </v-col>
               </v-row>
               <!-- Información de contacto -->
               <!-- Email -->
-              <v-text-field v-model="form.email" :label="$t('common.forms.email')" prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email]" variant="outlined" class="mt-2" maxlength="50"
-                :error-messages="fieldErrors.email || []" @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+              <v-text-field
+                v-model="form.email"
+                :label="$t('common.forms.email')"
+                prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+                :error-messages="fieldErrors.email || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
               <!-- Teléfono -->
-              <v-text-field v-model="form.phone" :label="$t('common.forms.phone')" prepend-inner-icon="mdi-phone"
-                :rules="[rules.required, rules.phone]" variant="outlined" class="mt-2" maxlength="15"
-                :error-messages="fieldErrors.phone || []" @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+              <v-text-field
+                v-model="form.phone"
+                :label="$t('common.forms.phone')"
+                prepend-inner-icon="mdi-phone"
+                :rules="[rules.required, rules.phone]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="15"
+                :error-messages="fieldErrors.phone || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
               <!-- Dirección -->
               <v-row>
                 <v-col>
-                  <v-text-field v-model="form.street" :label="$t('common.forms.street')" prepend-inner-icon="mdi-road" :rules="[rules.required]" variant="outlined" />
+                  <v-text-field
+                    v-model="form.street"
+                    :label="$t('common.forms.street')"
+                    prepend-inner-icon="mdi-road"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                  />
                 </v-col>
                 <v-col>
-                  <v-text-field v-model="form.city" :label="$t('common.forms.city')" prepend-inner-icon="mdi-city" :rules="[rules.required]" variant="outlined" />
+                  <v-text-field
+                    v-model="form.city"
+                    :label="$t('common.forms.city')"
+                    prepend-inner-icon="mdi-city"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                  />
                 </v-col>
-              <v-col>
-                <v-text-field v-model="form.postalCode" :label="$t('common.forms.postalCode')" prepend-inner-icon="mdi-map-marker" :rules="[rules.required]" variant="outlined" />
-              </v-col>
-              
+                <v-col>
+                  <v-text-field
+                    v-model="form.postalCode"
+                    :label="$t('common.forms.postalCode')"
+                    prepend-inner-icon="mdi-map-marker"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                  />
+                </v-col>
               </v-row>
 
               <!-- Información personal -->
 
-              <v-select v-model="form.gender" :label="$t('common.forms.gender')"
-                prepend-inner-icon="mdi-gender-transgender" :items="gendersList" item-title="title" item-value="value"
-                :rules="[rules.required]" variant="outlined" class="mt-2" :error-messages="fieldErrors.gender || []"
-                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
+              <v-select
+                v-model="form.gender"
+                :label="$t('common.forms.gender')"
+                prepend-inner-icon="mdi-gender-transgender"
+                :items="gendersList"
+                item-title="title"
+                item-value="value"
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.gender || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
               <!-- Nacionalidad  nationality picker-->
 
-              <v-select v-model="form.nationality" :label="$t('common.forms.nationality')"
-                prepend-inner-icon="mdi-earth" :items="nationalitiesList" item-title="title" item-value="value"
-                variant="outlined" :rules="[rules.required]" :error-messages="fieldErrors.nationality || []" />
-              
-              <v-text-field v-model="form.emergencyContact" :label="$t('common.forms.emergencyContact')"
-                prepend-inner-icon="mdi-phone-alert" :rules="[rules.required, rules.phone]" variant="outlined"
-                class="mt-2" maxlength="15" :error-messages="fieldErrors.emergencyContact || []"
-                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
-              <!-- NOTA: usar el componente de fecha registrado (Vuetify Labs) -->
-              <v-date-input v-model="form.birthDate" :label="$t('common.forms.dateOfBirth')"
-                prepend-inner-icon="mdi-calendar-account-outline" prepend-icon="" :rules="[rules.required]"
-                variant="outlined" class="mt-2" :error-messages="fieldErrors.birthDate || []" @focus="hideAlertOnFocus"
-                @update:model-value="hideAlertOnInput" />
+              <v-select
+                v-model="form.nationality"
+                :label="$t('common.forms.nationality')"
+                prepend-inner-icon="mdi-earth"
+                :items="nationalitiesList"
+                item-title="title"
+                item-value="value"
+                variant="outlined"
+                :rules="[rules.required]"
+                :error-messages="fieldErrors.nationality || []"
+              />
 
-              <CloudinaryUpload ref="cloudinaryRef" :preset="uploadPreset" folder="patients"
-                :buttonText="$t('common.buttons.uploadImage')" :api-url="`${apiBaseUrl}/signature`"
-                @uploaded="form.imageUrl = $event" @cleared="form.imageUrl = ''" block />
+              <v-text-field
+                v-model="form.emergencyContact"
+                :label="$t('common.forms.emergencyContact')"
+                prepend-inner-icon="mdi-phone-alert"
+                :rules="[rules.required, rules.phone]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="15"
+                :error-messages="fieldErrors.emergencyContact || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
+              <!-- NOTA: usar el componente de fecha registrado (Vuetify Labs) -->
+              <v-date-input
+                v-model="form.birthDate"
+                :label="$t('common.forms.dateOfBirth')"
+                prepend-inner-icon="mdi-calendar-account-outline"
+                prepend-icon=""
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.birthDate || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
+
+              <CloudinaryUpload
+                ref="cloudinaryRef"
+                :preset="uploadPreset"
+                folder="patients"
+                :buttonText="$t('common.buttons.uploadImage')"
+                :api-url="`${apiBaseUrl}/signature`"
+                @uploaded="form.imageUrl = $event"
+                @cleared="form.imageUrl = ''"
+                block
+              />
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
                 {{ $t('common.buttons.registerPatient') }}
               </v-btn>
             </v-form>
 
             <!-- Alerta estructurada alineada con el backend -->
-            <Alert class="mt-4" :show="alert.show" :type="alert.type" :message-code="alert.messageCode"
-              :details="alert.details" :message-params="alert.params" :message="alert.message"
-              @field-errors-updated="updateFieldErrors" />
+            <Alert
+              class="mt-4"
+              :show="alert.show"
+              :type="alert.type"
+              :message-code="alert.messageCode"
+              :details="alert.details"
+              :message-params="alert.params"
+              :message="alert.message"
+              @field-errors-updated="updateFieldErrors"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -117,31 +213,30 @@ const form = reactive({
   emergencyContact: '',
   street: '',
   city: '',
-  postalCode: ''
-
+  postalCode: '',
 })
 
 // Canvia gendersList d'array estàtic a computed reactiu
 const gendersList = computed(() => [
   { value: 'male', title: t('common.genders.genderMan') },
   { value: 'female', title: t('common.genders.genderWoman') },
-  { value: 'non-binary', title: t('common.genders.genderNonBinary') }
+  { value: 'non-binary', title: t('common.genders.genderNonBinary') },
 ])
 
 const nationalitiesList = computed(() =>
   nationalitiesData.map((n) => ({
     value: n.code,
-    title: n.name[locale.value] || n.name.en // usa l'idioma actual
-  }))
+    title: n.name[locale.value] || n.name.en, // usa l'idioma actual
+  })),
 )
 
 const alert = reactive({
   show: false,
-  type: 'success',                 // 'success' | 'error' | ...
-  message: '',                     // fallback (texto plano)
+  type: 'success', // 'success' | 'error' | ...
+  message: '', // fallback (texto plano)
   messageCode: 'OPERATION_SUCCESS',
-  details: null,                   // [{ field?, code, meta? }]
-  params: {}                       // placeholders opcionales
+  details: null, // [{ field?, code, meta? }]
+  params: {}, // placeholders opcionales
 })
 
 // Errores por campo para :error-messages
@@ -199,7 +294,6 @@ const rules = {
 const newPatient = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) {
-
     // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
     const details = []
 
@@ -315,6 +409,4 @@ function openCloudinaryWidget() {
     myWidget.open()
   }
 }
-
-
 </script>

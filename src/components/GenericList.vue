@@ -21,13 +21,13 @@
             </v-col>
           </v-toolbar>
 
-          <Alert 
-            v-if="error" 
+          <Alert
+            v-if="error"
             :show="true"
-            type="error" 
+            type="error"
             :messageCode="error"
             :fallbackMessage="error"
-            class="mx-4 mt-4" 
+            class="mx-4 mt-4"
           />
 
           <v-data-table
@@ -44,7 +44,7 @@
             fixed-header
             height="500px"
             :item-key="idField"
-            :class="{'gl-clickable': rowClickEnabled}"
+            :class="{ 'gl-clickable': rowClickEnabled }"
             @click:row="onRowClick"
           >
             <template v-slot:item.imageUrl="{ item }">
@@ -80,18 +80,18 @@ const props = defineProps({
 
   // Navegación por fila
   itemRoutePrefix: { type: String, default: '' }, // p.ej. '/patients'
-  routeName: { type: String, default: '' },       // p.ej. 'PatientDetail'
+  routeName: { type: String, default: '' }, // p.ej. 'PatientDetail'
   idField: { type: String, default: '_id' },
   rowClickable: { type: Boolean, default: true },
 })
 
-const rowClickEnabled = computed(() =>
-  props.rowClickable && (!!props.itemRoutePrefix || !!props.routeName)
+const rowClickEnabled = computed(
+  () => props.rowClickable && (!!props.itemRoutePrefix || !!props.routeName),
 )
 
 const localHeaders = computed(() => {
   const incoming = Array.isArray(props.headers) ? props.headers : []
-  return incoming.map(h => {
+  return incoming.map((h) => {
     const text = h.title || h.text || h.label || ''
     const value = h.key || h.value || h.field || ''
     const copy = { ...h, text, value }

@@ -11,7 +11,7 @@
   "views": {
     "patients": {
       "title": "Patients Registration",
-      "subtitle":"Handle patient sign up",
+      "subtitle": "Handle patient sign up",
       "listTitle": "Patient List",
       "description": "Patient",
       "actions": {
@@ -73,7 +73,6 @@
       "gender": "Gender",
       "emergencyContact": "Emergency contact",
       "nationality": "Nationality"
-      
     },
     "buttons": {
       "save": "Save",

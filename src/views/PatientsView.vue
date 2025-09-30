@@ -11,7 +11,7 @@
         :loading="loading"
         :error="error"
         :search-placeholder="$t('common.forms.search')"
-        route-name="PatientDetail"  
+        route-name="PatientDetail"
         id-field="_id"
         :row-clickable="true"
       />
@@ -33,11 +33,11 @@ const loading = ref(false)
 const error = ref('')
 
 const headers = computed(() => [
-  {title: t('common.forms.photo'), key: 'imageUrl'},
+  { title: t('common.forms.photo'), key: 'imageUrl' },
   { title: t('common.forms.firstName'), key: 'firstName' },
   { title: t('common.forms.lastName'), key: 'lastName' },
   { title: t('common.forms.phone'), key: 'phone' },
-  { title: t('common.forms.email'), key: 'email' }
+  { title: t('common.forms.email'), key: 'email' },
 ])
 
 const fetchPatients = async () => {
@@ -61,7 +61,6 @@ const handlePatientAdded = () => {
   fetchPatients()
 }
 </script>
-
 
 <!-- <style scoped>
 .container{

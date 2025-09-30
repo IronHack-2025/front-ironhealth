@@ -139,7 +139,7 @@ const props = defineProps({
   showPatientInfo: {
     type: Boolean,
     default: true, // Por defecto muestra la info del paciente
-  }
+  },
 })
 
 const professionals = ref([])
@@ -209,7 +209,7 @@ const fetchPatient = async (patientId) => {
   if (!props.showPatientInfo) {
     return // No carga el paciente si no hay que mostrar su info
   }
-  
+
   try {
     const response = await get(`/patients/${patientId}`)
     patient.value = response.data
@@ -225,13 +225,13 @@ const fetchPatient = async (patientId) => {
 // Función reactiva para formatear fechas basada en el locale
 const formatDate = computed(() => {
   const locale = props.calendarLocale === 'es' ? 'es-ES' : 'en-US'
-  const options = { 
+  const options = {
     year: 'numeric',
-    month: 'short', 
+    month: 'short',
     day: 'numeric',
-    weekday: 'short', 
-    hour: '2-digit', 
-    minute: '2-digit' 
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
   }
 
   return (date) => {
@@ -277,10 +277,11 @@ const calendarOptions = ref({
         const isCancelled = event.status?.cancelled
 
         // Título - mostrar profesional
-        const professionalTitle = professional.firstName && professional.lastName 
-          ? `Dr. ${professional.lastName}, ${professional.firstName}`
-          : 'Profesional desconocido'
-        
+        const professionalTitle =
+          professional.firstName && professional.lastName
+            ? `Dr. ${professional.lastName}, ${professional.firstName}`
+            : 'Profesional desconocido'
+
         const title = isCancelled
           ? `[${t('views.appointments.cancelled')}] ${professionalTitle}`
           : professionalTitle
@@ -349,7 +350,7 @@ onMounted(async () => {
   try {
     // Cargar solo los datos necesarios
     await fetchProfessionals()
-    
+
     // Cargar paciente solo si hay que mostrar su info
     if (props.patientId && props.showPatientInfo) {
       await fetchPatient(props.patientId)

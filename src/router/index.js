@@ -31,7 +31,7 @@ const router = createRouter({
       path: '/patients/:id',
       name: 'PatientDetail',
       component: PatientDetail,
-    }
+    },
   ],
 })
 

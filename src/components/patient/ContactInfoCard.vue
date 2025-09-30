@@ -7,9 +7,13 @@
     <v-card-text>
       <InfoRow :label="$t('common.forms.email')" :value="patient?.email" icon="mdi-email" />
       <InfoRow :label="$t('common.forms.phone')" :value="patient?.phone" icon="mdi-phone" />
-      <InfoRow :label="$t('common.forms.street')":value="patient?.street" icon="mdi-map-marker" />
+      <InfoRow :label="$t('common.forms.street')" :value="patient?.street" icon="mdi-map-marker" />
       <InfoRow :label="$t('common.forms.city')" :value="patient?.city" icon="mdi-city" />
-      <InfoRow :label="$t('common.forms.postalCode')" :value="patient?.postalCode" icon="mdi-mailbox" />
+      <InfoRow
+        :label="$t('common.forms.postalCode')"
+        :value="patient?.postalCode"
+        icon="mdi-mailbox"
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -19,6 +23,6 @@ import InfoRow from '@/components/base/InfoRow.vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
-  patient: { type: Object, required: true }
+  patient: { type: Object, required: true },
 })
 </script>

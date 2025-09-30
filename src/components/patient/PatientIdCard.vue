@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-4 d-flex align-center" rounded="xl" elevation="2" >
+  <v-card class="pa-4 d-flex align-center" rounded="xl" elevation="2">
     <v-avatar size="80" class="me-4">
       <v-img :src="photoSrc" alt="Patient picture" cover />
     </v-avatar>
@@ -29,7 +29,7 @@ const props = defineProps({
 const displayName = computed(() => {
   const f = (props.firstName || '').trim()
   const l = (props.lastName || '').trim()
-  return (f || l) ? `${f} ${l}`.trim() : 'Nombre y Apellidos'
+  return f || l ? `${f} ${l}`.trim() : 'Nombre y Apellidos'
 })
 
 const photoSrc = computed(() => {
@@ -40,5 +40,7 @@ const secondaryText = computed(() => props.subtitle || 'Paciente')
 </script>
 
 <style scoped>
-.min-w-0 { min-width: 0; } /* permite text-truncate dentro */
+.min-w-0 {
+  min-width: 0;
+} /* permite text-truncate dentro */
 </style>

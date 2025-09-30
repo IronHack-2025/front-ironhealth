@@ -10,41 +10,88 @@
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.firstName" :label="$t('common.forms.firstName')"
-                    prepend-inner-icon="mdi-account" :rules="[rules.required, rules.acceptedLength]" variant="outlined"
-                    maxlength="50" :error-messages="fieldErrors.firstName || []" 
-                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                  <v-text-field
+                    v-model="form.firstName"
+                    :label="$t('common.forms.firstName')"
+                    prepend-inner-icon="mdi-account"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                    :error-messages="fieldErrors.firstName || []"
+                    @focus="hideAlertOnFocus"
+                    @input="hideAlertOnInput"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="form.lastName" :label="$t('common.forms.lastName')"
-                    prepend-inner-icon="mdi-account-details" :rules="[rules.required, rules.acceptedLength]"
-                    variant="outlined" maxlength="50" :error-messages="fieldErrors.lastName || []" 
-                    @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+                  <v-text-field
+                    v-model="form.lastName"
+                    :label="$t('common.forms.lastName')"
+                    prepend-inner-icon="mdi-account-details"
+                    :rules="[rules.required, rules.acceptedLength]"
+                    variant="outlined"
+                    maxlength="50"
+                    :error-messages="fieldErrors.lastName || []"
+                    @focus="hideAlertOnFocus"
+                    @input="hideAlertOnInput"
+                  />
                 </v-col>
               </v-row>
 
               <!-- PROFESIÓN -->
-              <v-select v-model="selectedProfession" :label="$t('common.forms.profession')"
-                prepend-inner-icon="mdi-briefcase" :items="professionsList" item-title="title" item-value="value"
-                :rules="[rules.required]" variant="outlined" class="mt-2"
-                :error-messages="fieldErrors.profession || []" 
-                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
+              <v-select
+                v-model="selectedProfession"
+                :label="$t('common.forms.profession')"
+                prepend-inner-icon="mdi-briefcase"
+                :items="professionsList"
+                item-title="title"
+                item-value="value"
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.profession || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
 
               <!-- ESPECIALIDAD -->
-              <v-select v-model="selectedSpecialty" :label="$t('common.forms.specialty')"
-                prepend-inner-icon="mdi-stethoscope" :items="specialtiesList" item-title="title" item-value="value"
-                variant="outlined" class="mt-2" :error-messages="fieldErrors.specialty || []" 
-                @focus="hideAlertOnFocus" @update:model-value="hideAlertOnInput" />
+              <v-select
+                v-model="selectedSpecialty"
+                :label="$t('common.forms.specialty')"
+                prepend-inner-icon="mdi-stethoscope"
+                :items="specialtiesList"
+                item-title="title"
+                item-value="value"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.specialty || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
 
-              <v-text-field v-model="form.email" :label="$t('common.forms.email')" prepend-inner-icon="mdi-email"
-                :rules="[rules.required, rules.email, rules.acceptedLength]" variant="outlined" class="mt-2"
-                maxlength="50" :error-messages="fieldErrors.email || []" 
-                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+              <v-text-field
+                v-model="form.email"
+                :label="$t('common.forms.email')"
+                prepend-inner-icon="mdi-email"
+                :rules="[rules.required, rules.email, rules.acceptedLength]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+                :error-messages="fieldErrors.email || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
 
-              <v-text-field v-model="form.professionLicenceNumber" :label="$t('common.forms.professionalLicenseNumber')"
-                prepend-inner-icon="mdi-card-account-details" variant="outlined" class="mt-2" maxlength="50"
-                :error-messages="fieldErrors.professionLicenceNumber || []" 
-                @focus="hideAlertOnFocus" @input="hideAlertOnInput" />
+              <v-text-field
+                v-model="form.professionLicenceNumber"
+                :label="$t('common.forms.professionalLicenseNumber')"
+                prepend-inner-icon="mdi-card-account-details"
+                variant="outlined"
+                class="mt-2"
+                maxlength="50"
+                :error-messages="fieldErrors.professionLicenceNumber || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
 
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
                 {{ $t('common.buttons.registerProfessional') }}
@@ -52,9 +99,16 @@
             </v-form>
 
             <!-- Alerta estructurada -->
-            <Alert :show="alert.show" :type="alert.type" :message-code="alert.messageCode" :details="alert.details"
-              :message-params="alert.params" :message="alert.message" class="mt-4" 
-              @field-errors-updated="updateFieldErrors" />
+            <Alert
+              :show="alert.show"
+              :type="alert.type"
+              :message-code="alert.messageCode"
+              :details="alert.details"
+              :message-params="alert.params"
+              :message="alert.message"
+              class="mt-4"
+              @field-errors-updated="updateFieldErrors"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -74,8 +128,8 @@ const emit = defineEmits(['professional-added'])
 
 const formRef = ref(null)
 const isValid = ref(false)
-const selectedProfession = ref(null)            // code
-const selectedSpecialty = ref('')              // FIX: usar el VALUE '', no la etiqueta "Sin especificar"
+const selectedProfession = ref(null) // code
+const selectedSpecialty = ref('') // FIX: usar el VALUE '', no la etiqueta "Sin especificar"
 
 // Helper robusto para i18n: admite string o objeto por idioma
 const getText = (val) => {
@@ -91,7 +145,7 @@ const getText = (val) => {
 // Lista de profesiones: muestra text, guarda code
 const professionsList = computed(() => {
   return professionsData.professions.map((p) => ({
-    title: getText(p.text),  // FIX: evita [object Object] cuando p.text es {es,en}
+    title: getText(p.text), // FIX: evita [object Object] cuando p.text es {es,en}
     value: p.code,
   }))
 })
@@ -104,7 +158,7 @@ const specialtiesList = computed(() => {
   return [
     { title: 'Sin especificar', value: '' }, // value siempre '', la UI muestra etiqueta
     ...professionObj.specialty.map((s) => ({
-      title: getText(s['specialty-name']),   // FIX: idem para specialty-name
+      title: getText(s['specialty-name']), // FIX: idem para specialty-name
       value: s['specialty-code'],
     })),
   ]
@@ -112,7 +166,7 @@ const specialtiesList = computed(() => {
 
 watch(selectedProfession, () => {
   // Al cambiar la profesión, resetea el value (no la etiqueta)
-  selectedSpecialty.value = ''                // FIX coherente con value
+  selectedSpecialty.value = '' // FIX coherente con value
 })
 
 const form = reactive({
@@ -165,7 +219,6 @@ const hideAlertOnInput = () => {
 const submitForm = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) {
-
     // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
     const details = []
 
@@ -210,7 +263,6 @@ const submitForm = async () => {
 
     return
   }
-
 
   // limpiar estado previo de errores
   alert.show = false
