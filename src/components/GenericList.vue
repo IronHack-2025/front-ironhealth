@@ -4,7 +4,9 @@
       <v-col cols="12">
         <v-card class="elevation-6 rounded-xl">
           <v-toolbar flat color="primary" class="rounded-t-xl">
-            <v-toolbar-title class="text-white">{{ title }}</v-toolbar-title>
+            <v-toolbar-title class="text-white">
+              {{ title }}
+            </v-toolbar-title>
             <v-spacer />
             <v-col cols="12" sm="6" md="4" class="d-flex justify-end">
               <v-text-field
@@ -21,17 +23,17 @@
             </v-col>
           </v-toolbar>
 
-          <Alert
-            v-if="error"
-            :show="true"
-            type="error"
-            :messageCode="error"
-            :fallbackMessage="error"
+          <AlertMessage
+            v-if="alert.show"
+            :show="alert.show"
+            :type="alert.type"
+            :message-code="alert.messageCode"
+            :message="alert.message"
             class="mx-4 mt-4"
           />
 
           <v-data-table
-            :headers="localHeaders"
+            :headers="headers"
             :items="items"
             :loading="loading"
             :search="search"
@@ -52,7 +54,46 @@
                 <v-img :src="item.imageUrl" alt="Foto paciente" />
               </v-avatar>
             </template>
+
+            <!-- Botones según lo que enviemos por props -->
+            <template v-slot:item.actions="{ item }">
+              <v-btn
+                v-if="canEdit"
+                icon="mdi-pencil"
+                size="small"
+                variant="text"
+                color="primary"
+                @click.stop="$emit('edit', item._id || item.id)"
+              />
+              <v-btn
+                v-if="canDelete"
+                icon="mdi-delete"
+                variant="text"
+                color="error"
+                @click.stop="confirmDelete(item)"
+              />
+            </template>
           </v-data-table>
+
+          <!-- Modal de confirmación de eliminación -->
+          <v-dialog v-model="deleteDialog" max-width="500">
+            <v-card>
+              <v-card-title class="text-h6">
+                {{ $t('common.confirmations.deleteTitle') }}
+              </v-card-title>
+              <v-card-text>
+                {{ $t('common.confirmations.deleteMessage') }}
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn text @click="deleteDialog = false">
+                  {{ $t('common.buttons.cancel') }}
+                </v-btn>
+                <v-btn color="error" @click="executeDelete">
+                  {{ $t('common.buttons.delete') }}
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-col>
     </v-row>
@@ -60,13 +101,20 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import Alert from './AlertMessage.vue'
+import AlertMessage from './AlertMessage.vue'
 
-const { t } = useI18n()
+
+const emit = defineEmits(['refresh', 'edit', 'delete'])
 const router = useRouter()
+
+const alert = reactive({
+  show: false,
+  type: 'success',
+  messageCode: '',
+  message: '',
+})
 
 const props = defineProps({
   title: { type: String, default: '' },
@@ -83,24 +131,17 @@ const props = defineProps({
   routeName: { type: String, default: '' }, // p.ej. 'PatientDetail'
   idField: { type: String, default: '_id' },
   rowClickable: { type: Boolean, default: true },
+
+  canEdit: { type: Boolean, default: false },
+  canDelete: { type: Boolean, default: false },
+  form: { type: String, default: '' },
 })
+
 
 const rowClickEnabled = computed(
   () => props.rowClickable && (!!props.itemRoutePrefix || !!props.routeName),
 )
 
-const localHeaders = computed(() => {
-  const incoming = Array.isArray(props.headers) ? props.headers : []
-  return incoming.map((h) => {
-    const text = h.title || h.text || h.label || ''
-    const value = h.key || h.value || h.field || ''
-    const copy = { ...h, text, value }
-    delete copy.title
-    delete copy.key
-    delete copy.field
-    return copy
-  })
-})
 
 function navigateTo(record) {
   const id = record?.[props.idField]
@@ -117,6 +158,23 @@ function onRowClick(_event, row) {
   // Soporta distintas formas de Vuetify 3
   const record = row?.item?.raw ?? row?.item ?? row?.raw ?? row
   navigateTo(record)
+}
+const search = ref('')
+const deleteDialog = ref(false)
+const itemToDelete = ref(null)
+
+// Funciones para el modal de eliminación
+const confirmDelete = (item) => {
+  itemToDelete.value = item
+  deleteDialog.value = true
+}
+
+const executeDelete = () => {
+  if (itemToDelete.value) {
+    emit('delete', itemToDelete.value._id || itemToDelete.value.id)
+  }
+  deleteDialog.value = false
+  itemToDelete.value = null
 }
 </script>
 

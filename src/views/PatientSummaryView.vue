@@ -42,7 +42,6 @@
 </template>
 
 <script setup>
-import GenericList from '@/components/GenericList.vue'
 import ContactInfoCard from '@/components/patient/ContactInfoCard.vue'
 import PatientIdCard from '@/components/patient/PatientIdCard.vue'
 import PersonalInfoCard from '@/components/patient/PersonalInfoCard.vue'

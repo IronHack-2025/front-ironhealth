@@ -18,7 +18,7 @@
         icon="mdi-calendar-account"
         icon-color="green"
       />
-      <InfoRow label="ID" :value="patient._id" icon="mdi-id-card" icon-color="red" />
+      <InfoRow label="ID" :value="patient.dni" icon="mdi-id-card" icon-color="red" />
       <InfoRow
         :label="$t('common.forms.nationality')"
         :value="nationalityName"

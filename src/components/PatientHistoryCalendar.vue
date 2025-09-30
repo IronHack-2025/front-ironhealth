@@ -1,43 +1,38 @@
 <template>
   <v-container>
     <v-card class="pa-4">
-      <v-card-title v-if="showPatientInfo && patient" class="d-flex align-center">
-        <v-icon icon="mdi-calendar-clock" class="me-2" color="primary" />
-        {{ $t('views.appointments.historyFor') }} {{ patient.firstName }} {{ patient.lastName }}
-      </v-card-title>
       <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%" />
     </v-card>
-
     <v-dialog v-model="showEventDialog" max-width="500">
       <v-card>
-        <v-card-title>{{ $t('views.appointments.details') }}</v-card-title>
+        <v-card-title>{{ t('views.appointments.details') }}</v-card-title>
         <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
-          <!-- Mostrar información del paciente solo si showPatientInfo es true -->
+          <!-- Mostrar información del paciente solo si es visible para profesionales y hay datos -->
           <div
             v-if="
-              showPatientInfo &&
+              canViewNotes &&
               (selectedEvent.extendedProps.patientFirstName ||
                 selectedEvent.extendedProps.patientLastName)
             "
           >
-            <strong>{{ $t('views.appointments.patient') }}</strong>
+            <strong>{{ t('views.appointments.patient') }}</strong>
             {{
               `${selectedEvent.extendedProps.patientLastName}, ${selectedEvent.extendedProps.patientFirstName}`
             }}
           </div>
 
           <div>
-            <strong>{{ $t('views.appointments.professional') }}</strong>
+            <strong>{{ t('views.appointments.professional') }}</strong>
             {{
               `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
             }}
           </div>
           <div>
-            <strong>{{ $t('views.appointments.start') }}</strong>
+            <strong>{{ t('views.appointments.start') }}</strong>
             {{ formatDate(selectedEvent.start) }}
           </div>
           <div>
-            <strong>{{ $t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}
+            <strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}
           </div>
 
           <!-- Estado de la cita -->
@@ -49,8 +44,8 @@
             >
               {{
                 selectedEvent.extendedProps.isCancelled
-                  ? $t('views.appointments.cancelled')
-                  : $t('views.appointments.active')
+                  ? t('views.appointments.cancelled')
+                  : t('views.appointments.active')
               }}
             </v-chip>
           </div>
@@ -62,13 +57,13 @@
             "
             class="mt-2"
           >
-            <strong>{{ $t('views.appointments.cancelledAt') }}</strong>
+            <strong>{{ t('views.appointments.cancelledAt') }}</strong>
             {{ formatDate(selectedEvent.extendedProps.cancelledAt) }}
           </div>
 
           <!-- Notas del paciente - Solo visible para profesionales -->
           <div v-if="selectedEvent.extendedProps.notes && canViewNotes" class="mt-4">
-            <strong>{{ $t('views.appointments.notes') }}</strong>
+            <strong>{{ t('views.appointments.notes') }}</strong>
             <v-textarea
               :value="selectedEvent.extendedProps.notes"
               outlined
@@ -81,7 +76,7 @@
 
           <!-- Notas del profesional - Solo visible para profesionales -->
           <div v-if="selectedEvent.extendedProps.professionalNotes && canViewNotes" class="mt-4">
-            <strong>{{ $t('views.appointments.professionalNotes') }}</strong>
+            <strong>{{ t('views.appointments.professionalNotes') }}</strong>
             <v-textarea
               :value="selectedEvent.extendedProps.professionalNotes"
               outlined
@@ -93,12 +88,12 @@
           </div>
         </v-card-text>
         <v-card-text v-else>
-          <div>Error al cargar los detalles de la cita</div>
+          <div>Error loading appointment details</div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
-            $t('common.buttons.close')
+            t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
         <Alert
@@ -124,8 +119,13 @@ import listPlugin from '@fullcalendar/list'
 import Alert from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
+import { useAuth } from '../composables/useAuth'
 
 const { t } = useI18n()
+const { user, isProfessional, isAdmin } = useAuth()
+
+// Computed para verificar si el usuario puede ver las notas
+const canViewNotes = computed(() => isProfessional.value || isAdmin.value)
 
 const props = defineProps({
   calendarLocale: {
@@ -134,23 +134,15 @@ const props = defineProps({
   },
   patientId: {
     type: String,
-    required: true, // Siempre requiere la ID del paciente
-  },
-  showPatientInfo: {
-    type: Boolean,
-    default: true, // Por defecto muestra la info del paciente
+    default: null,
   },
 })
 
 const professionals = ref([])
-const patient = ref(null)
 const selectedEvent = ref(null)
 const showEventDialog = ref(false)
 const calendarRef = ref(null)
 const isDataLoaded = ref(false)
-
-// Siempre podemos ver las notas ya que es un historial específico de un paciente
-const canViewNotes = ref(true)
 
 const alert = reactive({
   show: false,
@@ -166,25 +158,14 @@ watch(
   () => props.calendarLocale,
   (newLocale) => {
     calendarOptions.value.locale = newLocale
+    // Forzar actualización del calendario
     if (calendarRef.value) {
       calendarRef.value.getApi().refetchEvents()
     }
   },
 )
 
-// Watcher para recargar cuando cambie el paciente
-watch(
-  () => props.patientId,
-  async (newPatientId) => {
-    if (newPatientId) {
-      await fetchPatient(newPatientId)
-      if (isDataLoaded.value) {
-        reloadCalendarEvents()
-      }
-    }
-  },
-)
-
+// Actualizar watcher para eliminar patients
 watch(
   [professionals],
   () => {
@@ -204,35 +185,10 @@ const resetAlert = () => {
   alert.params = {}
 }
 
-// Función para obtener el paciente por ID (solo si showPatientInfo es true)
-const fetchPatient = async (patientId) => {
-  if (!props.showPatientInfo) {
-    return // No carga el paciente si no hay que mostrar su info
-  }
-
-  try {
-    const response = await get(`/patients/${patientId}`)
-    patient.value = response.data
-  } catch (error) {
-    console.error('Error fetching patient:', error)
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = 'PATIENT_NOT_FOUND'
-    alert.message = 'Error al cargar la información del paciente'
-  }
-}
-
 // Función reactiva para formatear fechas basada en el locale
 const formatDate = computed(() => {
   const locale = props.calendarLocale === 'es' ? 'es-ES' : 'en-US'
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    weekday: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  }
+  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' }
 
   return (date) => {
     if (!date) return ''
@@ -254,12 +210,10 @@ const calendarOptions = ref({
 
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
-      if (!isDataLoaded.value || !props.patientId) {
+      if (!isDataLoaded.value) {
         successCallback([])
         return
       }
-
-      // Obtener todas las citas filtrando por patientId
       const response = await get('/appointment')
       const data = response.data || []
 
@@ -269,19 +223,23 @@ const calendarOptions = ref({
         return
       }
 
-      // Filtrar por este paciente específico
-      const filtered = data.filter((ev) => ev.patientId === props.patientId)
+      // Filtrar citas según el contexto
+      const filtered = data.filter((ev) => {
+        // Si es profesional y hay un paciente seleccionado, mostrar solo ese paciente
+        if (props.patientId) {
+          return ev.patientId === props.patientId
+        }
+        // Si es paciente, mostrar solo sus citas
+        return ev.patientId === user.value?.profileId
+      })
 
       const events = filtered.map((event) => {
         const professional = professionals.value.find((p) => p._id === event.professionalId) || {}
+        // Usar directamente los datos del evento en lugar de buscar en patients array
         const isCancelled = event.status?.cancelled
 
-        // Título - mostrar profesional
-        const professionalTitle =
-          professional.firstName && professional.lastName
-            ? `Dr. ${professional.lastName}, ${professional.firstName}`
-            : 'Profesional desconocido'
-
+        // Título - siempre mostrar profesional
+        const professionalTitle = `Dr. ${professional.lastName}, ${professional.firstName}`
         const title = isCancelled
           ? `[${t('views.appointments.cancelled')}] ${professionalTitle}`
           : professionalTitle
@@ -300,8 +258,9 @@ const calendarOptions = ref({
             professionalId: event.professionalId,
             professionalFirstName: professional.firstName || '',
             professionalLastName: professional.lastName || '',
-            patientFirstName: patient.value?.firstName || event.patient?.firstName || '',
-            patientLastName: patient.value?.lastName || event.patient?.lastName || '',
+            // Usar directamente los datos del evento si están disponibles
+            patientFirstName: event.patient?.firstName || '',
+            patientLastName: event.patient?.lastName || '',
             notes: event.notes || '',
             professionalNotes: event.professionalNotes || '',
             isCancelled: isCancelled,
@@ -311,7 +270,6 @@ const calendarOptions = ref({
       })
       successCallback(events)
     } catch (error) {
-      console.error('Error fetching appointments:', error)
       failureCallback(error)
     }
   },
@@ -351,11 +309,6 @@ onMounted(async () => {
     // Cargar solo los datos necesarios
     await fetchProfessionals()
 
-    // Cargar paciente solo si hay que mostrar su info
-    if (props.patientId && props.showPatientInfo) {
-      await fetchPatient(props.patientId)
-    }
-
     // Marcar que los datos están cargados
     isDataLoaded.value = true
 
@@ -365,6 +318,16 @@ onMounted(async () => {
     console.error('Error al cargar datos iniciales:', error)
   }
 })
+
+// Watcher para recargar cuando cambie el paciente seleccionado
+watch(
+  () => props.patientId,
+  () => {
+    if (isDataLoaded.value) {
+      reloadCalendarEvents()
+    }
+  },
+)
 </script>
 
 <style scoped>

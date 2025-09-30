@@ -3,14 +3,12 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
-          <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            {{ $t('views.patients.title') }}
-          </v-card-title>
 
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <!-- Nombre y apellidos -->
               <v-row>
+                <!-- Nombre -->
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.firstName"
@@ -25,6 +23,7 @@
                   />
                 </v-col>
 
+                <!-- Apellidos -->
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.lastName"
@@ -39,7 +38,7 @@
                   />
                 </v-col>
               </v-row>
-              <!-- Información de contacto -->
+
               <!-- Email -->
               <v-text-field
                 v-model="form.email"
@@ -53,6 +52,20 @@
                 @focus="hideAlertOnFocus"
                 @input="hideAlertOnInput"
               />
+              <!-- DNI -->
+              <v-text-field
+                v-model="form.dni"
+                :label="$t('common.forms.dni')"
+                prepend-inner-icon="mdi-card-account-details"
+                :rules="[rules.required, rules.dni]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="9"
+                :error-messages="fieldErrors.dni || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
+
               <!-- Teléfono -->
               <v-text-field
                 v-model="form.phone"
@@ -66,6 +79,7 @@
                 @focus="hideAlertOnFocus"
                 @input="hideAlertOnInput"
               />
+
               <!-- Dirección -->
               <v-row>
                 <v-col>
@@ -139,7 +153,9 @@
                 @focus="hideAlertOnFocus"
                 @input="hideAlertOnInput"
               />
-              <!-- NOTA: usar el componente de fecha registrado (Vuetify Labs) -->
+
+              <!-- Fecha de nacimiento -->
+               
               <v-date-input
                 v-model="form.birthDate"
                 :label="$t('common.forms.dateOfBirth')"
@@ -153,9 +169,9 @@
                 @update:model-value="hideAlertOnInput"
               />
 
+              <!-- Imagen -->
               <CloudinaryUpload
                 ref="cloudinaryRef"
-                :preset="uploadPreset"
                 folder="patients"
                 :buttonText="$t('common.buttons.uploadImage')"
                 :api-url="`${apiBaseUrl}/signature`"
@@ -163,13 +179,15 @@
                 @cleared="form.imageUrl = ''"
                 block
               />
+
+              <!-- Botón -->
               <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
-                {{ $t('common.buttons.registerPatient') }}
+                {{ btnTitle }}
               </v-btn>
             </v-form>
 
-            <!-- Alerta estructurada alineada con el backend -->
-            <Alert
+            <!-- Alerta -->
+            <AlertMessage
               class="mt-4"
               :show="alert.show"
               :type="alert.type"
@@ -185,28 +203,34 @@
     </v-row>
   </v-container>
 </template>
+
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Alert from './AlertMessage.vue'
-import { post } from '@/services/api'
+import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
+import { post, put } from '@/services/api.js'
 import nationalitiesData from '@/assets/data/nationalities.json'
-const cloudinaryRef = ref(null)
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 const { t, locale } = useI18n()
-const emit = defineEmits(['patient-added'])
-
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+const cloudinaryRef = ref(null)
+const props = defineProps({
+  mode: { type: String, default: 'create' }, // 'create' | 'edit'
+  items: { type: Object, default: null },
+  btnTitle: { type: String, default: '' },
+})
+const emit = defineEmits(['patient-added', 'patient-updated'])
 const formRef = ref(null)
 const isValid = ref(false)
-
 const form = reactive({
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
   birthDate: '',
+  dni: '',
   imageUrl: '',
   gender: '',
   nationality: '',
@@ -232,40 +256,21 @@ const nationalitiesList = computed(() =>
 
 const alert = reactive({
   show: false,
-  type: 'success', // 'success' | 'error' | ...
-  message: '', // fallback (texto plano)
+  type: 'success',
+  message: '',
   messageCode: 'OPERATION_SUCCESS',
-  details: null, // [{ field?, code, meta? }]
-  params: {}, // placeholders opcionales
+  details: null,
+  params: {},
 })
-
-// Errores por campo para :error-messages
 const fieldErrors = reactive({})
+
 function clearFieldErrors() {
   for (const k of Object.keys(fieldErrors)) delete fieldErrors[k]
 }
 
-// Recibir fieldErrors del componente Alert
-const updateFieldErrors = (errors) => {
-  // Limpiar errores anteriores
+function updateFieldErrors(errors) {
   clearFieldErrors()
-  // Asignar nuevos errores
   Object.assign(fieldErrors, errors)
-}
-
-// Función para ocultar alerta cuando el usuario interactúa
-const hideAlertOnFocus = () => {
-  if (alert.show && alert.type === 'error') {
-    alert.show = false
-    clearFieldErrors()
-  }
-}
-
-const hideAlertOnInput = () => {
-  if (alert.show && alert.type === 'error') {
-    alert.show = false
-    clearFieldErrors()
-  }
 }
 
 const rules = {
@@ -280,133 +285,129 @@ const rules = {
     const pattern = /^\+?\d{7,15}$/
     return pattern.test(value) || t('common.forms.invalidPhone')
   },
+  // Agregar validación de DNI para Vuetify
+  dni: (value) => {
+    if (!value) return t('common.forms.required')
+    const pattern = /^\d{7,8}[A-Za-z]$/i
+    return pattern.test(value) || t('common.forms.invalidDNI')
+  },
+
   acceptedLength: (value) => {
     if (!value) return true
-    const lengthMax = 50
-    const lengthMin = 3
+    const min = 3,
+      max = 50
     return (
-      (value.length <= lengthMax && value.length >= lengthMin) ||
-      t('common.forms.validLength', { min: lengthMin, max: lengthMax })
+      (value.length >= min && value.length <= max) || t('common.forms.validLength', { min, max })
     )
   },
 }
 
-const newPatient = async () => {
-  const { valid } = await formRef.value.validate()
-  if (!valid) {
-    // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
-    const details = []
-
-    // Nombre
-    if (!form.firstName) {
-      details.push({ field: 'firstName', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (form.firstName.length < 3 || form.firstName.length > 50) {
-      details.push({ field: 'firstName', code: 'NAME_MIN_LENGTH', meta: { min: 3, max: 50 } })
-    }
-
-    // Apellidos
-    if (!form.lastName) {
-      details.push({ field: 'lastName', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (form.lastName.length < 3 || form.lastName.length > 50) {
-      details.push({ field: 'lastName', code: 'NAME_MIN_LENGTH', meta: { min: 3, max: 50 } })
-    }
-
-    // Email
-    if (!form.email) {
-      details.push({ field: 'email', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      details.push({ field: 'email', code: 'EMAIL_INVALID_FORMAT' })
-    }
-
-    // Teléfono
-    if (!form.phone) {
-      details.push({ field: 'phone', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (!/^\+?\d{7,15}$/.test(form.phone)) {
-      details.push({ field: 'phone', code: 'PHONE_INVALID_FORMAT' })
-    }
-
-    // Fecha de nacimiento
-    if (!form.birthDate) {
-      details.push({ field: 'birthDate', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (isNaN(new Date(form.birthDate).getTime())) {
-      details.push({ field: 'birthDate', code: 'BIRTHDATE_INVALID' })
-    }
-
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = 'VALIDATION_FAILED'
-    alert.details = details
-    alert.params = {}
-    alert.message = t('messages.error.VALIDATION_FAILED')
-
-    return
+// *** Alertas ***
+const hideAlertOnFocus = () => {
+  if (alert.show && alert.type === 'error') {
+    alert.show = false
+    clearFieldErrors()
   }
+}
+const hideAlertOnInput = hideAlertOnFocus
+
+// *** Cargar datos ***
+function loadPatientData() {
+  if (props.mode === 'edit' && props.items) {
+    form.firstName = props.items.firstName || ''
+    form.lastName = props.items.lastName || ''
+    form.email = props.items.email || ''
+    form.phone = props.items.phone || ''
+    form.dni = props.items.dni || ''
+    form.birthDate = props.items.birthDate ? new Date(props.items.birthDate) : ''
+    form.imageUrl = props.items.imageUrl || ''
+    form.street = props.items.street || ''
+    form.gender = props.items.gender || ''
+    form.city = props.items.city || ''
+    form.emergencyContact = props.items.emergencyContact || ''
+    form.nationality = props.items.nationality || ''
+    form.postalCode = props.items.postalCode || '' 
+  } else {
+    resetForm()
+  }
+}
+
+function resetForm() {
+  form.firstName = ''
+  form.lastName = ''
+  form.email = ''
+  form.phone = ''
+  form.dni = ''
+  form.birthDate = ''
+  form.imageUrl = ''
+  clearFieldErrors()
+  alert.show = false
+  cloudinaryRef.value?.clearImage()
+}
+
+watch(() => props.items, loadPatientData, { immediate: true })
+watch(() => props.mode, loadPatientData)
+
+async function newPatient() {
+  const { valid } = await formRef.value.validate()
+  if (!valid) return showValidationErrors()
 
   alert.show = false
   clearFieldErrors()
 
-  console.log(form.imageUrl)
+  const formData = {
+    ...form,
+    birthDate:
+      form.birthDate instanceof Date ? form.birthDate.toISOString().split('T')[0] : form.birthDate,
+  }
 
   try {
-    const resp = await post('/patients', { ...form }) // { success, messageCode, data }
-    formRef.value.reset()
-    cloudinaryRef.value?.clearImage()
-    emit('patient-added')
-
-    // Éxito
-    alert.show = true
-    alert.type = 'success'
-    alert.messageCode = resp?.messageCode || 'PATIENT_CREATED'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('common.messages.success') // fallback
-  } catch (e) {
-    // Error (validación o servidor)
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = e.messageCode || 'INTERNAL_SERVER_ERROR'
-    alert.details = e.details || null
-    alert.params = {}
-    alert.message = t('common.messages.error')
-  }
-}
-
-onMounted(() => {
-  if (!window.cloudinary) {
-    const script = document.createElement('script')
-    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js'
-    script.async = true
-    script.onload = () => {
-      initWidget()
+    let response
+    if (props.mode === 'create') {
+      response = await post(`/patients`, formData)
+    } else {
+      response = await put(`/patients/${props.items.id}/edit`, formData)
     }
-    document.head.appendChild(script)
-  } else {
-    initWidget()
-  }
-})
 
-function initWidget() {
-  const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+    if (props.mode === 'create') {
+      formRef.value.reset()
+      cloudinaryRef.value?.clearImage()
+      emit('patient-added', response)
+    } else {
+      emit('patient-updated', response)
+    }
 
-  const myWidget = window.cloudinary.createUploadWidget(
-    {
-      cloudName: CLOUD_NAME,
-      uploadPreset: UPLOAD_PRESET,
-    },
-    (error, result) => {
-      if (!error && result && result.event === 'success') {
-        imageUrl.value = result.info.secure_url
-        form.imageUrl = result.info.secure_url // <-- Cambia aquí a imageUrl
-        console.log('Imagen subida:', result.info)
-      }
-    },
-  )
-}
-
-function openCloudinaryWidget() {
-  if (myWidget) {
-    myWidget.open()
+    showSuccess(response)
+  } catch (error) {
+    showError(error)
+  } finally {
+    setTimeout(() => (alert.show = false), 3000)
   }
 }
-</script>
+
+function showSuccess(response) {
+  alert.show = true
+  alert.type = 'success'
+  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = response?.details || null
+  alert.params = response?.params || {}
+}
+function showError(error) {
+  console.error('Error saving professional:', error)
+  alert.show = true
+  alert.type = 'error'
+  // Usar el messageCode del error si existe, sino usar uno por defecto
+  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = error?.details || error?.response?.data?.details || null
+  alert.params = error?.params || error?.response?.data?.params || {}
+}
+function showValidationErrors() {
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode = 'VALIDATION_FAILED'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = null
+  alert.params = {}
+}</script>

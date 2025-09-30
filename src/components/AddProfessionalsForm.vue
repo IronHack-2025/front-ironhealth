@@ -3,12 +3,11 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
-          <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            {{ $t('views.professionals.title') }}
-          </v-card-title>
+
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
+                <!-- Nombre -->
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.firstName"
@@ -22,6 +21,8 @@
                     @input="hideAlertOnInput"
                   />
                 </v-col>
+
+                <!-- Apellidos -->
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="form.lastName"
@@ -37,7 +38,7 @@
                 </v-col>
               </v-row>
 
-              <!-- PROFESIÓN -->
+              <!-- Profesión -->
               <v-select
                 v-model="selectedProfession"
                 :label="$t('common.forms.profession')"
@@ -53,7 +54,7 @@
                 @update:model-value="hideAlertOnInput"
               />
 
-              <!-- ESPECIALIDAD -->
+              <!-- Especialidad -->
               <v-select
                 v-model="selectedSpecialty"
                 :label="$t('common.forms.specialty')"
@@ -68,6 +69,7 @@
                 @update:model-value="hideAlertOnInput"
               />
 
+              <!-- Email -->
               <v-text-field
                 v-model="form.email"
                 :label="$t('common.forms.email')"
@@ -81,6 +83,21 @@
                 @input="hideAlertOnInput"
               />
 
+              <!-- DNI -->
+              <v-text-field
+                v-model="form.dni"
+                :label="$t('common.forms.dni')"
+                prepend-inner-icon="mdi-card-account-details"
+                :rules="[rules.required, rules.dni]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="9"
+                :error-messages="fieldErrors.dni || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
+
+              <!-- Nº colegiado -->
               <v-text-field
                 v-model="form.professionLicenceNumber"
                 :label="$t('common.forms.professionalLicenseNumber')"
@@ -93,20 +110,32 @@
                 @input="hideAlertOnInput"
               />
 
+              <!-- Imagen -->
+              <CloudinaryUpload
+                ref="cloudinaryRef"
+                folder="professionals"
+                :buttonText="$t('common.buttons.uploadImage')"
+                :api-url="`${apiBaseUrl}/signature`"
+                @uploaded="form.imageUrl = $event"
+                @cleared="form.imageUrl = ''"
+                block
+              />
+
+              <!-- Botón principal -->
               <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
-                {{ $t('common.buttons.registerProfessional') }}
+                {{ btnTitle }}
               </v-btn>
             </v-form>
 
-            <!-- Alerta estructurada -->
-            <Alert
+            <!-- Alertas -->
+            <AlertMessage
+              class="mt-4"
               :show="alert.show"
               :type="alert.type"
               :message-code="alert.messageCode"
               :details="alert.details"
               :message-params="alert.params"
               :message="alert.message"
-              class="mt-4"
               @field-errors-updated="updateFieldErrors"
             />
           </v-card-text>
@@ -117,192 +146,185 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
-import Alert from './AlertMessage.vue'
-import { post } from '../services/api'
-import professionsData from '@/assets/data/professions.json'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AlertMessage from './AlertMessage.vue'
+import CloudinaryUpload from './CloudinaryUpload.vue'
+import professionsData from '@/assets/data/professions.json'
+import { post, put } from '@/services/api'
 
 const { t, locale } = useI18n()
-const emit = defineEmits(['professional-added'])
-
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+const cloudinaryRef = ref(null)
+const props = defineProps({
+  btnTitle: { type: String, default: '' },
+  items: { type: Object, required: false },
+  mode: { type: String, default: 'create' }, // 'create' | 'edit'
+})
+const emit = defineEmits(['professional-added', 'professional-updated'])
 const formRef = ref(null)
 const isValid = ref(false)
-const selectedProfession = ref(null) // code
-const selectedSpecialty = ref('') // FIX: usar el VALUE '', no la etiqueta "Sin especificar"
-
-// Helper robusto para i18n: admite string o objeto por idioma
-const getText = (val) => {
-  // Si ya es string, ok
-  if (typeof val === 'string') return val
-  // Si es objeto, probamos el idioma actual -> en -> primer valor
-  if (val && typeof val === 'object') {
-    return val[locale.value] || val.en || Object.values(val)[0] || ''
-  }
-  return ''
-}
-
-// Lista de profesiones: muestra text, guarda code
-const professionsList = computed(() => {
-  return professionsData.professions.map((p) => ({
-    title: getText(p.text), // FIX: evita [object Object] cuando p.text es {es,en}
-    value: p.code,
-  }))
-})
-
-// Lista de especialidades según profesión seleccionada
-const specialtiesList = computed(() => {
-  if (!selectedProfession.value) return []
-  const professionObj = professionsData.professions.find((p) => p.code === selectedProfession.value)
-  if (!professionObj || !professionObj.specialty) return []
-  return [
-    { title: 'Sin especificar', value: '' }, // value siempre '', la UI muestra etiqueta
-    ...professionObj.specialty.map((s) => ({
-      title: getText(s['specialty-name']), // FIX: idem para specialty-name
-      value: s['specialty-code'],
-    })),
-  ]
-})
-
-watch(selectedProfession, () => {
-  // Al cambiar la profesión, resetea el value (no la etiqueta)
-  selectedSpecialty.value = '' // FIX coherente con value
-})
-
 const form = reactive({
   firstName: '',
   lastName: '',
   email: '',
   profession: '',
   specialty: '',
+  dni: '',
   professionLicenceNumber: '',
+  imageUrl: '',
 })
-
+const selectedProfession = ref(null)
+const selectedSpecialty = ref('')
 const alert = reactive({
   show: false,
-  message: '',
   type: 'success',
+  message: '',
   messageCode: 'OPERATION_SUCCESS',
-  details: null, // [{ field?, code, meta? }]
+  details: null,
   params: {},
 })
-
-// Errores por campo para enganchar a :error-messages
 const fieldErrors = reactive({})
+
 function clearFieldErrors() {
   for (const k of Object.keys(fieldErrors)) delete fieldErrors[k]
 }
-
-// Recibir fieldErrors del componente Alert
-const updateFieldErrors = (errors) => {
-  // Limpiar errores anteriores
+function updateFieldErrors(errors) {
   clearFieldErrors()
-  // Asignar nuevos errores
   Object.assign(fieldErrors, errors)
 }
 
-// Función para ocultar alerta cuando el usuario interactúa
+const getText = (val) => {
+  if (typeof val === 'string') return val
+  if (val && typeof val === 'object') {
+    return val[locale.value] || val.en || Object.values(val)[0] || ''
+  }
+  return ''
+}
+
+// *** Listas de selects ***
+const professionsList = computed(() =>
+  professionsData.professions.map((p) => ({
+    title: getText(p.text),
+    value: p.code,
+  })),
+)
+const specialtiesList = computed(() => {
+  if (!selectedProfession.value) return []
+  const professionObj = professionsData.professions.find((p) => p.code === selectedProfession.value)
+  if (!professionObj?.specialty) return []
+  return [
+    { title: 'Sin especificar', value: '' },
+    ...professionObj.specialty.map((s) => ({
+      title: getText(s['specialty-name']),
+      value: s['specialty-code'],
+    })),
+  ]
+})
+watch(selectedProfession, () => {
+  selectedSpecialty.value = ''
+})
+
+// *** Ocultar alertas ***
 const hideAlertOnFocus = () => {
   if (alert.show && alert.type === 'error') {
     alert.show = false
     clearFieldErrors()
   }
 }
+const hideAlertOnInput = hideAlertOnFocus
 
-const hideAlertOnInput = () => {
-  if (alert.show && alert.type === 'error') {
-    alert.show = false
-    clearFieldErrors()
+// *** Cargar datos en edición ***
+function loadEditData() {
+  if (props.mode === 'edit' && props.items) {
+    form.firstName = props.items.firstName || ''
+    form.lastName = props.items.lastName || ''
+    form.email = props.items.email || ''
+    form.dni = props.items.dni || ''
+    form.professionLicenceNumber = props.items.professionLicenceNumber || ''
+    form.imageUrl = props.items.imageUrl || ''
+    selectedProfession.value = props.items.profession || null
+    selectedSpecialty.value = props.items.specialty || ''
+  } else {
+    resetForm()
   }
 }
+function resetForm() {
+  form.firstName = ''
+  form.lastName = ''
+  form.email = ''
+  form.professionLicenceNumber = ''
+  form.imageUrl = ''
+  form.dni = ''
+  selectedProfession.value = null
+  selectedSpecialty.value = ''
+}
+onMounted(loadEditData)
+watch([() => props.items, () => props.mode], loadEditData, { immediate: true })
 
-const submitForm = async () => {
+async function submitForm() {
   const { valid } = await formRef.value.validate()
-  if (!valid) {
-    // Construimos la lista de errores para la alerta (además de las reglas de Vuetify)
-    const details = []
+  if (!valid) return showValidationErrors()
 
-    // Nombre
-    if (!form.firstName) {
-      details.push({ field: 'firstName', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (form.firstName.length < 3 || form.firstName.length > 50) {
-      details.push({ field: 'firstName', code: 'NAME_MIN_LENGTH', meta: { min: 3, max: 50 } })
-    }
-
-    // Apellidos
-    if (!form.lastName) {
-      details.push({ field: 'lastName', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (form.lastName.length < 3 || form.lastName.length > 50) {
-      details.push({ field: 'lastName', code: 'NAME_MIN_LENGTH', meta: { min: 3, max: 50 } })
-    }
-
-    // Profesión (select requerido)
-    if (!selectedProfession.value) {
-      details.push({ field: 'profession', code: 'FORM_FIELDS_REQUIRED' })
-    }
-
-    // Email
-    if (!form.email) {
-      details.push({ field: 'email', code: 'FORM_FIELDS_REQUIRED' })
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      details.push({ field: 'email', code: 'EMAIL_INVALID_FORMAT' })
-    }
-
-    // Nº licencia (opcional) – validación simple si hay valor
-    if (form.professionLicenceNumber && !/^[a-zA-Z0-9]+$/.test(form.professionLicenceNumber)) {
-      details.push({ field: 'professionLicenceNumber', code: 'NAME_INVALID_CHARACTERS' })
-    }
-
-    // Mostrar alerta con lista + pintar errores bajo cada input
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = 'VALIDATION_FAILED'
-    alert.details = details
-    alert.params = {}
-    alert.message = t('messages.error.VALIDATION_FAILED')
-
-    return
-  }
-
-  // limpiar estado previo de errores
   alert.show = false
   clearFieldErrors()
 
-  // FIX: specialty value seguro (sin depender de la etiqueta)
-  const specialtyToSend = selectedSpecialty.value || ''
-
   const formData = {
-    firstName: form.firstName,
-    lastName: form.lastName,
+    ...form,
     profession: selectedProfession.value,
-    specialty: specialtyToSend,
-    email: form.email,
-    professionLicenceNumber: form.professionLicenceNumber,
+    specialty: selectedSpecialty.value || '',
   }
 
   try {
-    const resp = await post('/professionals', formData)
-    formRef.value.reset()
-    emit('professional-added')
+    let response
+    if (props.mode === 'create') {
+      response = await post(`/professionals`, formData)
+    } else {
+      response = await put(`/professionals/${props.items.id}/edit`, formData)
+    }
 
-    // ÉXITO: mostrar alerta traducida por messageCode
-    alert.show = true
-    alert.type = 'success'
-    alert.messageCode = resp?.messageCode || 'OPERATION_SUCCESS'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('messages.success.OPERATION_SUCCESS') // fallback
+    if (props.mode === 'create') {
+      formRef.value.reset()
+      cloudinaryRef.value?.clearImage()
+      emit('professional-added', response)
+    } else {
+      emit('professional-updated', response)
+    }
+
+    showSuccess(response)
   } catch (error) {
-    // ERROR (validación / servidor)
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
-    alert.details = error.details || null
-    alert.params = {}
-    alert.message = t(`messages.error.${alert.messageCode}`)
+    showError(error)
+  } finally {
+    setTimeout(() => (alert.show = false), 3000)
   }
 }
 
+function showSuccess(response) {
+  alert.show = true
+  alert.type = 'success'
+  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = response?.details || null
+  alert.params = response?.params || {}
+}
+function showError(error) {
+  console.error('Error saving professional:', error)
+  alert.show = true
+  alert.type = 'error'
+  // Usar el messageCode del error si existe, sino usar uno por defecto
+  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = error?.details || error?.response?.data?.details || null
+  alert.params = error?.params || error?.response?.data?.params || {}
+}
+function showValidationErrors() {
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode = 'VALIDATION_FAILED'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = null
+  alert.params = {}
+}
 const rules = computed(() => ({
   required: (value) => !!value || t('common.forms.required'),
   email: (value) => {
@@ -317,12 +339,17 @@ const rules = computed(() => ({
   },
   acceptedLength: (value) => {
     if (!value) return true
-    const lengthMax = 50
-    const lengthMin = 3
+    const min = 3,
+      max = 50
     return (
-      (value.length <= lengthMax && value.length >= lengthMin) ||
-      t('common.forms.validLength', { min: lengthMin, max: lengthMax })
+      (value.length >= min && value.length <= max) || t('common.forms.validLength', { min, max })
     )
+  },
+  // Agregar validación de DNI para Vuetify
+  dni: (value) => {
+    if (!value) return t('common.forms.required')
+    const pattern = /^\d{7,8}[A-Za-z]$/i
+    return pattern.test(value) || t('common.forms.invalidDNI')
   },
 }))
 </script>

@@ -1,13 +1,20 @@
 <template>
-  <div>
+  <div v-if="isAdmin || isProfessional">
     <AppointmentsCalendar :calendar-locale="calendarLocale" />
+  </div>
+  <div v-else>
+    <PatientCalendar :calendar-locale="calendarLocale" />
   </div>
 </template>
 
 <script setup>
 import AppointmentsCalendar from '@/components/AppointmentsCalendar.vue'
+import PatientCalendar from '@/components/PatientCalendar.vue'
+import { useAuth } from '@/composables/useAuth.js'
 
-const props = defineProps({
+const { isAdmin, isProfessional } = useAuth()
+
+defineProps({
   calendarLocale: {
     type: String,
     default: 'es',
