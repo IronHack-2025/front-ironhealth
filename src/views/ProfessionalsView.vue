@@ -1,39 +1,124 @@
 <template>
   <div class="container">
-    <div class="left">
-      <AddProfessionalsForm @professional-added="handleProfessionalAdded" v-if="isAdmin" />
-    </div>
-    <div class="rigth">
-      <GenericList
-        :title="$t('views.professionals.listTitle')"
-        :items="professionals"
-        :headers="headers"
-        :loading="loading"
-        :error="error"
-        :search-placeholder="$t('common.forms.search')"
-      />
-    </div>
+    <!-- Formulario para registrar profesional -->
+    <AddProfessionalsForm
+      :btnTitle="$t('common.buttons.registerProfessional')"
+      @professional-added="handleProfessionalAdded"
+      v-if="isAdmin"
+    />
+
+    <!-- Listado de profesionales -->
+    <GenericList
+      :title="$t('views.professionals.listTitle')"
+      :items="professionals"
+      :headers="headers"
+      :loading="loading"
+      :error="error"
+      :search-placeholder="$t('common.forms.search')"
+      :canEdit="isAdmin"
+      :canDelete="isAdmin"
+      @refresh="fetchProfessionals"
+      @edit="onEdit"
+      @delete="onDelete"
+    />
+
+    <!-- Alertas -->
+    <AlertMessage
+      v-if="alert.show"
+      :show="alert.show"
+      :type="alert.type"
+      :message-code="alert.messageCode"
+      :message="alert.message"
+      class="mx-4 mt-4"
+    />
+
+    <!-- Modal de edición -->
+    <v-dialog v-model="dialog" max-width="800px" persistent>
+      <v-card class="elevation-6 rounded-xl pa-2">
+        <v-btn icon @click="dialog = false" absolute right top>
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+
+        <v-card-text class="pa-0">
+          <div v-if="editingProfessional?.imageUrl" class="d-flex justify-center mb-4">
+            <v-img
+              :src="editingProfessional.imageUrl"
+              max-width="180"
+              max-height="180"
+              class="rounded-circle"
+              alt="Patient Photo"
+              cover
+            />
+          </div>
+
+          <AddProfessionalsForm
+            :btnTitle="$t('common.buttons.editProfessional')"
+            :items="editingProfessional"
+            :mode="edit ? 'edit' : 'create'"
+            @professional-added="handleProfessionalAdded"
+            @professional-updated="handleProfessionalUpdated"
+          />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { get, put } from '@/services/api'
+import professionsData from '@/assets/data/professions.json'
+
 import GenericList from '@/components/GenericList.vue'
 import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
-import professionsData from '@/assets/data/professions.json'
-import { useI18n } from 'vue-i18n'
-import { get } from '@/services/api'
+import AlertMessage from '@/components/AlertMessage.vue'
 import { useAuth } from '@/composables/useAuth.js'
 
-const { isAdmin } = useAuth()
+const { isAdmin, isProfessional } = useAuth()
 
 const { t, locale } = useI18n()
-
 const professionals = ref([])
 const loading = ref(false)
 const error = ref('')
+const dialog = ref(false)
+const edit = ref(false)
+const editingProfessional = ref(null)
 
-// Helper robusto: string u objeto por idioma -> string legible
+// Alertas
+const alert = reactive({
+  show: false,
+  type: 'success',
+  messageCode: '',
+  message: '',
+})
+
+// Encabezados de la tabla
+
+const headers = computed(() => {
+  const headersTable = [
+    { title: t('common.forms.photo'), key: 'imageUrl' },
+    { title: t('common.forms.firstName'), key: 'firstName' },
+    { title: t('common.forms.lastName'), key: 'lastName' },
+    { title: t('common.forms.email'), key: 'email' },
+    {
+      title: t('common.forms.profession'),
+      key: 'profession',
+      value: (item) => getProfessionName(item.profession),
+    },
+    {
+      title: t('common.forms.specialty'),
+      key: 'specialty',
+      value: (item) => getSpecialtyName(item.specialty),
+    },
+  ]
+  if (isAdmin.value ) {
+    headersTable.unshift({ title: t('common.forms.actions'), key: 'actions' })
+  }
+  return headersTable
+})
+
+// Helpers para multilenguaje
 const getText = (val) => {
   if (typeof val === 'string') return val
   if (val && typeof val === 'object') {
@@ -57,22 +142,7 @@ function getSpecialtyName(code) {
   return '—'
 }
 
-const headers = computed(() => [
-  { title: t('common.forms.firstName'), key: 'firstName' },
-  { title: t('common.forms.lastName'), key: 'lastName' },
-  { title: t('common.forms.email'), key: 'email' },
-  {
-    title: t('common.forms.profession'),
-    key: 'profession',
-    value: (item) => getProfessionName(item.profession),
-  },
-  {
-    title: t('common.forms.specialty'),
-    key: 'specialty',
-    value: (item) => getSpecialtyName(item.specialty),
-  },
-])
-
+// Obtener lista de profesionales
 const fetchProfessionals = async () => {
   loading.value = true
   error.value = ''
@@ -82,27 +152,83 @@ const fetchProfessionals = async () => {
     professionals.value = arr
   } catch (e) {
     professionals.value = []
-    error.value = e.message || 'Error desconocido'
+    error.value = e.message
   } finally {
     loading.value = false
   }
 }
-
 onMounted(fetchProfessionals)
 
+// Profesional añadido
 const handleProfessionalAdded = () => {
   fetchProfessionals()
 }
+
+// Profesional actualizado
+const handleProfessionalUpdated = () => {
+  fetchProfessionals()
+  alert.show = true
+  alert.type = 'success'
+  alert.messageCode = 'PROFESSIONAL_UPDATED'
+  alert.message = t('messages.success.PROFESSIONAL_UPDATED')
+
+  setTimeout(() => {
+    dialog.value = false
+    alert.show = false
+    edit.value = false
+    editingProfessional.value = null
+  }, 3000)
+}
+
+// Editar profesional
+const onEdit = async (id) => {
+  try {
+    const response = await get(`/professionals/${id}/edit`)
+    editingProfessional.value = {
+      id: response.data._id || response.data.id,
+      firstName: response.data.firstName || '',
+      lastName: response.data.lastName || '',
+      email: response.data.email || '',
+      profession: response.data.profession || '',
+      specialty: response.data.specialty || '',
+      dni: response.data.dni || '',
+      professionLicenceNumber: response.data.professionLicenceNumber || '',
+      imageUrl: response.data.imageUrl || '',
+    }
+    edit.value = true
+    dialog.value = true
+  } catch (error) {
+    console.log('error:', error)
+    alert.show = true
+    alert.type = 'error'
+    alert.messageCode = 'INTERNAL_SERVER_ERROR'
+    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+
+    setTimeout(() => {
+      alert.show = false
+    }, 5000)
+  }
+}
+
+// Eliminar profesional
+const onDelete = async (id) => {
+  try {
+    const response = await put(`/professionals/${id}/delete`)
+    fetchProfessionals()
+
+    alert.show = true
+    alert.type = 'success'
+    alert.messageCode = response?.messageCode || 'PROFESSIONAL_DELETED'
+    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  } catch (error) {
+    alert.show = true
+    alert.type = 'error'
+    alert.messageCode = error?.messageCode || 'INTERNAL_SERVER_ERROR'
+    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  } finally {
+    setTimeout(() => {
+      alert.show = false
+    }, 5000)
+  }
+}
 </script>
-
-<!-- <style scoped>
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.left .right {
-  padding: 20px;
-  overflow-y: auto;
-}
-</style> -->

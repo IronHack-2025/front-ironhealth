@@ -15,7 +15,7 @@
   },
   "views": {
     "patients": {
-      "title": "Patients Registration",
+      "title": "Patients",
       "listTitle": "Patient List",
       "subtitle": "Manage all patient records",
       "actions": {
@@ -25,7 +25,7 @@
       }
     },
     "professionals": {
-      "title": "Healthcare Professionals Registration",
+      "title": "Healthcare Professionals",
       "listTitle": "Professionals List",
       "subtitle": "Manage medical staff",
       "actions": {
@@ -145,12 +145,17 @@
       "photo": "Photo",
       "search": "Search...",
       "required": "This field is required",
+      "actions": "Actions",
       "invalidEmail": "Invalid email format",
       "invalidPhone": "Invalid phone number",
       "invalidDate": "Invalid date",
       "validLength": "This field must be between {min} and {max} characters.",
       "imageRequired": "Image upload is required.",
       "invalidDNI": "DNI must be 7 or 8 digits followed by a letter"
+    },
+    "confirmations": {
+      "deleteTitle": "Confirm deletion",
+      "deleteMessage": "Are you sure you want to delete this item? This action cannot be undone."
     },
     "buttons": {
       "save": "Save",
@@ -161,7 +166,9 @@
       "saveNotes": "Save Notes",
       "view": "View Details",
       "registerPatient": "Register Patient",
+      "editPatient": "Edit Patient",
       "registerProfessional": "Register Professional",
+      "editProfessional": "Edit Professional",
       "uploadImage": "Upload Image"
     },
     "messages": {
@@ -190,6 +197,7 @@
       "PATIENT_CREATED": "Patient created successfully",
       "PATIENT_UPDATED": "Patient updated successfully",
       "PATIENT_DELETED": "Patient deleted successfully",
+      "PATIENTS_DELETED": "Patient deleted successfully",
       "PROFESSIONAL_CREATED": "Professional created successfully",
       "PROFESSIONAL_UPDATED": "Professional updated successfully",
       "PROFESSIONAL_DELETED": "Professional deleted successfully",
