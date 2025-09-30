@@ -2,6 +2,7 @@
   <v-card rounded="xl">
     <v-card-title class="d-flex align-center">
       <v-icon icon="mdi-card-account-details" class="me-2" color="primary" />
+      {{ $t('views.patients.personalInfo') }}
     </v-card-title>
 
     <v-card-text>

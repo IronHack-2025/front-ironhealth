@@ -19,7 +19,9 @@
         "edit": "Editar Paciente",
         "delete": "Eliminar Paciente"
       },
-      "details": "Detalles"
+      "details": "Detalles",
+      "personalInfo": "Información personal",
+      "contactInfo": "Información de contacto"
     },
     "professionals": {
       "title": "Profesionales de la Salud",

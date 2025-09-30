@@ -19,7 +19,9 @@
         "edit": "Edit Patient",
         "delete": "Delete Patient"
       },
-      "details": "Details"
+      "details": "Details",
+      "personalInfo": "Personal information",
+      "contactInfo": "Contact information"
     },
     "professionals": {
       "title": "Healthcare Professionals Registration",
