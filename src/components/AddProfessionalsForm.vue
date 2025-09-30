@@ -3,7 +3,6 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
-
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <v-row>
@@ -312,7 +311,8 @@ function showError(error) {
   alert.show = true
   alert.type = 'error'
   // Usar el messageCode del error si existe, sino usar uno por defecto
-  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.messageCode =
+    error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
   alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   alert.details = error?.details || error?.response?.data?.details || null
   alert.params = error?.params || error?.response?.data?.params || {}

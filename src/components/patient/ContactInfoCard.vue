@@ -21,9 +21,8 @@
 
 <script setup>
 import InfoRow from '@/components/base/InfoRow.vue'
-import { useI18n } from 'vue-i18n'
 
-const props = defineProps({
+defineProps({
   patient: { type: Object, required: true },
 })
 </script>

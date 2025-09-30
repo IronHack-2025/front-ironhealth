@@ -105,7 +105,6 @@ import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AlertMessage from './AlertMessage.vue'
 
-
 const emit = defineEmits(['refresh', 'edit', 'delete'])
 const router = useRouter()
 
@@ -137,11 +136,9 @@ const props = defineProps({
   form: { type: String, default: '' },
 })
 
-
 const rowClickEnabled = computed(
   () => props.rowClickable && (!!props.itemRoutePrefix || !!props.routeName),
 )
-
 
 function navigateTo(record) {
   const id = record?.[props.idField]

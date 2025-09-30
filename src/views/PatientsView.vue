@@ -1,16 +1,37 @@
 <template>
   <div class="container">
     <!-- Formulario -->
-    <AddPatientForm :btnTitle="$t('common.buttons.registerPatient')" @patient-added="handlePatientAdded" />
+    <AddPatientForm
+      :btnTitle="$t('common.buttons.registerPatient')"
+      @patient-added="handlePatientAdded"
+    />
 
     <!-- Listado de pacientes -->
-    <GenericList :title="$t('views.patients.listTitle')" :items="patients" :headers="headers" :loading="loading"
-      :error="error" :search-placeholder="$t('common.forms.search')" route-name="PatientDetail" id-field="_id"
-      :row-clickable="true" :canEdit="true" :canDelete="true" @edit="onEdit" @delete="onDelete" />
+    <GenericList
+      :title="$t('views.patients.listTitle')"
+      :items="patients"
+      :headers="headers"
+      :loading="loading"
+      :error="error"
+      :search-placeholder="$t('common.forms.search')"
+      route-name="PatientDetail"
+      id-field="_id"
+      :row-clickable="true"
+      :canEdit="true"
+      :canDelete="true"
+      @edit="onEdit"
+      @delete="onDelete"
+    />
 
     <!-- Alertas -->
-    <AlertMessage v-if="alertView.show" :show="alertView.show" :type="alertView.type"
-      :message-code="alertView.messageCode" :message="alertView.message" class="mx-4 mt-4" />
+    <AlertMessage
+      v-if="alertView.show"
+      :show="alertView.show"
+      :type="alertView.type"
+      :message-code="alertView.messageCode"
+      :message="alertView.message"
+      class="mx-4 mt-4"
+    />
 
     <!-- Modal de edición -->
     <v-dialog v-model="dialog" max-width="800px" persistent>
@@ -28,9 +49,13 @@
             </v-col>
           </v-row>
 
-          <AddPatientForm :btnTitle="$t('common.buttons.editPatient')" :items="editingPatient"
-            :mode="edit ? 'edit' : 'create'" @patient-added="handlePatientAdded"
-            @patient-updated="handlePatientUpdated" />
+          <AddPatientForm
+            :btnTitle="$t('common.buttons.editPatient')"
+            :items="editingPatient"
+            :mode="edit ? 'edit' : 'create'"
+            @patient-added="handlePatientAdded"
+            @patient-updated="handlePatientUpdated"
+          />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -128,7 +153,7 @@ const onEdit = async (id) => {
       city: response.data.city || '',
       postalCode: response.data.postalCode || '',
       nationality: response.data.nationality || '',
-      emergencyContact: response.data.emergencyContact || ''
+      emergencyContact: response.data.emergencyContact || '',
     }
 
     edit.value = true

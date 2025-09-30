@@ -3,7 +3,6 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
-
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
               <!-- Nombre y apellidos -->
@@ -155,7 +154,7 @@
               />
 
               <!-- Fecha de nacimiento -->
-               
+
               <v-date-input
                 v-model="form.birthDate"
                 :label="$t('common.forms.dateOfBirth')"
@@ -211,7 +210,6 @@ import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 import { post, put } from '@/services/api.js'
 import nationalitiesData from '@/assets/data/nationalities.json'
-
 
 const { t, locale } = useI18n()
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -326,7 +324,7 @@ function loadPatientData() {
     form.city = props.items.city || ''
     form.emergencyContact = props.items.emergencyContact || ''
     form.nationality = props.items.nationality || ''
-    form.postalCode = props.items.postalCode || '' 
+    form.postalCode = props.items.postalCode || ''
   } else {
     resetForm()
   }
@@ -398,7 +396,8 @@ function showError(error) {
   alert.show = true
   alert.type = 'error'
   // Usar el messageCode del error si existe, sino usar uno por defecto
-  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.messageCode =
+    error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
   alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   alert.details = error?.details || error?.response?.data?.details || null
   alert.params = error?.params || error?.response?.data?.params || {}
@@ -410,4 +409,5 @@ function showValidationErrors() {
   alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   alert.details = null
   alert.params = {}
-}</script>
+}
+</script>
