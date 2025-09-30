@@ -225,20 +225,11 @@ async function newPatient() {
   }
 
   try {
-    let response
     if (props.mode === 'create') {
-      response = await fetch(`${apiBaseUrl}/patients`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
+      response = await post(`/patients`, formData)
     } else {
       if (!props.items?.id) throw new Error('No se puede editar: falta el ID')
-      response = await fetch(`${apiBaseUrl}/patients/${props.items.id}/edit`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
+      response = await put(`/patients`, formData)
     }
 
     const responseData = await response.json()

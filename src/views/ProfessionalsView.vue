@@ -67,7 +67,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { get } from '@/services/api'
+import { get, put } from '@/services/api'
 import professionsData from '@/assets/data/professions.json'
 
 import GenericList from '@/components/GenericList.vue'
@@ -177,24 +177,24 @@ const handleProfessionalUpdated = () => {
 // Editar profesional
 const onEdit = async (id) => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/edit`)
-    const response = await res.json()
-    const data = response.data
-
+    const response = await get(`/professionals/${id}/edit`)
+    console.log("response.data:", response)
     editingProfessional.value = {
-      id: data._id || data.id,
-      firstName: data.firstName || '',
-      lastName: data.lastName || '',
-      email: data.email || '',
-      profession: data.profession || '',
-      specialty: data.specialty || '',
-      professionLicenceNumber: data.professionLicenceNumber || '',
-      imageUrl: data.imageUrl || '',
+      id: response.data._id || response.data.id,
+      firstName: response.data.firstName || '',
+      lastName: response.data.lastName || '',
+      email: response.data.email || '',
+      profession: response.data.profession || '',
+      specialty: response.data.specialty || '',
+      dni: response.data.dni || '',
+      professionLicenceNumber: response.data.professionLicenceNumber || '',
+      imageUrl: response.data.imageUrl || '',
     }
-
+console.log(editingProfessional.value)
     edit.value = true
     dialog.value = true
   } catch (error) {
+    console.log("error:", error)
     alert.show = true
     alert.type = 'error'
     alert.messageCode = 'INTERNAL_SERVER_ERROR'

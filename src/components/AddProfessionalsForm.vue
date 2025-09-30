@@ -87,6 +87,20 @@
                 @input="hideAlertOnInput"
               />
 
+              <!-- DNI -->
+              <v-text-field
+                v-model="form.dni"
+                :label="$t('common.forms.dni')"
+                prepend-inner-icon="mdi-card-account-details"
+                :rules="[rules.required, rules.dni]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="9"
+                :error-messages="fieldErrors.dni || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
+
               <!-- Nº colegiado -->
               <v-text-field
                 v-model="form.professionLicenceNumber"
@@ -142,6 +156,7 @@ import { useI18n } from 'vue-i18n'
 import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 import professionsData from '@/assets/data/professions.json'
+import { post, put } from '@/services/api'
 
 const { t, locale } = useI18n()
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -230,6 +245,7 @@ function loadEditData() {
     form.firstName = props.items.firstName || ''
     form.lastName = props.items.lastName || ''
     form.email = props.items.email || ''
+    form.dni = props.items.dni || ''
     form.professionLicenceNumber = props.items.professionLicenceNumber || ''
     form.imageUrl = props.items.imageUrl || ''
     selectedProfession.value = props.items.profession || null
@@ -244,6 +260,7 @@ function resetForm() {
   form.email = ''
   form.professionLicenceNumber = ''
   form.imageUrl = ''
+  form.dni = ''
   selectedProfession.value = null
   selectedSpecialty.value = ''
 }
@@ -266,32 +283,20 @@ async function submitForm() {
   try {
     let response
     if (props.mode === 'create') {
-      response = await fetch(`${apiBaseUrl}/professionals`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
+      response = await post(`/professionals`, formData)
     } else {
-      if (!props.items?.id) throw new Error('No se puede editar: falta el ID')
-      response = await fetch(`${apiBaseUrl}/professionals/${props.items.id}/edit`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
+      response = await put(`/professionals/${props.items.id}/edit`, formData)
     }
-
-    const data = await response.json()
-    if (!response.ok) throw new Error(data.message || 'Error en la petición')
 
     if (props.mode === 'create') {
       formRef.value.reset()
       cloudinaryRef.value?.clearImage()
-      emit('professional-added', data)
+      emit('professional-added', response)
     } else {
-      emit('professional-updated', data)
+      emit('professional-updated', response)
     }
 
-    showSuccess(data)
+    showSuccess(response)
   } catch (error) {
     showError(error)
   } finally {
@@ -305,10 +310,10 @@ function showValidationErrors() {
   alert.messageCode = 'VALIDATION_FAILED'
   alert.message = t('messages.error.VALIDATION_FAILED')
 }
-function showSuccess(data) {
+function showSuccess(response) {
   alert.show = true
   alert.type = 'success'
-  alert.messageCode = data?.messageCode || 'PROFESSIONAL_SAVED'
+  alert.messageCode = response?.messageCode || 'PROFESSIONAL_SAVED'
   alert.message = t('messages.success.OPERATION_SUCCESS')
 }
 function showError(error) {

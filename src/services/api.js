@@ -180,15 +180,22 @@ export const get = async (endpoint) => {
 // Añadimos PUT con el mismo manejo
 export const put = async (endpoint, data) => {
   try {
+    console.log(':cohete: PUT Request Details:')
+    console.log('URL:', `${apiBaseUrl}${endpoint}`)
+    console.log('Headers:', getAuthHeaders())
+    console.log('Body Data:', data)
+    console.log('Body JSON:', JSON.stringify(data))
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     })
-    return handleResponse(response)
+    console.log(':bandeja_de_entrada: Response Status:', response.status)
+    console.log(':bandeja_de_entrada: Response Headers:', [...response.headers.entries()])
+    return await handleResponse(response)
   } catch (error) {
+    console.error(':x: PUT Error:', error)
+    // Si es un error de red o fetch (no tiene messageCode)
     if (!error.messageCode) {
       error.messageCode = 'NETWORK_ERROR'
       error.messageType = 'error'
@@ -196,7 +203,6 @@ export const put = async (endpoint, data) => {
     throw error
   }
 }
-
 // Añadimos PATCH con el mismo manejo
 // export const patch = async (endpoint, data) => {
 //   try {
