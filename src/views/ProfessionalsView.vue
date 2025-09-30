@@ -178,7 +178,6 @@ const handleProfessionalUpdated = () => {
 const onEdit = async (id) => {
   try {
     const response = await get(`/professionals/${id}/edit`)
-    console.log("response.data:", response)
     editingProfessional.value = {
       id: response.data._id || response.data.id,
       firstName: response.data.firstName || '',
@@ -190,7 +189,6 @@ const onEdit = async (id) => {
       professionLicenceNumber: response.data.professionLicenceNumber || '',
       imageUrl: response.data.imageUrl || '',
     }
-console.log(editingProfessional.value)
     edit.value = true
     dialog.value = true
   } catch (error) {
@@ -209,26 +207,18 @@ console.log(editingProfessional.value)
 // Eliminar profesional
 const onDelete = async (id) => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/professionals/${id}/delete`, {
-      method: 'PUT',
-    })
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}))
-      throw new Error(errorData.message || 'Error al eliminar')
-    }
-
-    await res.json()
+    const response = await put(`/professionals/${id}/delete`)
     fetchProfessionals()
 
     alert.show = true
     alert.type = 'success'
-    alert.messageCode = 'PROFESSIONAL_DELETED'
-    alert.message = t('messages.success.PROFESSIONAL_DELETED')
+    alert.messageCode = response?.messageCode || 'PROFESSIONAL_DELETED'
+    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   } catch (error) {
     alert.show = true
     alert.type = 'error'
-    alert.messageCode = 'INTERNAL_SERVER_ERROR'
-    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+    alert.messageCode = error?.messageCode || 'INTERNAL_SERVER_ERROR'
+    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   } finally {
     setTimeout(() => {
       alert.show = false

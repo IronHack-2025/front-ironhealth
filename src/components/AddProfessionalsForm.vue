@@ -304,26 +304,32 @@ async function submitForm() {
   }
 }
 
-function showValidationErrors() {
-  alert.show = true
-  alert.type = 'error'
-  alert.messageCode = 'VALIDATION_FAILED'
-  alert.message = t('messages.error.VALIDATION_FAILED')
-}
 function showSuccess(response) {
   alert.show = true
   alert.type = 'success'
-  alert.messageCode = response?.messageCode || 'PROFESSIONAL_SAVED'
-  alert.message = t('messages.success.OPERATION_SUCCESS')
+  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = response?.details || null
+  alert.params = response?.params || {}
 }
 function showError(error) {
   console.error('Error saving professional:', error)
   alert.show = true
   alert.type = 'error'
-  alert.messageCode = 'INTERNAL_SERVER_ERROR'
-  alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+  // Usar el messageCode del error si existe, sino usar uno por defecto
+  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = error?.details || error?.response?.data?.details || null
+  alert.params = error?.params || error?.response?.data?.params || {}
 }
-
+function showValidationErrors() {
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode = 'VALIDATION_FAILED'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = null
+  alert.params = {}
+}
 const rules = computed(() => ({
   required: (value) => !!value || t('common.forms.required'),
   email: (value) => {

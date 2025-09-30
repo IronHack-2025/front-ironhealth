@@ -55,6 +55,19 @@
                 @focus="hideAlertOnFocus"
                 @input="hideAlertOnInput"
               />
+              <!-- DNI -->
+              <v-text-field
+                v-model="form.dni"
+                :label="$t('common.forms.dni')"
+                prepend-inner-icon="mdi-card-account-details"
+                :rules="[rules.required, rules.dni]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="9"
+                :error-messages="fieldErrors.dni || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
 
               <!-- Teléfono -->
               <v-text-field
@@ -87,7 +100,6 @@
               <!-- Imagen -->
               <CloudinaryUpload
                 ref="cloudinaryRef"
-                :preset="uploadPreset"
                 folder="patients"
                 :buttonText="$t('common.buttons.uploadImage')"
                 :api-url="`${apiBaseUrl}/signature`"
@@ -125,6 +137,7 @@ import { ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
+import { post, put } from '@/services/api.js'
 
 const { t } = useI18n()
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -177,6 +190,13 @@ const rules = {
     const pattern = /^\+?\d{7,15}$/
     return pattern.test(value) || t('common.forms.invalidPhone')
   },
+  // Agregar validación de DNI para Vuetify
+  dni: (value) => {
+    if (!value) return t('common.forms.required')
+    const pattern = /^\d{7,8}[A-Za-z]$/i
+    return pattern.test(value) || t('common.forms.invalidDNI')
+  },
+
   acceptedLength: (value) => {
     if (!value) return true
     const min = 3,
@@ -203,9 +223,25 @@ function loadPatientData() {
     form.lastName = props.items.lastName || ''
     form.email = props.items.email || ''
     form.phone = props.items.phone || ''
+    form.dni = props.items.dni || ''
     form.birthDate = props.items.birthDate ? new Date(props.items.birthDate) : ''
     form.imageUrl = props.items.imageUrl || ''
+  } else {
+    resetForm()
   }
+}
+
+function resetForm() {
+  form.firstName = ''
+  form.lastName = ''
+  form.email = ''
+  form.phone = ''
+  form.dni = ''
+  form.birthDate = ''
+  form.imageUrl = ''
+  clearFieldErrors()
+  alert.show = false
+  cloudinaryRef.value?.clearImage()
 }
 
 watch(() => props.items, loadPatientData, { immediate: true })
@@ -225,25 +261,22 @@ async function newPatient() {
   }
 
   try {
+    let response
     if (props.mode === 'create') {
       response = await post(`/patients`, formData)
     } else {
-      if (!props.items?.id) throw new Error('No se puede editar: falta el ID')
-      response = await put(`/patients`, formData)
+      response = await put(`/patients/${props.items.id}/edit`, formData)
     }
-
-    const responseData = await response.json()
-    if (!response.ok) throw new Error(responseData.message || 'Error en la petición')
 
     if (props.mode === 'create') {
       formRef.value.reset()
       cloudinaryRef.value?.clearImage()
-      emit('patient-added', responseData)
+      emit('patient-added', response)
     } else {
-      emit('patient-updated', responseData)
+      emit('patient-updated', response)
     }
 
-    showSuccess(responseData)
+    showSuccess(response)
   } catch (error) {
     showError(error)
   } finally {
@@ -251,28 +284,29 @@ async function newPatient() {
   }
 }
 
+function showSuccess(response) {
+  alert.show = true
+  alert.type = 'success'
+  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = response?.details || null
+  alert.params = response?.params || {}
+}
+function showError(error) {
+  console.error('Error saving professional:', error)
+  alert.show = true
+  alert.type = 'error'
+  // Usar el messageCode del error si existe, sino usar uno por defecto
+  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = error?.details || error?.response?.data?.details || null
+  alert.params = error?.params || error?.response?.data?.params || {}
+}
 function showValidationErrors() {
   alert.show = true
   alert.type = 'error'
   alert.messageCode = 'VALIDATION_FAILED'
-  alert.message = t('messages.error.VALIDATION_FAILED')
-}
-function showSuccess(responseData) {
-  alert.show = true
-  alert.type = 'success'
-  alert.messageCode =
-    responseData?.messageCode || (props.mode === 'create' ? 'PATIENT_CREATED' : 'PATIENT_UPDATED')
-  alert.message = t(
-    props.mode === 'create'
-      ? 'messages.success.PATIENT_CREATED'
-      : 'messages.success.PATIENT_UPDATED',
-  )
-}
-function showError(error) {
-  console.error('Error saving patient:', error)
-  alert.show = true
-  alert.type = 'error'
-  alert.messageCode = 'INTERNAL_SERVER_ERROR'
-  alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
-}
-</script>
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = null
+  alert.params = {}
+}</script>

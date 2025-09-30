@@ -62,7 +62,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { get } from '@/services/api'
+import { get, put } from '@/services/api'
 import GenericList from '@/components/GenericList.vue'
 import AddPatientForm from '@/components/AddPatientForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
@@ -134,18 +134,17 @@ const handlePatientUpdated = () => {
 // Editar paciente
 const onEdit = async (id) => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/patients/${id}/edit`)
-    const response = await res.json()
-    const data = response.data
+    const response = await get(`/patients/${id}/edit`)
 
     editingPatient.value = {
-      id: data._id || data.id,
-      firstName: data.firstName || '',
-      lastName: data.lastName || '',
-      email: data.email || '',
-      phone: data.phone || '',
-      birthDate: data.birthDate || '',
-      imageUrl: data.imageUrl || '',
+      id: response.data._id || response.data.id,
+      firstName: response.data.firstName || '',
+      lastName: response.data.lastName || '',
+      email: response.data.email || '',
+      phone: response.data.phone || '',
+      dni: response.data.dni || '',
+      birthDate: response.data.birthDate || '',
+      imageUrl: response.data.imageUrl || '',
     }
 
     edit.value = true
@@ -165,27 +164,18 @@ const onEdit = async (id) => {
 // Eliminar paciente
 const onDelete = async (id) => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/patients/${id}/delete`, {
-      method: 'PUT',
-    })
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}))
-      throw new Error(errorData.message)
-    }
-
-    await res.json()
+    const response = await put(`/patients/${id}/delete`)
     fetchPatients()
 
     alert.show = true
     alert.type = 'success'
-    alert.messageCode = 'PATIENTS_DELETED'
-    alert.message = t('messages.success.PATIENTS_DELETED')
+    alert.messageCode = response.messageCode || 'PATIENTS_DELETED'
+    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   } catch (error) {
     alert.show = true
     alert.type = 'error'
-    alert.messageCode = 'INTERNAL_SERVER_ERROR'
-    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+    alert.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
+    alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   } finally {
     setTimeout(() => {
       alert.show = false
@@ -193,20 +183,3 @@ const onDelete = async (id) => {
   }
 }
 </script>
-<<<<<<< HEAD
-=======
-
-<!-- <style scoped>
-.container{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-}
-
-.left .right {
-  padding: 20px;
-  overflow-y: auto
-}
-
-</style> -->
->>>>>>> main
