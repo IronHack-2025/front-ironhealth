@@ -3,14 +3,14 @@
     <v-card class="pa-4">
       <v-card-title v-if="showPatientInfo && patient" class="d-flex align-center">
         <v-icon icon="mdi-calendar-clock" class="me-2" color="primary" />
-        {{ t('views.appointments.historyFor') }} {{ patient.firstName }} {{ patient.lastName }}
+        {{ $t('views.appointments.historyFor') }} {{ patient.firstName }} {{ patient.lastName }}
       </v-card-title>
       <FullCalendar ref="calendarRef" :options="calendarOptions" style="max-width: 100%" />
     </v-card>
 
     <v-dialog v-model="showEventDialog" max-width="500">
       <v-card>
-        <v-card-title>{{ t('views.appointments.details') }}</v-card-title>
+        <v-card-title>{{ $t('views.appointments.details') }}</v-card-title>
         <v-card-text v-if="selectedEvent && selectedEvent.extendedProps">
           <!-- Mostrar información del paciente solo si showPatientInfo es true -->
           <div
@@ -20,24 +20,24 @@
                 selectedEvent.extendedProps.patientLastName)
             "
           >
-            <strong>{{ t('views.appointments.patient') }}</strong>
+            <strong>{{ $t('views.appointments.patient') }}</strong>
             {{
               `${selectedEvent.extendedProps.patientLastName}, ${selectedEvent.extendedProps.patientFirstName}`
             }}
           </div>
 
           <div>
-            <strong>{{ t('views.appointments.professional') }}</strong>
+            <strong>{{ $t('views.appointments.professional') }}</strong>
             {{
               `Dr. ${selectedEvent.extendedProps.professionalLastName}, ${selectedEvent.extendedProps.professionalFirstName}`
             }}
           </div>
           <div>
-            <strong>{{ t('views.appointments.start') }}</strong>
+            <strong>{{ $t('views.appointments.start') }}</strong>
             {{ formatDate(selectedEvent.start) }}
           </div>
           <div>
-            <strong>{{ t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}
+            <strong>{{ $t('views.appointments.end') }}</strong> {{ formatDate(selectedEvent.end) }}
           </div>
 
           <!-- Estado de la cita -->
@@ -49,8 +49,8 @@
             >
               {{
                 selectedEvent.extendedProps.isCancelled
-                  ? t('views.appointments.cancelled')
-                  : t('views.appointments.active')
+                  ? $t('views.appointments.cancelled')
+                  : $t('views.appointments.active')
               }}
             </v-chip>
           </div>
@@ -62,13 +62,13 @@
             "
             class="mt-2"
           >
-            <strong>{{ t('views.appointments.cancelledAt') }}</strong>
+            <strong>{{ $t('views.appointments.cancelledAt') }}</strong>
             {{ formatDate(selectedEvent.extendedProps.cancelledAt) }}
           </div>
 
           <!-- Notas del paciente - Solo visible para profesionales -->
           <div v-if="selectedEvent.extendedProps.notes && canViewNotes" class="mt-4">
-            <strong>{{ t('views.appointments.notes') }}</strong>
+            <strong>{{ $t('views.appointments.notes') }}</strong>
             <v-textarea
               :value="selectedEvent.extendedProps.notes"
               outlined
@@ -81,7 +81,7 @@
 
           <!-- Notas del profesional - Solo visible para profesionales -->
           <div v-if="selectedEvent.extendedProps.professionalNotes && canViewNotes" class="mt-4">
-            <strong>{{ t('views.appointments.professionalNotes') }}</strong>
+            <strong>{{ $t('views.appointments.professionalNotes') }}</strong>
             <v-textarea
               :value="selectedEvent.extendedProps.professionalNotes"
               outlined
@@ -98,7 +98,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
-            t('common.buttons.close')
+            $t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
         <Alert
