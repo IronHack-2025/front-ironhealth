@@ -15,14 +15,18 @@
   },
   "views": {
     "patients": {
-      "title": "Patients",
+      "title": "Patients Registration",
+      "subtitle": "Handle patient sign up",
       "listTitle": "Patient List",
-      "subtitle": "Manage all patient records",
+      "description": "Patient",
       "actions": {
         "add": "Add Patient",
         "edit": "Edit Patient",
         "delete": "Delete Patient"
-      }
+      },
+      "details": "Details",
+      "personalInfo": "Personal information",
+      "contactInfo": "Contact information"
     },
     "professionals": {
       "title": "Healthcare Professionals",
@@ -130,7 +134,6 @@
       }
     }
   },
-
   "common": {
     "forms": {
       "firstName": "First Name",
@@ -151,6 +154,12 @@
       "invalidDate": "Invalid date",
       "validLength": "This field must be between {min} and {max} characters.",
       "imageRequired": "Image upload is required.",
+      "city": "City",
+      "street": "Street",
+      "postalCode": "Postal Code",
+      "gender": "Gender",
+      "emergencyContact": "Emergency contact",
+      "nationality": "Nationality",
       "invalidDNI": "DNI must be 7 or 8 digits followed by a letter"
     },
     "confirmations": {
@@ -189,8 +198,11 @@
     "pagination": {
       "itemsPerPage": "Items per page:"
     },
-    "yes": "Yes",
-    "no": "No"
+    "genders": {
+      "genderMan": "Man",
+      "genderWoman": "Woman",
+      "genderNonBinary": "Non-binary"
+    }
   },
   "messages": {
     "success": {

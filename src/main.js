@@ -14,6 +14,7 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 
 import { VDateInput } from 'vuetify/labs/VDateInput'
+import { CountrySelect } from 'vue3-country-region-select'
 
 const vuetify = createVuetify({
   components: {
@@ -28,5 +29,7 @@ const app = createApp(App)
 app.use(i18n)
 app.use(router)
 app.use(vuetify)
+
+app.component('CountrySelect', CountrySelect)
 
 app.mount('#app')

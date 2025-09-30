@@ -45,8 +45,10 @@
             density="comfortable"
             fixed-header
             height="500px"
+            :item-key="idField"
+            :class="{ 'gl-clickable': rowClickEnabled }"
+            @click:row="onRowClick"
           >
-            <!-- Slot para renderizar la imageUrln -->
             <template v-slot:item.imageUrl="{ item }">
               <v-avatar size="70">
                 <v-img :src="item.imageUrl" alt="Foto paciente" />
@@ -61,14 +63,14 @@
                 size="small"
                 variant="text"
                 color="primary"
-                @click="$emit('edit', item._id || item.id)"
+                @click.stop="$emit('edit', item._id || item.id)"
               />
               <v-btn
                 v-if="canDelete"
                 icon="mdi-delete"
                 variant="text"
                 color="error"
-                @click="confirmDelete(item)"
+                @click.stop="confirmDelete(item)"
               />
             </template>
           </v-data-table>
@@ -97,9 +99,14 @@
     </v-row>
   </v-container>
 </template>
+
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import AlertMessage from './AlertMessage.vue'
+
+const emit = defineEmits(['refresh', 'edit', 'delete'])
+const router = useRouter()
 
 const alert = reactive({
   show: false,
@@ -107,9 +114,8 @@ const alert = reactive({
   messageCode: '',
   message: '',
 })
-const emit = defineEmits(['refresh', 'edit', 'delete'])
 
-defineProps({
+const props = defineProps({
   title: { type: String, default: '' },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
@@ -118,10 +124,38 @@ defineProps({
   loadingText: { type: String, default: '' },
   noDataText: { type: String, default: '' },
   searchPlaceholder: { type: String, default: '' },
+
+  // Navegación por fila
+  itemRoutePrefix: { type: String, default: '' }, // p.ej. '/patients'
+  routeName: { type: String, default: '' }, // p.ej. 'PatientDetail'
+  idField: { type: String, default: '_id' },
+  rowClickable: { type: Boolean, default: true },
+
   canEdit: { type: Boolean, default: false },
   canDelete: { type: Boolean, default: false },
   form: { type: String, default: '' },
 })
+
+const rowClickEnabled = computed(
+  () => props.rowClickable && (!!props.itemRoutePrefix || !!props.routeName),
+)
+
+function navigateTo(record) {
+  const id = record?.[props.idField]
+  if (!id) return
+  if (props.routeName) {
+    router.push({ name: props.routeName, params: { id } })
+  } else if (props.itemRoutePrefix) {
+    router.push(`${props.itemRoutePrefix}/${id}`)
+  }
+}
+
+function onRowClick(_event, row) {
+  if (!rowClickEnabled.value) return
+  // Soporta distintas formas de Vuetify 3
+  const record = row?.item?.raw ?? row?.item ?? row?.raw ?? row
+  navigateTo(record)
+}
 const search = ref('')
 const deleteDialog = ref(false)
 const itemToDelete = ref(null)
@@ -140,3 +174,9 @@ const executeDelete = () => {
   itemToDelete.value = null
 }
 </script>
+
+<style scoped>
+.gl-clickable :deep(tbody tr) {
+  cursor: pointer;
+}
+</style>

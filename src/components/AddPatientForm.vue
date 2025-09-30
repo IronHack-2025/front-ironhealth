@@ -3,13 +3,9 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="pa-8" elevation="6" rounded="xl">
-          <!-- Título -->
-          <v-card-title class="text-h5 font-weight-bold text-center mb-4">
-            {{ $t('views.patients.title') }}
-          </v-card-title>
-
           <v-card-text>
             <v-form ref="formRef" v-model="isValid" lazy-validation>
+              <!-- Nombre y apellidos -->
               <v-row>
                 <!-- Nombre -->
                 <v-col cols="12" md="6">
@@ -83,7 +79,82 @@
                 @input="hideAlertOnInput"
               />
 
+              <!-- Dirección -->
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="form.street"
+                    :label="$t('common.forms.street')"
+                    prepend-inner-icon="mdi-road"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                  />
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    v-model="form.city"
+                    :label="$t('common.forms.city')"
+                    prepend-inner-icon="mdi-city"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                  />
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    v-model="form.postalCode"
+                    :label="$t('common.forms.postalCode')"
+                    prepend-inner-icon="mdi-map-marker"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                  />
+                </v-col>
+              </v-row>
+
+              <!-- Información personal -->
+
+              <v-select
+                v-model="form.gender"
+                :label="$t('common.forms.gender')"
+                prepend-inner-icon="mdi-gender-transgender"
+                :items="gendersList"
+                item-title="title"
+                item-value="value"
+                :rules="[rules.required]"
+                variant="outlined"
+                class="mt-2"
+                :error-messages="fieldErrors.gender || []"
+                @focus="hideAlertOnFocus"
+                @update:model-value="hideAlertOnInput"
+              />
+              <!-- Nacionalidad  nationality picker-->
+
+              <v-select
+                v-model="form.nationality"
+                :label="$t('common.forms.nationality')"
+                prepend-inner-icon="mdi-earth"
+                :items="nationalitiesList"
+                item-title="title"
+                item-value="value"
+                variant="outlined"
+                :rules="[rules.required]"
+                :error-messages="fieldErrors.nationality || []"
+              />
+
+              <v-text-field
+                v-model="form.emergencyContact"
+                :label="$t('common.forms.emergencyContact')"
+                prepend-inner-icon="mdi-phone-alert"
+                :rules="[rules.required, rules.phone]"
+                variant="outlined"
+                class="mt-2"
+                maxlength="15"
+                :error-messages="fieldErrors.emergencyContact || []"
+                @focus="hideAlertOnFocus"
+                @input="hideAlertOnInput"
+              />
+
               <!-- Fecha de nacimiento -->
+
               <v-date-input
                 v-model="form.birthDate"
                 :label="$t('common.forms.dateOfBirth')"
@@ -133,13 +204,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 import { post, put } from '@/services/api.js'
+import nationalitiesData from '@/assets/data/nationalities.json'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const cloudinaryRef = ref(null)
 const props = defineProps({
@@ -158,7 +230,28 @@ const form = reactive({
   birthDate: '',
   dni: '',
   imageUrl: '',
+  gender: '',
+  nationality: '',
+  emergencyContact: '',
+  street: '',
+  city: '',
+  postalCode: '',
 })
+
+// Canvia gendersList d'array estàtic a computed reactiu
+const gendersList = computed(() => [
+  { value: 'male', title: t('common.genders.genderMan') },
+  { value: 'female', title: t('common.genders.genderWoman') },
+  { value: 'non-binary', title: t('common.genders.genderNonBinary') },
+])
+
+const nationalitiesList = computed(() =>
+  nationalitiesData.map((n) => ({
+    value: n.code,
+    title: n.name[locale.value] || n.name.en, // usa l'idioma actual
+  })),
+)
+
 const alert = reactive({
   show: false,
   type: 'success',
@@ -226,6 +319,12 @@ function loadPatientData() {
     form.dni = props.items.dni || ''
     form.birthDate = props.items.birthDate ? new Date(props.items.birthDate) : ''
     form.imageUrl = props.items.imageUrl || ''
+    form.street = props.items.street || ''
+    form.gender = props.items.gender || ''
+    form.city = props.items.city || ''
+    form.emergencyContact = props.items.emergencyContact || ''
+    form.nationality = props.items.nationality || ''
+    form.postalCode = props.items.postalCode || ''
   } else {
     resetForm()
   }
@@ -297,7 +396,8 @@ function showError(error) {
   alert.show = true
   alert.type = 'error'
   // Usar el messageCode del error si existe, sino usar uno por defecto
-  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.messageCode =
+    error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
   alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   alert.details = error?.details || error?.response?.data?.details || null
   alert.params = error?.params || error?.response?.data?.params || {}
@@ -309,4 +409,5 @@ function showValidationErrors() {
   alert.message = '' // Dejar vacío para que AlertMessage use messageCode
   alert.details = null
   alert.params = {}
-}</script>
+}
+</script>

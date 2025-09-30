@@ -75,7 +75,7 @@ import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { useAuth } from '@/composables/useAuth.js'
 
-const { isAdmin, isProfessional } = useAuth()
+const { isAdmin } = useAuth()
 
 const { t, locale } = useI18n()
 const professionals = ref([])
@@ -112,7 +112,7 @@ const headers = computed(() => {
       value: (item) => getSpecialtyName(item.specialty),
     },
   ]
-  if (isAdmin.value ) {
+  if (isAdmin.value) {
     headersTable.unshift({ title: t('common.forms.actions'), key: 'actions' })
   }
   return headersTable

@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import Patients from '../views/PatientsView.vue'
 import Professionals from '../views/ProfessionalsView.vue'
 import Appointments from '../views/AppointmentsView.vue'
+import PatientDetail from '@/views/PatientSummaryView.vue'
 import Login from '../views/LoginView.vue'
 import MyAppointments from '../views/MyAppointmentsView.vue'
 import Users from '../views/UsersView.vue'
@@ -34,6 +35,12 @@ const router = createRouter({
       path: '/appointments',
       name: 'appointments',
       component: Appointments,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/patients/:id',
+      name: 'PatientDetail',
+      component: PatientDetail,
       meta: { requiresAuth: true },
     },
     {

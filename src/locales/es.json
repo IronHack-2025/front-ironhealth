@@ -18,11 +18,15 @@
       "title": "Pacientes",
       "listTitle": "Listado de Pacientes",
       "subtitle": "Gestionar todos los registros de pacientes",
+      "description": "Paciente",
       "actions": {
         "add": "Agregar Paciente",
         "edit": "Editar Paciente",
         "delete": "Eliminar Paciente"
-      }
+      },
+      "details": "Detalles",
+      "personalInfo": "Información personal",
+      "contactInfo": "Información de contacto"
     },
     "professionals": {
       "title": "Profesionales de la Salud",
@@ -150,6 +154,12 @@
       "invalidDate": "Fecha inválida",
       "validLength": "Debe tener entre {min} y {max} caracteres",
       "search": "Buscar...",
+      "city": "Ciudad",
+      "street": "Calle",
+      "postalCode": "Código Postal",
+      "gender": "Género",
+      "emergencyContact": "Contacto de emergencia",
+      "nationality": "Nacionalidad",
       "invalidDNI": "El DNI debe tener 7 u 8 dígitos seguidos de una letra",
       "imageRequired": "La carga de imagen es obligatoria."
     },
@@ -192,8 +202,11 @@
     "pagination": {
       "itemsPerPage": "Elementos por página:"
     },
-    "yes": "Sí",
-    "no": "No"
+    "genders": {
+      "genderMan": "Hombre",
+      "genderWoman": "Mujer",
+      "genderNonBinary": "No binario"
+    }
   },
   "messages": {
     "success": {

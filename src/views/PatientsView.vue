@@ -14,6 +14,9 @@
       :loading="loading"
       :error="error"
       :search-placeholder="$t('common.forms.search')"
+      route-name="PatientDetail"
+      id-field="_id"
+      :row-clickable="true"
       :canEdit="true"
       :canDelete="true"
       @edit="onEdit"
@@ -134,7 +137,7 @@ const handlePatientUpdated = () => {
 // Editar paciente
 const onEdit = async (id) => {
   try {
-    const response = await get(`/patients/${id}/edit`)
+    const response = await get(`/patients/${id}`)
 
     editingPatient.value = {
       id: response.data._id || response.data.id,
@@ -145,6 +148,12 @@ const onEdit = async (id) => {
       dni: response.data.dni || '',
       birthDate: response.data.birthDate || '',
       imageUrl: response.data.imageUrl || '',
+      street: response.data.street || '',
+      gender: response.data.gender || '',
+      city: response.data.city || '',
+      postalCode: response.data.postalCode || '',
+      nationality: response.data.nationality || '',
+      emergencyContact: response.data.emergencyContact || '',
     }
 
     edit.value = true
