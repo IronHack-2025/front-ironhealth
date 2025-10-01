@@ -348,8 +348,12 @@ const rules = computed(() => ({
   // Agregar validación de DNI para Vuetify
   dni: (value) => {
     if (!value) return t('common.forms.required')
-    const pattern = /^\d{7,8}[A-Za-z]$/i
-    return pattern.test(value) || t('common.forms.invalidDNI')
+
+    const validPatterns = [
+      /^[0-9]{8}[A-Z]$/, // 8 números + letra
+      /^[XYZ][0-9]{7}[A-Z]$/, // NIE: letra + 7 números + letra
+    ];
+    return validPatterns.some(pattern => pattern.test(value)) || t('common.forms.invalidDNI')
   },
 }))
 </script>
