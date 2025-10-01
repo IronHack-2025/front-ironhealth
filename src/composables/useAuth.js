@@ -52,7 +52,7 @@ export function useAuth() {
     loginError.value = null
 
     try {
-      const response = await post('/login', {
+      const response = await post('/auth/login', {
         email: credentials.email,
         password: credentials.password,
       })
@@ -105,7 +105,7 @@ export function useAuth() {
       if (authToken.value) {
         try {
           console.info('🔄 Attempting server logout...')
-          await post('/logout')
+          await post('/auth/logout')
           console.info('✅ Server logout successful')
         } catch (error) {
           // Manejar diferentes tipos de error de logout elegantemente

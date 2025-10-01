@@ -128,7 +128,7 @@ const handleSubmit = async () => {
   loading.value = true
 
   try {
-    const response = await post('/change-password', {
+    const response = await post('/auth/change-password', {
       currentPassword: currentPassword.value,
       newPassword: newPassword.value,
     })
