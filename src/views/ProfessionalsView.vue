@@ -183,7 +183,7 @@ const handleProfessionalUpdated = () => {
 // Editar profesional
 const onEdit = async (id) => {
   try {
-    const response = await get(`/professionals/${id}/edit`)
+    const response = await get(`/professionals/${id}`)
     editingProfessional.value = {
       id: response.data._id || response.data.id,
       firstName: response.data.firstName || '',
