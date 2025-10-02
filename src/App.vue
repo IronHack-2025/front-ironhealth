@@ -35,7 +35,6 @@ watch(currentLocale, (newLocale) => {
     <v-app>
       <v-navigation-drawer app v-model="drawer" :rail="rail" permanent @click="rail = false" theme="dark">
         <v-list-item>
-          <!-- Se podría valorar poner un pequeño logo/avatar/icono aquí, por ejemplo -->
           <template v-slot:prepend>
             <v-avatar>
               <v-img src="src\assets\ironhealth-logo.png"></v-img>
