@@ -2,8 +2,12 @@
   <div class="container">
     <!-- Formulario -->
     <div class="d-flex justify-end mb-6">
-      <v-btn color="primary" size="medium" class="text-white font-weight-medium px-4 py-2 mx-4 rounded-xl"
-        @click="showForm = !showForm">
+      <v-btn
+        color="primary"
+        size="medium"
+        class="text-white font-weight-medium px-4 py-2 mx-4 rounded-xl"
+        @click="showForm = !showForm"
+      >
         <v-icon icon="mdi-plus" start></v-icon>
         {{ $t('common.buttons.registerPatient') }}
       </v-btn>
@@ -11,19 +15,40 @@
     <v-expand-transition>
       <div v-show="showForm" class="form-container">
         <v-card variant="outlined" class="pa-6 rounded-xl">
-          <AddPatientForm :btnTitle="$t('common.buttons.registerPatient')" :mode="'create'"
-            @patient-added="handlePatientAdded" />
+          <AddPatientForm
+            :btnTitle="$t('common.buttons.registerPatient')"
+            :mode="'create'"
+            @patient-added="handlePatientAdded"
+          />
         </v-card>
       </div>
     </v-expand-transition>
     <!-- Listado de pacientes -->
-    <GenericList :title="$t('views.patients.listTitle')" :items="patients" :headers="headers" :loading="loading"
-      :error="error" :search-placeholder="$t('common.forms.search')" route-name="PatientDetail" id-field="_id"
-      :row-clickable="true" :canEdit="true" :canDelete="true" @edit="onEdit" @delete="onDelete" />
+    <GenericList
+      :title="$t('views.patients.listTitle')"
+      :items="patients"
+      :headers="headers"
+      :loading="loading"
+      :error="error"
+      :search-placeholder="$t('common.forms.search')"
+      route-name="PatientDetail"
+      id-field="_id"
+      :row-clickable="true"
+      :canEdit="true"
+      :canDelete="true"
+      @edit="onEdit"
+      @delete="onDelete"
+    />
 
     <!-- Alertas -->
-    <AlertMessage v-if="alertView.show" :show="alertView.show" :type="alertView.type"
-      :message-code="alertView.messageCode" :message="alertView.message" class="mx-4 mt-4" />
+    <AlertMessage
+      v-if="alertView.show"
+      :show="alertView.show"
+      :type="alertView.type"
+      :message-code="alertView.messageCode"
+      :message="alertView.message"
+      class="mx-4 mt-4"
+    />
 
     <!-- Modal de edición -->
     <v-dialog v-model="dialog" max-width="800px" persistent>
@@ -41,9 +66,13 @@
             </v-col>
           </v-row>
 
-          <AddPatientForm :btnTitle="$t('common.buttons.editPatient')" :items="editingPatient"
-            :mode="edit ? 'edit' : 'create'" @patient-added="handlePatientAdded"
-            @patient-updated="handlePatientUpdated" />
+          <AddPatientForm
+            :btnTitle="$t('common.buttons.editPatient')"
+            :items="editingPatient"
+            :mode="edit ? 'edit' : 'create'"
+            @patient-added="handlePatientAdded"
+            @patient-updated="handlePatientUpdated"
+          />
         </v-card-text>
       </v-card>
     </v-dialog>
