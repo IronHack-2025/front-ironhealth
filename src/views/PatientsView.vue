@@ -1,11 +1,28 @@
 <template>
   <div class="container">
     <!-- Formulario -->
-    <AddPatientForm
-      :btnTitle="$t('common.buttons.registerPatient')"
-      @patient-added="handlePatientAdded"
-    />
-
+    <div class="d-flex justify-end ma-6">
+      <v-btn
+        color="primary"
+        size="medium"
+        class="text-white font-weight-medium px-4 py-2 mx-4 rounded-xl"
+        @click="showForm = !showForm"
+      >
+        <v-icon icon="mdi-plus" start></v-icon>
+        {{ $t('common.buttons.registerPatient') }}
+      </v-btn>
+    </div>
+    <v-expand-transition>
+      <div v-show="showForm" class="form-container">
+        <v-card class="pa-6 rounded-xl">
+          <AddPatientForm
+            :btnTitle="$t('common.buttons.registerPatient')"
+            :mode="'create'"
+            @patient-added="handlePatientAdded"
+          />
+        </v-card>
+      </div>
+    </v-expand-transition>
     <!-- Listado de pacientes -->
     <GenericList
       :title="$t('views.patients.listTitle')"
@@ -69,6 +86,8 @@ import { get, put } from '@/services/api'
 import GenericList from '@/components/GenericList.vue'
 import AddPatientForm from '@/components/AddPatientForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
+
+const showForm = ref(false)
 
 const { t } = useI18n()
 const patients = ref([])

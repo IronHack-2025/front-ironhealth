@@ -1,11 +1,27 @@
 <template>
   <div class="container">
     <!-- Formulario para registrar profesional -->
-    <AddProfessionalsForm
-      :btnTitle="$t('common.buttons.registerProfessional')"
-      @professional-added="handleProfessionalAdded"
-      v-if="isAdmin"
-    />
+    <div v-if="isAdmin" class="d-flex justify-end ma-6">
+      <v-btn
+        color="primary"
+        size="medium"
+        class="text-white font-weight-medium px-4 py-2 mx-4 rounded-xl"
+        @click="showForm = !showForm"
+      >
+        <v-icon icon="mdi-plus" start></v-icon>
+        {{ $t('common.buttons.registerProfessional') }}
+      </v-btn>
+    </div>
+    <v-expand-transition>
+      <div v-show="showForm && isAdmin" class="form-container">
+        <v-card class="pa-6 rounded-xl">
+          <AddProfessionalsForm
+            :btnTitle="$t('common.buttons.registerProfessional')"
+            @professional-added="handleProfessionalAdded"
+          />
+        </v-card>
+      </div>
+    </v-expand-transition>
 
     <!-- Listado de profesionales -->
     <GenericList
@@ -75,8 +91,8 @@ import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { useAuth } from '@/composables/useAuth.js'
 
+const showForm = ref(false)
 const { isAdmin } = useAuth()
-
 const { t, locale } = useI18n()
 const professionals = ref([])
 const loading = ref(false)
