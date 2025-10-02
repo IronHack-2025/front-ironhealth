@@ -34,11 +34,16 @@ watch(currentLocale, (newLocale) => {
   <header>
     <v-app>
       <v-navigation-drawer app v-model="drawer" :rail="rail" permanent @click="rail = false" theme="dark">
-        <v-list-item title="IronHealth" subtitle="CRM">
+        <v-list-item>
           <!-- Se podría valorar poner un pequeño logo/avatar/icono aquí, por ejemplo -->
-          <!-- <v-avatar>
-            <v-img src="src\assets\logo.svg"></v-img>
-          </v-avatar> -->
+          <template v-slot:prepend>
+            <v-avatar>
+              <v-img src="src\assets\ironhealth-logo.png"></v-img>
+            </v-avatar>
+          </template>
+          <v-list-item-title v-if="!rail">
+            IronHealth
+          </v-list-item-title>
           <template v-slot:append>
             <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
           </template>
