@@ -1,36 +1,30 @@
 <template>
   <div class="container">
     <!-- Formulario para registrar profesional -->
-    <AddProfessionalsForm
-      :btnTitle="$t('common.buttons.registerProfessional')"
-      @professional-added="handleProfessionalAdded"
-      v-if="isAdmin"
-    />
+    <div v-if="isAdmin" class="d-flex justify-end mb-6">
+      <v-btn color="primary" size="medium" class="text-white font-weight-medium px-4 py-2 mx-4 rounded-xl"
+        @click="showForm = !showForm">
+        <v-icon icon="mdi-plus" start></v-icon>
+        {{ $t('common.buttons.registerProfessional') }}
+      </v-btn>
+    </div>
+    <v-expand-transition>
+      <div v-show="showForm && isAdmin" class="form-container">
+        <v-card variant="outlined" class="pa-6 rounded-xl">
+          <AddProfessionalsForm :btnTitle="$t('common.buttons.registerProfessional')"
+            @professional-added="handleProfessionalAdded" />
+        </v-card>
+      </div>
+    </v-expand-transition>
 
     <!-- Listado de profesionales -->
-    <GenericList
-      :title="$t('views.professionals.listTitle')"
-      :items="professionals"
-      :headers="headers"
-      :loading="loading"
-      :error="error"
-      :search-placeholder="$t('common.forms.search')"
-      :canEdit="isAdmin"
-      :canDelete="isAdmin"
-      @refresh="fetchProfessionals"
-      @edit="onEdit"
-      @delete="onDelete"
-    />
+    <GenericList :title="$t('views.professionals.listTitle')" :items="professionals" :headers="headers"
+      :loading="loading" :error="error" :search-placeholder="$t('common.forms.search')" :canEdit="isAdmin"
+      :canDelete="isAdmin" @refresh="fetchProfessionals" @edit="onEdit" @delete="onDelete" />
 
     <!-- Alertas -->
-    <AlertMessage
-      v-if="alert.show"
-      :show="alert.show"
-      :type="alert.type"
-      :message-code="alert.messageCode"
-      :message="alert.message"
-      class="mx-4 mt-4"
-    />
+    <AlertMessage v-if="alert.show" :show="alert.show" :type="alert.type" :message-code="alert.messageCode"
+      :message="alert.message" class="mx-4 mt-4" />
 
     <!-- Modal de edición -->
     <v-dialog v-model="dialog" max-width="800px" persistent>
@@ -41,23 +35,13 @@
 
         <v-card-text class="pa-0">
           <div v-if="editingProfessional?.imageUrl" class="d-flex justify-center mb-4">
-            <v-img
-              :src="editingProfessional.imageUrl"
-              max-width="180"
-              max-height="180"
-              class="rounded-circle"
-              alt="Patient Photo"
-              cover
-            />
+            <v-img :src="editingProfessional.imageUrl" max-width="180" max-height="180" class="rounded-circle"
+              alt="Patient Photo" cover />
           </div>
 
-          <AddProfessionalsForm
-            :btnTitle="$t('common.buttons.editProfessional')"
-            :items="editingProfessional"
-            :mode="edit ? 'edit' : 'create'"
-            @professional-added="handleProfessionalAdded"
-            @professional-updated="handleProfessionalUpdated"
-          />
+          <AddProfessionalsForm :btnTitle="$t('common.buttons.editProfessional')" :items="editingProfessional"
+            :mode="edit ? 'edit' : 'create'" @professional-added="handleProfessionalAdded"
+            @professional-updated="handleProfessionalUpdated" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -75,8 +59,8 @@ import AddProfessionalsForm from '@/components/AddProfessionalsForm.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { useAuth } from '@/composables/useAuth.js'
 
+const showForm = ref(false)
 const { isAdmin } = useAuth()
-
 const { t, locale } = useI18n()
 const professionals = ref([])
 const loading = ref(false)
