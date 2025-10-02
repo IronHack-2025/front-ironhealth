@@ -5,6 +5,8 @@ import { useI18n } from 'vue-i18n'
 import { useAuth } from '@/composables/useAuth.js'
 import SelectLanguage from '@/components/SelectLanguage.vue'
 
+const drawer = ref(true)
+const rail = ref(true)
 const { locale } = useI18n()
 const currentLocale = ref(locale.value)
 
@@ -31,8 +33,25 @@ watch(currentLocale, (newLocale) => {
 <template>
   <header>
     <v-app>
-      <v-navigation-drawer app permanent theme="dark">
-        <v-list-item title="IronHealth" subtitle="CRM"></v-list-item>
+      <v-navigation-drawer
+        app
+        v-model="drawer"
+        :rail="rail"
+        permanent
+        @click="rail = false"
+        theme="dark"
+      >
+        <v-list-item>
+          <template v-slot:prepend>
+            <v-avatar>
+              <v-img src="src\assets\ironhealth-logo.png"></v-img>
+            </v-avatar>
+          </template>
+          <v-list-item-title v-if="!rail"> IronHealth </v-list-item-title>
+          <template v-slot:append>
+            <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
+          </template>
+        </v-list-item>
         <v-divider />
         <v-list>
           <v-list-item
