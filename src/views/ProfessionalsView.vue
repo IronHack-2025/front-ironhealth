@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- Formulario para registrar profesional -->
-    <div v-if="isAdmin" class="d-flex justify-end mb-6">
+    <div v-if="isAdmin" class="d-flex justify-end ma-6">
       <v-btn
         color="primary"
         size="medium"

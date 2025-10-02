@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- Formulario -->
-    <div class="d-flex justify-end mb-6">
+    <div class="d-flex justify-end ma-6">
       <v-btn
         color="primary"
         size="medium"

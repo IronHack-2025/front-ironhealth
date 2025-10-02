@@ -1,9 +1,19 @@
-<script setup lang="ts">
-import Dashboard from '@/components/DashboardComponent.vue'
-import SelectLanguage from '@/components/SelectLanguage.vue'
-</script>
 
 <template>
-  <Dashboard />
-  <SelectLanguage />
+  <v-container class="HomeView" fluid>
+  </v-container>
 </template>
+
+<style scoped>
+.HomeView {
+  background-image: url('@/assets/home-bg.jpg'); /* Color de fondo claro */
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 100vh; /* Asegura que ocupe toda la altura de la ventana */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+</style>
