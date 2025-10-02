@@ -14,7 +14,7 @@
     </div>
     <v-expand-transition>
       <div v-show="showForm && isAdmin" class="form-container">
-        <v-card variant="outlined" class="pa-6 rounded-xl">
+        <v-card class="pa-6 rounded-xl">
           <AddProfessionalsForm
             :btnTitle="$t('common.buttons.registerProfessional')"
             @professional-added="handleProfessionalAdded"

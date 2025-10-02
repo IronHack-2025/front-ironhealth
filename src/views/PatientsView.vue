@@ -14,7 +14,7 @@
     </div>
     <v-expand-transition>
       <div v-show="showForm" class="form-container">
-        <v-card variant="outlined" class="pa-6 rounded-xl">
+        <v-card class="pa-6 rounded-xl">
           <AddPatientForm
             :btnTitle="$t('common.buttons.registerPatient')"
             :mode="'create'"
