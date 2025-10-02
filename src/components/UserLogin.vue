@@ -1,11 +1,11 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row justify="center" align="center">
-      <v-col cols="12" sm="8" md="6" lg="4">
+      <v-col cols="12" sm="8" md="6" lg="4" offset-lg="4" offset-md="1">
         <v-card class="pa-6" elevation="8">
           <v-card-title class="text-center mb-4">
             <v-icon size="48" color="primary" class="mb-2">mdi-medical-bag</v-icon>
-            <h2>{{ $t('views.login.title') }}</h2>
+
             <h3 class="font-weight-light">{{ $t('views.login.subtitle') }}</h3>
           </v-card-title>
 

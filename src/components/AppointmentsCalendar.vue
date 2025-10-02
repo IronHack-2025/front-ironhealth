@@ -519,6 +519,10 @@ const calendarOptions = ref({
   initialView: 'timeGridWeek',
   selectable: true,
   editable: true,
+  selectAllow(selectInfo) {
+    const now = new Date()
+    return selectInfo.start >= now
+  },
   locales: [esLocale],
   locale: props.calendarLocale,
   selectMirror: true,
