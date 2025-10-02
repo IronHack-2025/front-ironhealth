@@ -18,4 +18,10 @@ import UserLogin from '@/components/UserLogin.vue'
   justify-content: center;
   align-items: center;
 }
+
+@media (max-width: 1279px) {
+  .LoginView {
+    background-image: url('@/assets/login-bg-mobile.jpg');
+  }
+}
 </style>
