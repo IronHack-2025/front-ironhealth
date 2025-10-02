@@ -5,7 +5,7 @@
         <v-card class="pa-6" elevation="8">
           <v-card-title class="text-center mb-4">
             <v-icon size="48" color="primary" class="mb-2">mdi-medical-bag</v-icon>
-         
+
             <h3 class="font-weight-light">{{ $t('views.login.subtitle') }}</h3>
           </v-card-title>
 

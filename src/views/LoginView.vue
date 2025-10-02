@@ -3,9 +3,9 @@ import UserLogin from '@/components/UserLogin.vue'
 </script>
 
 <template>
-     <v-container class="LoginView" fluid>
-   <UserLogin />
-</v-container>
+  <v-container class="LoginView" fluid>
+    <UserLogin />
+  </v-container>
 </template>
 <style scoped>
 .LoginView {

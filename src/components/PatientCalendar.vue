@@ -429,8 +429,8 @@ const calendarOptions = ref({
   selectable: true,
   editable: false,
   selectAllow(selectInfo) {
-  const now = new Date()
-  return selectInfo.start >= now
+    const now = new Date()
+    return selectInfo.start >= now
   },
   locales: [esLocale],
   locale: props.calendarLocale,
