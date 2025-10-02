@@ -33,36 +33,69 @@ watch(currentLocale, (newLocale) => {
 <template>
   <header>
     <v-app>
-      <v-navigation-drawer app v-model="drawer" :rail="rail" permanent @click="rail = false" theme="dark">
+      <v-navigation-drawer
+        app
+        v-model="drawer"
+        :rail="rail"
+        permanent
+        @click="rail = false"
+        theme="dark"
+      >
         <v-list-item>
           <template v-slot:prepend>
             <v-avatar>
               <v-img src="src\assets\ironhealth-logo.png"></v-img>
             </v-avatar>
           </template>
-          <v-list-item-title v-if="!rail">
-            IronHealth
-          </v-list-item-title>
+          <v-list-item-title v-if="!rail"> IronHealth </v-list-item-title>
           <template v-slot:append>
             <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
           </template>
         </v-list-item>
         <v-divider />
         <v-list>
-          <v-list-item to="/login" prepend-icon="mdi-login" :title="$t('navbar.login')"
-            v-if="!isAuthenticated"></v-list-item>
-          <v-list-item to="/patients" prepend-icon="mdi-account-multiple" :title="$t('navbar.patients')"
-            v-if="isAuthenticated && (isProfessional || isAdmin)"></v-list-item>
-          <v-list-item to="/professionals" prepend-icon="mdi-doctor" :title="$t('navbar.professionals')"
-            v-if="isAuthenticated"></v-list-item>
-          <v-list-item to="/appointments" prepend-icon="mdi-calendar-blank" :title="$t('navbar.appointments')"
-            v-if="isAuthenticated"></v-list-item>
-          <v-list-item to="/my-appointments" prepend-icon="mdi-calendar-check" :title="$t('navbar.myAppointments')"
-            v-if="isAuthenticated && !isAdmin"></v-list-item>
-          <v-list-item to="/users" prepend-icon="mdi-account-group" :title="$t('navbar.users')"
-            v-if="isAuthenticated && isAdmin"></v-list-item>
-          <v-list-item @click="logout" prepend-icon="mdi-logout" :title="$t('navbar.logout')"
-            v-if="isAuthenticated"></v-list-item>
+          <v-list-item
+            to="/login"
+            prepend-icon="mdi-login"
+            :title="$t('navbar.login')"
+            v-if="!isAuthenticated"
+          ></v-list-item>
+          <v-list-item
+            to="/patients"
+            prepend-icon="mdi-account-multiple"
+            :title="$t('navbar.patients')"
+            v-if="isAuthenticated && (isProfessional || isAdmin)"
+          ></v-list-item>
+          <v-list-item
+            to="/professionals"
+            prepend-icon="mdi-doctor"
+            :title="$t('navbar.professionals')"
+            v-if="isAuthenticated"
+          ></v-list-item>
+          <v-list-item
+            to="/appointments"
+            prepend-icon="mdi-calendar-blank"
+            :title="$t('navbar.appointments')"
+            v-if="isAuthenticated"
+          ></v-list-item>
+          <v-list-item
+            to="/my-appointments"
+            prepend-icon="mdi-calendar-check"
+            :title="$t('navbar.myAppointments')"
+            v-if="isAuthenticated && !isAdmin"
+          ></v-list-item>
+          <v-list-item
+            to="/users"
+            prepend-icon="mdi-account-group"
+            :title="$t('navbar.users')"
+            v-if="isAuthenticated && isAdmin"
+          ></v-list-item>
+          <v-list-item
+            @click="logout"
+            prepend-icon="mdi-logout"
+            :title="$t('navbar.logout')"
+            v-if="isAuthenticated"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
 
