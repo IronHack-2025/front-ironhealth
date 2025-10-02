@@ -352,8 +352,8 @@ const rules = computed(() => ({
     const validPatterns = [
       /^[0-9]{8}[A-Z]$/i, // 8 números + letra
       /^[XYZ][0-9]{7}[A-Z]$/i, // NIE: letra + 7 números + letra
-    ];
-    return validPatterns.some(pattern => pattern.test(value)) || t('common.forms.invalidDNI')
+    ]
+    return validPatterns.some((pattern) => pattern.test(value)) || t('common.forms.invalidDNI')
   },
 }))
 </script>
