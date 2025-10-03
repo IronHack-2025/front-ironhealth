@@ -201,7 +201,9 @@
       "genderMan": "Hombre",
       "genderWoman": "Mujer",
       "genderNonBinary": "No binario"
-    }
+    },
+    "yes": "Sí",
+    "no": "No"
   },
   "messages": {
     "success": {

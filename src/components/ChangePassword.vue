@@ -60,15 +60,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { post } from '@/services/api.js'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { buildRules } from '@/utils/rules.js'
 
-const { t: $t } = useI18n()
-const rules = buildRules($t)
+const { t, locale } = useI18n()
+const rules = computed(() => buildRules(t))
+
+watch(locale, () => {
+  if (form.value) {
+    form.value.validate()
+  }
+})
 const router = useRouter()
 
 // Reactive data

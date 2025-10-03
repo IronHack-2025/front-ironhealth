@@ -154,7 +154,13 @@ import { post, put } from '@/services/api'
 import { buildRules } from '@/utils/rules.js'
 
 const { t, locale } = useI18n()
-const rules = buildRules(t)
+const rules = computed(() => buildRules(t))
+
+watch(locale, () => {
+  if (formRef.value) {
+    formRef.value.validate()
+  }
+})
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const cloudinaryRef = ref(null)
 const props = defineProps({
@@ -261,6 +267,7 @@ function resetForm() {
   selectedSpecialty.value = ''
 }
 onMounted(loadEditData)
+
 watch([() => props.items, () => props.mode], loadEditData, { immediate: true })
 
 async function submitForm() {

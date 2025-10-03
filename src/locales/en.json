@@ -197,7 +197,9 @@
       "genderMan": "Man",
       "genderWoman": "Woman",
       "genderNonBinary": "Non-binary"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "messages": {
     "success": {

@@ -212,7 +212,13 @@ import { post, put } from '@/services/api.js'
 import nationalitiesData from '@/assets/data/nationalities.json'
 import { buildRules } from '@/utils/rules.js'
 const { t, locale } = useI18n()
-const rules = buildRules(t)
+const rules = computed(() => buildRules(t))
+
+watch(locale, () => {
+  if (formRef.value) {
+    formRef.value.validate()
+  }
+})
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const cloudinaryRef = ref(null)
