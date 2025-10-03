@@ -1,7 +1,7 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 const getAuthToken = () => {
-  return localStorage.getItem('authToken') || localStorage.getItem('token')
+  return localStorage.getItem('authToken') 
 }
 const getAuthHeaders = () => {
   const token = getAuthToken()
@@ -16,7 +16,6 @@ const getAuthHeaders = () => {
 async function handleResponse(response) {
   if (response.status === 401) {
     localStorage.removeItem('authToken')
-    localStorage.removeItem('token')
     const error = new Error('Token expired or invalid')
     error.messageCode = 'INVALID_TOKEN'
     error.messageType = 'error'
