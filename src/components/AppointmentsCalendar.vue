@@ -282,10 +282,15 @@ const cancelAppointmentById = async (id) => {
   try {
     if (!id) throw new Error('Invalid appointment ID')
 
-    const response = await put('/appointment/' + id)
-    return response
+      const response = await put('/appointment/' + selectedEvent.value.id, {
+      status: { cancelled: true },
+    })
+    showSuccess(response)
+    await fetchAppointments()
+    calendarRef.value.getApi().refetchEvents()
   } catch (error) {
     console.error('Error cancelando cita:', error)
+    showError(error)
     throw error
   }
 }
@@ -340,7 +345,9 @@ const cancelAppointment = async () => {
    if (!selectedEvent.value || !selectedEvent.value.id) return
 try {
     const response = await put('/appointment/' + selectedEvent.value.id, {
-      status: { cancelled: true },
+      status: { cancelled: true,
+      timestamp: new Date()
+       },
     })
     showSuccess(response) 
     await fetchAppointments()

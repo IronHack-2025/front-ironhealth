@@ -134,7 +134,7 @@
 </template>
 
 <script setup>
-import { post, get } from '../services/api'
+import { post, get, put } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -156,7 +156,6 @@ const props = defineProps({
   },
 })
 
-// Remover patients ya que no es necesario
 const professionals = ref([])
 const selectedProfessional = ref(null)
 const selectedEvent = ref(null)
@@ -165,7 +164,7 @@ const calendarRef = ref(null)
 const appointments = ref([])
 const isDataLoaded = ref(false)
 
-// Definir form ANTES de los watchers
+
 const form = ref({
   patientId: '',
   professionalId: '',
@@ -186,7 +185,6 @@ const alert = reactive({
   params: {},
 })
 
-// Ahora SÍ podemos usar los watchers
 watch(
   () => user.value?.profileId,
   (newPatientId) => {
@@ -304,53 +302,24 @@ const resetAlert = () => {
 }
 
 const cancelAppointment = async () => {
-  try {
-    const token = localStorage.getItem('authToken')
-    const response = await fetch(
-      `http://localhost:3000/api/appointment/${selectedEvent.value.id}`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          status: {
-            cancelled: true,
-            timestamp: new Date(),
-          },
-        }),
-      },
-    )
-
-    if (response.ok) {
-      const result = await response.json()
-
-      alert.type = 'success'
-      alert.messageCode = result.messageCode || 'APPOINTMENT_CANCELLED'
-      alert.details = null
-      alert.params = {}
-      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_CANCELLED'}`)
-      alert.show = true
-    } else {
-      const errorData = await response.json()
-
-      alert.type = 'error'
-      alert.messageCode = errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'
-      alert.details = errorData.details || null
-      alert.params = {}
-      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'}`)
-      alert.show = true
-    }
-  } catch (error) {
-    console.error('Error de conexión al cancelar la cita:', error)
-
-    alert.type = 'error'
-    alert.messageCode = 'NETWORK_ERROR'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('messages.error.NETWORK_ERROR')
-    alert.show = true
-  }
-  await fetchAppointments()
+   if (!selectedEvent.value || !selectedEvent.value.id) return
+try {
+    const response = await put('/appointment/' + selectedEvent.value.id, {
+      status: { cancelled: true,
+      timestamp: new Date()
+       },
+    })
+    showSuccess(response) 
+    await fetchAppointments()
   calendarRef.value.getApi().refetchEvents()
+  } catch (error) {
+    showError(error)
+  } finally {
+    setTimeout(() => {
+      (alert.show = false),
+      (showEventDialog.value = false)
+    }, 2000)
+  }
 }
 
 const saveAppointment = async () => {
@@ -384,13 +353,7 @@ const saveAppointment = async () => {
   try {
     const response = await post('/appointment', event)
 
-    alert.type = 'success'
-    alert.messageCode = response.messageCode || 'APPOINTMENT_CREATED'
-    alert.details = null
-    alert.params = {}
-    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_CREATED'}`)
-    alert.show = true
-
+    showSuccess(response)
     // Solo resetear si fue exitoso
     form.value = {
       patientId: user.value?.profileId || '',
@@ -406,12 +369,7 @@ const saveAppointment = async () => {
   } catch (error) {
     console.error('Error:', error)
 
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'APPOINTMENT_CREATE_FAILED'
-    alert.details = error.details || null
-    alert.params = {}
-    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_CREATE_FAILED'}`)
-    alert.show = true
+    showError(error)
   }
 }
 
@@ -549,6 +507,25 @@ const reloadCalendarEvents = () => {
   if (calendarRef.value?.getApi) {
     calendarRef.value.getApi().refetchEvents()
   }
+}
+function showSuccess(response) {
+  alert.show = true
+  alert.type = 'success'
+  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = response?.details || null
+  alert.params = response?.params || {}
+}
+
+function showError(error) {
+  console.error('Error updating notes:', error)
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode =
+    error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = error?.details || error?.response?.data?.details || null
+  alert.params = error?.params || error?.response?.data?.params || {}
 }
 
 onMounted(async () => {
