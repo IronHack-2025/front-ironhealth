@@ -151,8 +151,10 @@ import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 import professionsData from '@/assets/data/professions.json'
 import { post, put } from '@/services/api'
+import { buildRules } from '@/utils/rules.js'
 
 const { t, locale } = useI18n()
+const rules = buildRules(t)
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const cloudinaryRef = ref(null)
 const props = defineProps({
@@ -325,35 +327,5 @@ function showValidationErrors() {
   alert.details = null
   alert.params = {}
 }
-const rules = computed(() => ({
-  required: (value) => !!value || t('common.forms.required'),
-  email: (value) => {
-    if (!value) return t('common.forms.required')
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(value) || t('common.forms.invalidEmail')
-  },
-  phone: (value) => {
-    if (!value) return t('common.forms.required')
-    const pattern = /^\+?\d{7,15}$/
-    return pattern.test(value) || t('common.forms.invalidPhone')
-  },
-  acceptedLength: (value) => {
-    if (!value) return true
-    const min = 3,
-      max = 50
-    return (
-      (value.length >= min && value.length <= max) || t('common.forms.validLength', { min, max })
-    )
-  },
-  // Agregar validación de DNI para Vuetify
-  dni: (value) => {
-    if (!value) return t('common.forms.required')
 
-    const validPatterns = [
-      /^[0-9]{8}[A-Z]$/i, // 8 números + letra
-      /^[XYZ][0-9]{7}[A-Z]$/i, // NIE: letra + 7 números + letra
-    ]
-    return validPatterns.some((pattern) => pattern.test(value)) || t('common.forms.invalidDNI')
-  },
-}))
 </script>

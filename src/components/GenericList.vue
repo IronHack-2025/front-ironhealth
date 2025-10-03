@@ -49,14 +49,14 @@
             :class="{ 'gl-clickable': rowClickEnabled }"
             @click:row="onRowClick"
           >
-            <template v-slot:item.imageUrl="{ item }">
+            <template #item.imageUrl="{ item }">
               <v-avatar size="70">
                 <v-img :src="item.imageUrl" alt="Foto paciente" />
               </v-avatar>
             </template>
 
             <!-- Botones según lo que enviemos por props -->
-            <template v-slot:item.actions="{ item }">
+            <template #item.actions="{ item }">
               <v-btn
                 v-if="canEdit"
                 icon="mdi-pencil"

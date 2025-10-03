@@ -13,7 +13,7 @@
             <v-text-field
               v-model="form.email"
               :label="$t('views.login.email')"
-              :rules="emailRules"
+              :rules="[rules.required, rules.email, rules.acceptedLength]"
               type="email"
               prepend-inner-icon="mdi-email"
               outlined
@@ -24,7 +24,7 @@
             <v-text-field
               v-model="form.password"
               :label="$t('views.login.password')"
-              :rules="passwordRules"
+              :rules="[rules.required, rules.password]"
               :type="showPassword ? 'text' : 'password'"
               prepend-inner-icon="mdi-lock"
               :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -65,8 +65,10 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth.js'
 import AlertMessage from './AlertMessage.vue'
+import { buildRules } from '@/utils/rules'
 
 const { t } = useI18n()
+const rules = buildRules(t)
 const router = useRouter()
 const { login, loading, clearLoginError } = useAuth()
 
@@ -83,17 +85,6 @@ const alert = reactive({
   message: '',
   type: 'success',
 })
-
-// Validation rules
-const emailRules = [
-  (v) => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
-  (v) => /.+@.+\..+/.test(v) || t('messages.validation.EMAIL_INVALID_FORMAT'),
-]
-
-const passwordRules = [
-  (v) => !!v || t('messages.validation.FORM_FIELDS_REQUIRED'),
-  (v) => (v && v.length >= 6) || t('messages.validation.PASSWORD_LENGTH'),
-]
 
 const resetAlert = () => {
   alert.show = false
