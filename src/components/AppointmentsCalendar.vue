@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { post, get } from '../services/api'
+import { post, get, put, patch } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -280,25 +280,10 @@ const form = ref({
 
 const cancelAppointmentById = async (id) => {
   try {
-    const token = localStorage.getItem('authToken')
+    if (!id) throw new Error('Invalid appointment ID')
 
-    const response = await fetch(`http://localhost:3000/api/appointment/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        status: { cancelled: true, timestamp: new Date() },
-      }),
-    })
-    if (!response.ok) {
-      const errorData = await response.json()
-      const error = new Error(errorData.error || 'Error al cancelar cita')
-      error.messageCode = errorData.messageCode || 'INTERNAL_SERVER_ERROR'
-      error.details = errorData.details || null
-      throw error
-    }
-
-    const result = await response.json()
-    return result
+    const response = await put('/appointment/' + id)
+    return response
   } catch (error) {
     console.error('Error cancelando cita:', error)
     throw error
@@ -333,23 +318,12 @@ const handleEventDrop = async (info) => {
 
     // Refrescar eventos del calendario
     calendarRef.value.getApi().refetchEvents()
-
-    alert.show = true
-    alert.type = 'success'
-    alert.messageCode = response.messageCode || 'APPOINTMENT_RESCHEDULED'
-    alert.details = null
-    alert.params = {}
-    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_RESCHEDULED'}`)
+    showSuccess(response)
   } catch (error) {
     console.error('Error al reprogramar:', error)
     info.revert()
 
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'APPOINTMENT_RESCHEDULE_FAILED'
-    alert.details = error.details || null
-    alert.params = {}
-    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_RESCHEDULE_FAILED'}`)
+    showError(error)
   }
 }
 
@@ -363,54 +337,22 @@ const resetAlert = () => {
 }
 
 const cancelAppointment = async () => {
-  try {
-    const token = localStorage.getItem('authToken')
-
-    const response = await fetch(
-      `http://localhost:3000/api/appointment/${selectedEvent.value.id}`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          status: {
-            cancelled: true,
-            timestamp: new Date(),
-          },
-        }),
-      },
-    )
-
-    if (response.ok) {
-      const result = await response.json()
-
-      alert.type = 'success'
-      alert.messageCode = result.messageCode || 'APPOINTMENT_CANCELLED'
-      alert.details = null
-      alert.params = {}
-      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_CANCELLED'}`)
-      alert.show = true
-    } else {
-      const errorData = await response.json()
-
-      alert.type = 'error'
-      alert.messageCode = errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'
-      alert.details = errorData.details || null
-      alert.params = {}
-      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'}`)
-      alert.show = true
-    }
-  } catch (error) {
-    console.error('Error de conexión al cancelar la cita:', error)
-
-    alert.type = 'error'
-    alert.messageCode = 'NETWORK_ERROR'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('messages.error.NETWORK_ERROR')
-    alert.show = true
-  }
-  await fetchAppointments()
+   if (!selectedEvent.value || !selectedEvent.value.id) return
+try {
+    const response = await put('/appointment/' + selectedEvent.value.id, {
+      status: { cancelled: true },
+    })
+    showSuccess(response) 
+    await fetchAppointments()
   calendarRef.value.getApi().refetchEvents()
+  } catch (error) {
+    showError(error)
+  } finally {
+    setTimeout(() => {
+      (alert.show = false),
+      (showEventDialog.value = false)
+    }, 2000)
+  }
 }
 
 const saveAppointment = async () => {
@@ -426,13 +368,7 @@ const saveAppointment = async () => {
   try {
     const response = await post('/appointment', event)
 
-    alert.type = 'success'
-    alert.messageCode = response.messageCode || 'APPOINTMENT_CREATED'
-    alert.details = null
-    alert.params = {}
-    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_CREATED'}`)
-    alert.show = true
-
+    showSuccess(response)
     // Solo resetear si fue exitoso
     form.value = { patientId: '', professionalId: '', start: null, end: null, notes: '' }
     selectedPatient.value = null
@@ -443,67 +379,53 @@ const saveAppointment = async () => {
   } catch (error) {
     console.error('Error:', error)
 
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'APPOINTMENT_CREATE_FAILED'
-    alert.details = error.details || null
-    alert.params = {}
-    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_CREATE_FAILED'}`)
-    alert.show = true
+    showError(error)
+    if (error.messageCode === 'VALIDATION_FAILED') {
+      showValidationErrors()
+    }
+}}
+
+const updateNotes = async () => {
+  if (!selectedEvent.value) return
+
+  try {
+    const response = await patch('/appointment/' + selectedEvent.value.id + '/notes', {
+      notes: editableNotes.value,
+    })
+    showSuccess(response)
+    selectedEvent.value.setExtendedProp('notes', editableNotes.value)
+  } catch (error) {
+    showError(error)
   }
 }
 
-const updateNotes = async () => {
-  const token = localStorage.getItem('authToken')
+function showSuccess(response) {
+  alert.show = true
+  alert.type = 'success'
+  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = response?.details || null
+  alert.params = response?.params || {}
+}
 
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/appointment/${selectedEvent.value.id}/notes`,
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          notes: editableNotes.value,
-        }),
-      },
-    )
+function showError(error) {
+  console.error('Error updating notes:', error)
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode =
+    error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = error?.details || error?.response?.data?.details || null
+  alert.params = error?.params || error?.response?.data?.params || {}
+}
 
-    if (response.ok) {
-      const result = await response.json()
-
-      alert.type = 'success'
-      alert.messageCode = result.messageCode || 'APPOINTMENT_NOTES_UPDATED'
-      alert.details = null
-      alert.params = {}
-      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_NOTES_UPDATED'}`)
-      alert.show = true
-
-      // Actualizar las notas en el evento seleccionado
-      selectedEvent.value.setExtendedProp('notes', editableNotes.value)
-
-      // Refrescar eventos del calendario
-      calendarRef.value.getApi().refetchEvents()
-    } else {
-      const errorData = await response.json()
-
-      alert.type = 'error'
-      alert.messageCode = errorData.messageCode || 'APPOINTMENT_NOTES_UPDATE_FAILED'
-      alert.details = errorData.details || null
-      alert.params = {}
-      alert.message = t(
-        `messages.error.${errorData.messageCode || 'APPOINTMENT_NOTES_UPDATE_FAILED'}`,
-      )
-      alert.show = true
-    }
-  } catch (error) {
-    console.error('Error al actualizar notas:', error)
-
-    alert.type = 'error'
-    alert.messageCode = 'NETWORK_ERROR'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('messages.error.NETWORK_ERROR')
-    alert.show = true
-  }
+function showValidationErrors() {
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode = 'VALIDATION_FAILED'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = null
+  alert.params = {}
 }
 
 const formatDate = (date) => {
