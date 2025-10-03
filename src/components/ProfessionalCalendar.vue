@@ -637,6 +637,15 @@ function showError(error) {
   alert.params = error?.params || error?.response?.data?.params || {}
 }
 
+function showValidationErrors() {
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode = 'VALIDATION_FAILED'
+  alert.message = '' // Dejar vacío para que AlertMessage use messageCode
+  alert.details = null
+  alert.params = {}
+}
+
 const fetchAppointments = async () => {
   try {
     const response = await get('/appointment')
