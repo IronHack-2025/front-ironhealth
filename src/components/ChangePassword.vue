@@ -67,7 +67,7 @@ import { post } from '@/services/api.js'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { buildRules } from '@/utils/rules.js'
 
-const { t, locale } = useI18n()
+const { t , locale } = useI18n()
 const rules = computed(() => buildRules(t))
 
 watch(locale, () => {
@@ -132,7 +132,7 @@ const handleSubmit = async () => {
     alertMessage.messageCode = response.messageCode || 'OPERATION_SUCCESS'
     alertMessage.details = Array.isArray(response.details) ? response.details : undefined
     alertMessage.params = response.params || {}
-    alertMessage.message = $t(`messages.success.${response.messageCode}`)
+    alertMessage.message = t(`messages.success.${response.messageCode}`)
 
     // Reset form
     currentPassword.value = ''
@@ -152,13 +152,13 @@ const handleSubmit = async () => {
       error.details.forEach((err) => {
         if (err.field === 'currentPassword') {
           errors.currentPassword.push(
-            $t('views.profile.changePassword.messages.invalidCurrentPassword'),
+            t('views.profile.changePassword.messages.invalidCurrentPassword'),
           )
         } else if (err.field === 'newPassword') {
           if (err.code === 'PASSWORD_MIN_LENGTH') {
-            errors.newPassword.push($t('views.profile.changePassword.messages.passwordMinLength'))
+            errors.newPassword.push(t('views.profile.changePassword.messages.passwordMinLength'))
           } else {
-            errors.newPassword.push($t('views.profile.changePassword.messages.newPasswordRequired'))
+            errors.newPassword.push(t('views.profile.changePassword.messages.newPasswordRequired'))
           }
         }
       })
@@ -169,7 +169,7 @@ const handleSubmit = async () => {
     alertMessage.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
     alertMessage.details = Array.isArray(error.details) ? error.details : undefined
     alertMessage.params = error.params || {}
-    alertMessage.message = $t(`messages.error.${error.messageCode}`)
+    alertMessage.message = t(`messages.error.${error.messageCode}`)
   } finally {
     loading.value = false
   }
