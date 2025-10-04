@@ -51,7 +51,7 @@
           }}</v-btn>
           <v-btn
             color="primary"
-            @click="saveAppointment"
+            @click="saveAppointmentOwnPatient"
             :disabled="!selectedProfessional || !isPatientAvailable"
           >
             {{ t('common.buttons.save') }}
@@ -322,7 +322,7 @@ try {
   }
 }
 
-const saveAppointment = async () => {
+const saveAppointmentOwnPatient = async () => {
   if (!form.value.professionalId) return
 
   // Asegurar que el patientId está asignado para pacientes logueados

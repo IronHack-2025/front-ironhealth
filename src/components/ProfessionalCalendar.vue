@@ -116,7 +116,7 @@
           <v-btn color="red" variant="tonal" @click="cancelAppointment">{{
             t('common.buttons.cancel')
           }}</v-btn>
-          <v-btn color="blue" variant="tonal" @click="updateNotes">{{
+          <v-btn color="blue" variant="tonal" @click="updateNotesProfessional">{{
             t('common.buttons.saveNotes')
           }}</v-btn>
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
@@ -415,7 +415,7 @@ const saveAppointment = async () => {
   }
 }
 
-const updateNotes = async () => {
+const updateNotesProfessional = async () => {
   if (!selectedEvent.value) return
 
   try {
