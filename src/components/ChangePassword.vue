@@ -65,7 +65,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { post } from '@/services/api.js'
 import AlertMessage from '@/components/AlertMessage.vue'
-import { buildRules } from '@/utils/rules.js'
+import { buildRules } from '@/utils/validationRules.js'
 
 const { t , locale } = useI18n()
 const rules = computed(() => buildRules(t))
