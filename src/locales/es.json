@@ -47,6 +47,8 @@
       "professionals": "Profesionales Disponibles:",
       "professional": "Profesional:",
       "professionalNotAvailable": "Profesional no disponible",
+      "tryDifferentTime": "Por favor, intenta con un horario diferente.",
+      "noAvailableProfessionals": "No hay profesionales disponibles",
       "patientNotAvailable": "Paciente no disponible",
       "selectDifferentTime": "Por favor, selecciona un horario diferente.",
       "notes": "Notas:",

@@ -52,7 +52,7 @@
           }}</v-btn>
           <v-btn color="primary" @click="handleSaveAppointment">{{ t('common.buttons.save') }}</v-btn>
         </v-card-actions>
-        <AlertMessage :show="alert.show" :type="alert.type" :message="alert.message" />
+        <AlertMessage :show="alert.show" :type="alert.type" :message="alert.message" :message-code="alert.messageCode" :details="alert.details" :message-params="alert.params" :fallback-message="alert.fallbackMessage" />
       </v-card>
     </v-dialog>
 
@@ -168,28 +168,24 @@ const availableProfessionals = computed(() => {
     return professionals.value.map((pro) => ({ ...pro, disabled: false }))
   }
 
-  // Convertir las fechas del formulario a timestamps para comparación más robusta
-  const formStart = new Date(form.value.start).getTime()
-  const formEnd = new Date(form.value.end).getTime()
-
   // Filtrar para mostrar solo profesionales disponibles
-  const availableProfessionals = professionals.value.filter((pro) => {
+  const filtered = professionals.value.filter((pro) => {
     return isPersonAvailable(pro._id, form.value.start, form.value.end, appointments.value, 'professional')
   })
 
   // Si no hay profesionales disponibles, mostrar mensaje
-  if (availableProfessionals.length === 0) {
+  if (filtered.length === 0) {
     return [
       {
         _id: null,
-        firstName: 'try different time.',
-        lastName: 'No available professionals',
+        firstName: t('views.appointments.tryDifferentTime'),
+        lastName: t('views.appointments.noAvailableProfessionals'),
         disabled: true,
       },
     ]
   }
 
-  return availableProfessionals
+  return filtered
 }) 
 
 const availablePatients = computed(() => {
@@ -271,7 +267,7 @@ const calendarOptions = ref({
   expandRows: false,
   height: 'auto',
 
-  events: async (fetchInfo, successCallback, failureCallback) => {
+  events: async (_fetchInfo, successCallback, failureCallback) => {
     try {
       if (!isDataLoaded.value) {
         successCallback([])
@@ -371,31 +367,58 @@ const handleUpdateNotes = async () => {
 }
 
 const handleCancelAppointment = async () => {
-  await cancelAppointment(
-    selectedEvent, 
-    alert, 
-    calendarRef, 
-    async () => { 
-      appointments.value = await fetchAppointments() 
+  try {
+    await cancelAppointment(
+      selectedEvent, 
+      alert, 
+      calendarRef, 
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+    if(alert.show && alert.type === 'success') {
+      setTimeout(() => {
+      dialog.value = false
+      resetAlert(alert)
+    }, 2000)
     }
-  )
-  setTimeout(() => {
-    resetAlert(alert)
-    showEventDialog.value = false
-  }, 2000)
+    
+  } catch (error) {
+    console.error('Error in handleCancelAppointment:', error)
+    // La función cancelAppointment ya maneja los errores
+  }
 }
 const handleSaveAppointment = async () => {
-  await saveAppointment(
-    form, 
-    selectedPatient, 
-    selectedProfessional, 
-    dialog, 
-    alert, 
-    calendarRef,
-    async () => { 
-      appointments.value = await fetchAppointments() 
+  try {
+    console.log('🎯 Starting save appointment...') // Debug log
+    
+    await saveAppointment(
+      form, 
+      selectedPatient, 
+      selectedProfessional, 
+      dialog, 
+      alert, 
+      calendarRef,
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+    
+    console.log('✅ Save appointment completed, alert state:', alert) // Debug log
+    
+    // Dar tiempo para ver la alerta antes de cerrar el diálogo
+    if(alert.show && alert.type === 'success') {
+      setTimeout(() => {
+      dialog.value = false
+      resetAlert(alert)
+    }, 2000)
     }
-  )
+    
+    
+  } catch (error) {
+    console.error('❌ Error in handleSaveAppointment:', error)
+    // La función saveAppointment ya maneja los errores y muestra la alerta
+  }
 }
 </script>
 

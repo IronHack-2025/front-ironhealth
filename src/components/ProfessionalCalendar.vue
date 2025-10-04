@@ -135,7 +135,7 @@
 </template>
 
 <script setup>
-import { post, get, put, patch } from '../services/api'
+import { get } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -150,7 +150,7 @@ import {
   cancelAppointment,
   handleEventDrop,
   updateNotesProfessional,
-  saveAppointment,
+  saveAppointmentProfessional, // ← Cambiar de saveAppointment a saveAppointmentProfessional
   formatDate,
   fetchProfessionals,
   fetchPatients,
@@ -159,7 +159,7 @@ import {
   resetAlert,
   showError,
   isPersonAvailable
-  } from '../utils/calendarFunctions'
+} from '../utils/calendarFunctions'
 
 const { t } = useI18n()
 const { user, isProfessional } = useAuth()
@@ -399,10 +399,18 @@ const calendarOptions = ref({
     resetAlert(alert)
     form.value.start = info.startStr
     form.value.end = info.endStr
+    
+    // Asegurar que se establezca el professionalId
     if (isProfessional.value && user.value?.profileId) {
       form.value.professionalId = user.value.profileId
     }
-    await fetchAppointments()
+    
+    // Reset otros campos
+    form.value.patientId = ''
+    form.value.notes = ''
+    selectedPatient.value = null
+    
+    appointments.value = await fetchAppointments()
     dialog.value = true
   },
   firstDay: 1,
@@ -457,35 +465,95 @@ onMounted(async () => {
 })
 
 const handleUpdateNotesProfessional = async () => {
-  await updateNotesProfessional(selectedEvent, editableNotes, editableProfessionalNotes,alert)
+  try {
+    if (!selectedEvent.value) return
+
+    console.log('🎯 Starting update notes...') // Debug log
+
+    await updateNotesProfessional(
+      selectedEvent.value,
+      editableNotes.value,
+      editableProfessionalNotes.value,
+      alert,
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+
+    console.log('✅ Update notes completed, alert state:', alert) // Debug log
+
+    // Solo cerrar el diálogo si la operación fue exitosa
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        showEventDialog.value = false
+        resetAlert(alert)
+      }, 3000) // Aumentar a 3 segundos para dar más tiempo
+    } else if (alert.show && alert.type === 'error') {
+      // Si hay error, no cerrar el diálogo automáticamente
+      // Dejar que el usuario vea el error y cierre manualmente
+    }
+
+  } catch (error) {
+    console.error('❌ Error in handleUpdateNotesProfessional:', error)
+    showError(error, alert)
+    // No cerrar el diálogo en caso de error
+  }
 }
 
 const handleCancelAppointment = async () => {
-  await cancelAppointment(
-    selectedEvent, 
-    alert, 
-    calendarRef, 
-    async () => { 
-      appointments.value = await fetchAppointments() 
+  try {
+    console.log('🎯 Starting cancel appointment...') // Debug log
+
+    await cancelAppointment(
+      selectedEvent, 
+      alert, 
+      calendarRef, 
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+
+    console.log('✅ Cancel appointment completed, alert state:', alert) // Debug log
+
+    // Solo cerrar si la operación fue exitosa
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        showEventDialog.value = false
+        resetAlert(alert)
+      }, 3000)
     }
-  )
-  setTimeout(() => {
-    resetAlert(alert)
-    showEventDialog.value = false
-  }, 2000)
+
+  } catch (error) {
+    console.error('❌ Error in handleCancelAppointment:', error)
+    showError(error, alert)
+  }
 }
 const handleSaveAppointment = async () => {
-  await saveAppointment(
-    form, 
-    selectedPatient, 
-    selectedProfessional, 
-    dialog, 
-    alert, 
-    calendarRef,
-    async () => { 
-      appointments.value = await fetchAppointments() 
+  try {
+    console.log('🎯 Starting save appointment...')
+    
+    await saveAppointmentProfessional( // ← Usar la nueva función
+      form, 
+      selectedPatient, 
+      alert, 
+      calendarRef,
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+    
+    console.log('✅ Save appointment completed, alert state:', alert)
+    
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        dialog.value = false
+        resetAlert(alert)
+      }, 3000)
     }
-  )
+  } catch (error) {
+    console.error('❌ Error in handleSaveAppointment:', error)
+    showError(error, alert)
+  }
 }
 </script>
 

@@ -1,4 +1,5 @@
 import { post, get, put, patch } from '../services/api'
+import { useI18n } from 'vue-i18n'
 
 export function hasTimeOverlap(start1, end1, start2, end2) {
   const start1Time = new Date(start1).getTime()
@@ -34,6 +35,128 @@ export function isPersonAvailable(personId, formStart, formEnd, appointments, pe
     
   const conflicts = findConflicts(personId, formStart, formEnd, appointments)
   return conflicts.length === 0
+}
+export function reloadCalendarEvents(calendarRef) {
+  if (calendarRef && calendarRef.value) {
+    const calendarApi = calendarRef.value.getApi()
+    calendarApi.refetchEvents()
+  }
+}
+export function showSuccess(response, alert) {
+  if (!alert) {
+    console.error('Alert object is undefined')
+    return
+  }
+  
+  alert.show = true
+  alert.type = 'success'
+  
+  // Extraer el mensaje del objeto de respuesta
+  if (typeof response === 'string') {
+    alert.message = response
+    alert.messageCode = 'OPERATION_SUCCESS'
+  } else if (response && typeof response === 'object') {
+    // Extraer messageCode de la respuesta
+    const messageCode = response.messageCode || response.data?.messageCode || 'OPERATION_SUCCESS'
+    
+    alert.message = response.message || response.data?.message || ''
+    alert.messageCode = messageCode
+    // Asegurar que details sea un array o null
+    alert.details = Array.isArray(response.details) ? response.details : 
+                   Array.isArray(response.data?.details) ? response.data.details : null
+    alert.params = response.params || response.data?.params || {}
+  } else {
+    alert.message = ''
+    alert.messageCode = 'OPERATION_SUCCESS'
+  }
+  
+  if (!alert.details) alert.details = null
+  if (!alert.params) alert.params = {}
+}
+
+export function showError(error, alert) {
+  if (!alert) {
+    console.error('Alert object is undefined')
+    return
+  }
+  
+  alert.show = true
+  alert.type = 'error'
+  
+  // Extraer propiedades del objeto de error
+  if (typeof error === 'string') {
+    alert.message = error
+    alert.messageCode = 'OPERATION_ERROR'
+    alert.details = null
+    alert.params = {}
+  } else if (error && typeof error === 'object') {
+    // Manejar errores de API con estructura response.data
+    const errorData = error.response?.data || error
+    
+    // Extraer messageCode del error
+    const messageCode = errorData.messageCode || error.messageCode || 'INTERNAL_SERVER_ERROR'
+    
+    alert.message = errorData.message || error.message || ''
+    alert.messageCode = messageCode
+    // Asegurar que details sea un array o null
+    alert.details = Array.isArray(errorData.details) ? errorData.details : 
+                   Array.isArray(error.details) ? error.details : null
+    alert.params = errorData.params || error.params || {}
+  } else {
+    alert.message = ''
+    alert.messageCode = 'INTERNAL_SERVER_ERROR'
+    alert.details = null
+    alert.params = {}
+  }
+}
+
+export function showValidationErrors(alert) {
+  alert.show = true
+  alert.type = 'error'
+  alert.messageCode = 'VALIDATION_FAILED'
+  alert.message = ''
+  alert.details = null
+  alert.params = {}
+}
+
+export function resetAlert(alert) {
+  alert.show = false
+  alert.type = 'success'
+  alert.messageCode = ''
+  alert.message = ''
+  alert.details = null
+  alert.params = {}
+}
+
+export function formatDate(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' }
+  return d.toLocaleString('es-ES', options)
+}
+
+export async function cancelAppointmentById(id) {
+  if (!id) throw new Error('Invalid appointment ID')
+  
+  const response = await put(`/appointment/${id}`, {
+    status: { cancelled: true },
+  })
+  return response
+}
+
+export async function fetchProfessionals() {
+  const response = await get('/professionals')
+  return response.data || []
+}
+
+export async function fetchPatients() {
+  const response = await get('/patients')
+  return response.data || []
+}
+
+export async function fetchAppointments() {
+  const response = await get('/appointment')
+  return response.data || []
 }
 
 export async function cancelAppointment(selectedEvent, alert, calendarRef, fetchAppointmentsFn) {
@@ -97,76 +220,44 @@ export async function updateNotes(selectedEvent, editableNotes, alert) {
     showError(error, alert)
   }
 }
-export async function updateNotesProfessional(selectedEvent, editableNotes, editableProfessionalNotes, alert) {
-  if (!selectedEvent.value) return
+export async function updateNotesProfessional(selectedEvent, editableNotes, editableProfessionalNotes, alert, fetchAppointmentsFn) {
+  if (!selectedEvent || !selectedEvent.id) {
+    showError('No event selected', alert)
+    return
+  }
 
   try {
-    const response = await patch(`/appointment/${selectedEvent.value.id}/notes`, {
-      notes: editableNotes.value,
-      professionalNotes: editableProfessionalNotes.value,
+    console.log('🎯 updateNotesProfessional called with:', { 
+      eventId: selectedEvent.id, 
+      notes: editableNotes, 
+      professionalNotes: editableProfessionalNotes 
     })
+
+    const response = await patch(`/appointment/${selectedEvent.id}/notes`, {
+      notes: editableNotes,
+      professionalNotes: editableProfessionalNotes,
+    })
+
+    console.log('✅ Update notes response:', response)
+
     showSuccess(response, alert)
-    selectedEvent.value.setExtendedProp('notes', editableNotes.value)
-    selectedEvent.value.setExtendedProp('professionalNotes', editableProfessionalNotes.value)
+    
+    // Actualizar las propiedades del evento
+    selectedEvent.setExtendedProp('notes', editableNotes)
+    selectedEvent.setExtendedProp('professionalNotes', editableProfessionalNotes)
+    if (fetchAppointmentsFn) {
+      await fetchAppointmentsFn()
+    }
+
   } catch (error) {
+    console.error('❌ Update notes error:', error)
     showError(error, alert)
+    throw error
   }
 }
 export async function saveAppointment(form, selectedPatient, selectedProfessional, dialog, alert, calendarRef, fetchAppointmentsFn) {
-  if (!form.value.patientId || !form.value.professionalId) return
-
-  const event = {
-    startDate: form.value.start,
-    endDate: form.value.end,
-    patientId: form.value.patientId,
-    professionalId: form.value.professionalId,
-    notes: form.value.notes || '',
-  }
-  
-  try {
-    const response = await post('/appointment', event)
-    showSuccess(response, alert)
-    
-    // Reset form
-    form.value = { patientId: '', professionalId: '', start: null, end: null, notes: '' }
-    selectedPatient.value = null
-    selectedProfessional.value = null
-    dialog.value = false
-    
-    await fetchAppointmentsFn()
-    calendarRef.value.getApi().refetchEvents()
-  } catch (error) {
-    console.error('Error:', error)
-    showError(error, alert)
-    if (error.messageCode === 'VALIDATION_FAILED') {
-      showValidationErrors(alert)
-    }
-  }
-}
-
-export function reloadCalendarEvents(calendarRef) {
-  if (calendarRef.value?.getApi) {
-    calendarRef.value.getApi().refetchEvents()
-  }
-}
-export async function saveAppointmentOwnPatient(form, user, isPatientAvailable, selectedProfessional, dialog, alert, calendarRef, fetchAppointments) {
-  if (!form.value.professionalId) return
-
-  // Asegurar que el patientId está asignado para pacientes logueados
-  if (user.value?.profileId && !form.value.patientId) {
-    form.value.patientId = user.value.profileId
-  }
-
-  if (!form.value.patientId) return
-
-  // Verificar disponibilidad del paciente logueado
-  if (!isPatientAvailable.value) {
-    alert.type = 'error'
-    alert.messageCode = 'PATIENT_NOT_AVAILABLE'
-    alert.details = null
-    alert.params = {}
-    alert.message = ''
-    alert.show = true
+  if (!form.value.patientId || !form.value.professionalId) {
+    showError('Patient and professional must be selected', alert)
     return
   }
 
@@ -177,93 +268,123 @@ export async function saveAppointmentOwnPatient(form, user, isPatientAvailable, 
     professionalId: form.value.professionalId,
     notes: form.value.notes || '',
   }
+  
   try {
     const response = await post('/appointment', event)
-
-    showSuccess(response)
-    // Solo resetear si fue exitoso
-    form.value = {
-      patientId: user.value?.profileId || '',
-      professionalId: '',
-      start: null,
-      end: null,
-      notes: '',
-    }
+    console.log('✅ Save appointment response:', response) // Debug log
+    
+    showSuccess(response, alert)
+    
+    // Reset form
+    form.value = { patientId: '', professionalId: '', start: null, end: null, notes: '' }
+    selectedPatient.value = null
     selectedProfessional.value = null
-    dialog.value = false
-    await fetchAppointments()
-    calendarRef.value.getApi().refetchEvents()
+    
+    await fetchAppointmentsFn()
+    if (calendarRef && calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents()
+    }
   } catch (error) {
-    console.error('Error:', error)
-
-    showError(error)
+    console.error('❌ Save appointment error:', error)
+    showError(error, alert)
+    throw error
   }
 }
 
-export function showSuccess(response, alert) {
-  alert.show = true
-  alert.type = 'success'
-  alert.messageCode = response?.messageCode || 'OPERATION_SUCCESS'
-  alert.message = ''
-  alert.details = response?.details || null
-  alert.params = response?.params || {}
+export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fetchAppointmentsFn) {
+  try {
+    if (!alert) {
+      console.error('Alert object is undefined')
+      return
+    }
+
+    if (!formData.professionalId) {
+      showError('Professional must be selected', alert)
+      return
+    }
+    
+    if (!formData.patientId) {
+      showError('Patient ID is required', alert)
+      return
+    }
+
+    const appointmentData = {
+      startDate: formData.start,
+      endDate: formData.end,
+      patientId: formData.patientId,
+      professionalId: formData.professionalId,
+      notes: formData.notes || '',
+    }
+
+    const response = await post('/appointment', appointmentData)
+    console.log('✅ Save own patient appointment response:', response) // Debug log
+    
+    showSuccess(response, alert)
+    
+    if (fetchAppointmentsFn) {
+      await fetchAppointmentsFn()
+    }
+    
+    if (calendarRef && calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents()
+    }
+    
+  } catch (error) {
+    console.error('❌ Save own patient appointment error:', error)
+    showError(error, alert)
+    throw error
+  }
 }
 
-export function showError(error, alert) {
-  console.error('Error:', error)
-  alert.show = true
-  alert.type = 'error'
-  alert.messageCode = error?.messageCode || error?.response?.data?.messageCode || 'INTERNAL_SERVER_ERROR'
-  alert.message = ''
-  alert.details = error?.details || error?.response?.data?.details || null
-  alert.params = error?.params || error?.response?.data?.params || {}
-}
-
-export function showValidationErrors(alert) {
-  alert.show = true
-  alert.type = 'error'
-  alert.messageCode = 'VALIDATION_FAILED'
-  alert.message = ''
-  alert.details = null
-  alert.params = {}
-}
-
-export function resetAlert(alert) {
-  alert.show = false
-  alert.type = 'success'
-  alert.messageCode = ''
-  alert.message = ''
-  alert.details = null
-  alert.params = {}
-}
-
-export function formatDate(date) {
-  if (!date) return ''
-  const d = new Date(date)
-  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' }
-  return d.toLocaleString('es-ES', options)
-}
-
-export async function cancelAppointmentById(id) {
-  if (!id) throw new Error('Invalid appointment ID')
+// Nueva función específica para profesionales
+export async function saveAppointmentProfessional(form, selectedPatient, alert, calendarRef, fetchAppointmentsFn) {
+  console.log('🎯 saveAppointmentProfessional called with alert:', alert)
   
-  const response = await put(`/appointment/${id}`, {
-    status: { cancelled: true },
-  })
-  return response
-}
+  if (!form.value.patientId || !form.value.professionalId) {
+    showError('Patient and professional must be selected', alert)
+    return
+  }
 
-export async function fetchProfessionals() {
-  const response = await get('/professionals')
-  return response.data || []
-}
-
-export async function fetchPatients() {
-  const response = await get('/patients')
-  return response.data || []
-}
-
-export async function fetchAppointments() {
-  const response = await get('/appointment')
-  return response.data || []
+  const event = {
+    startDate: form.value.start,
+    endDate: form.value.end,
+    patientId: form.value.patientId,
+    professionalId: form.value.professionalId,
+    notes: form.value.notes || '',
+  }
+  
+  try {
+    const response = await post('/appointment', event)
+    console.log('✅ Save appointment response:', response)
+    
+    console.log('🔍 About to call showSuccess with:', { response, alert })
+    showSuccess(response, alert)
+    console.log('🔍 After showSuccess, alert.show is:', alert.show)
+    
+    // Reset form
+    form.value = { 
+      patientId: '', 
+      professionalId: '', 
+      start: null, 
+      end: null, 
+      notes: '' 
+    }
+    
+    // Solo resetear selectedPatient (no hay selectedProfessional en contexto profesional)
+    if (selectedPatient && selectedPatient.value !== undefined) {
+      selectedPatient.value = null
+    }
+    
+    await fetchAppointmentsFn()
+    if (calendarRef && calendarRef.value) {
+      calendarRef.value.getApi().refetchEvents()
+    }
+    
+    console.log('🔍 End of saveAppointmentProfessional, alert.show is:', alert.show)
+    
+  } catch (error) {
+    console.error('❌ Save appointment error:', error)
+    showError(error, alert)
+    throw error
+  }
 }
