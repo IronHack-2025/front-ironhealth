@@ -1,3 +1,5 @@
+import { cleanEmpty } from '../utils/cleanEmpty.js'
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 const getAuthToken = () => {
@@ -121,10 +123,12 @@ async function handleResponse(response) {
 
 export const post = async (endpoint, data) => {
   try {
+    const cleanedData = cleanEmpty(data)
+    
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(cleanedData),
     })
 
     return await handleResponse(response)
@@ -161,10 +165,12 @@ export const get = async (endpoint) => {
 // Añadimos PUT con el mismo manejo
 export const put = async (endpoint, data) => {
   try {
+    const cleanedData = cleanEmpty(data)
+    
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(cleanedData),
     })
     return await handleResponse(response)
   } catch (error) {
@@ -179,10 +185,12 @@ export const put = async (endpoint, data) => {
 
 export const patch = async (endpoint, data) => {
   try {
+    const cleanedData = cleanEmpty(data)
+    
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(cleanedData),
     })
     return await handleResponse(response)
   } catch (error) {
