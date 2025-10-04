@@ -50,13 +50,13 @@
           }}</v-btn>
           <v-btn
             color="primary"
-            @click="saveAppointment"
+            @click="handleSaveAppointment"
             :disabled="!selectedPatient || !isProfessionalAvailable"
           >
             {{ t('common.buttons.save') }}
           </v-btn>
         </v-card-actions>
-        <Alert
+        <AlertMessage
           :show="alert.show"
           :type="alert.type"
           :message-code="alert.messageCode"
@@ -109,21 +109,19 @@
           </div>
         </v-card-text>
         <v-card-text v-else>
-          <div>Error loading appointment details</div>
+          <div>{{ t('messages.error.ERROR_LOADING_APPOINTMENTS') }}</div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" variant="tonal" @click="cancelAppointment">{{
+          <v-btn color="red" variant="tonal" @click="handleCancelAppointment">{{
             t('common.buttons.cancel')
           }}</v-btn>
-          <v-btn color="blue" variant="tonal" @click="updateNotes">{{
-            t('common.buttons.saveNotes')
-          }}</v-btn>
+          <v-btn color="blue" variant="tonal" @click="handleUpdateNotesProfessional">{{ t('common.buttons.saveNotes') }}</v-btn>
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
             t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
-        <Alert
+        <AlertMessage
           :show="alert.show"
           :type="alert.type"
           :message-code="alert.messageCode"
@@ -137,17 +135,31 @@
 </template>
 
 <script setup>
-import { post, get } from '../services/api'
+import { get } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
-import Alert from './AlertMessage.vue'
+import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
+import { 
+  cancelAppointment,
+  handleEventDrop,
+  updateNotesProfessional,
+  saveAppointmentProfessional, // ← Cambiar de saveAppointment a saveAppointmentProfessional
+  formatDate,
+  fetchProfessionals,
+  fetchPatients,
+  fetchAppointments,
+  reloadCalendarEvents,
+  resetAlert,
+  showError,
+  isPersonAvailable
+} from '../utils/calendarFunctions'
 
 const { t } = useI18n()
 const { user, isProfessional } = useAuth()
@@ -167,59 +179,28 @@ const showEventDialog = ref(false)
 const calendarRef = ref(null)
 const appointments = ref([])
 const isDataLoaded = ref(false)
-// Función para verificar si el profesional logueado está disponible en el horario seleccionado
+
 const isProfessionalAvailable = computed(() => {
   if (!form.value.start || !form.value.end || !user.value?.profileId) {
     return true
   }
 
-  const formStart = new Date(form.value.start).getTime()
-  const formEnd = new Date(form.value.end).getTime()
-  const professionalId = user.value.profileId
-
-  const conflicts = appointments.value.filter((appointment) => {
-    if (appointment.status?.cancelled) return false
-    if (appointment.professionalId !== professionalId) return false
-
-    const appointmentStart = new Date(appointment.startDate).getTime()
-    const appointmentEnd = new Date(appointment.endDate).getTime()
-
-    // Detectar solapamiento
-    const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart
-    return hasOverlap
-  })
-
-  return conflicts.length === 0
+  return isPersonAvailable(
+    user.value.profileId,
+    form.value.start,
+    form.value.end,
+    appointments.value,
+    'professional'
+  )
 })
 
-const availablePatients = computed(() => {
+ const availablePatients = computed(() => {
   if (!form.value.start || !form.value.end) {
     return patients.value.map((pat) => ({ ...pat, disabled: false }))
   }
 
-  // Convertir las fechas del formulario a timestamps para comparación más robusta
-  const formStart = new Date(form.value.start).getTime()
-  const formEnd = new Date(form.value.end).getTime()
-
-  // Filtrar para mostrar solo pacuientes disponibles
   const availablePatients = patients.value.filter((pat) => {
-    // Buscar conflictos para este pacientes
-    const conflicts = appointments.value.filter((appointment) => {
-      if (appointment.status?.cancelled) return false
-      if (appointment.patientId !== pat._id) return false
-
-      const appointmentStart = new Date(appointment.startDate).getTime()
-      const appointmentEnd = new Date(appointment.endDate).getTime()
-
-      // Detectar solapamiento: nuevo inicio < cita fin Y nuevo fin > cita inicio
-      const hasOverlap = formStart < appointmentEnd && formEnd > appointmentStart
-
-      return hasOverlap
-    })
-
-    const isAvailable = conflicts.length === 0
-
-    return isAvailable // Solo devolver profesionales SIN conflictos
+    return isPersonAvailable(pat._id, form.value.start, form.value.end, appointments.value, 'patient')
   })
 
   return availablePatients
@@ -254,7 +235,7 @@ watch(
   [patients, professionals],
   () => {
     if (isDataLoaded.value) {
-      reloadCalendarEvents()
+      reloadCalendarEvents(calendarRef)
     }
   },
   { deep: true },
@@ -274,266 +255,6 @@ const form = ref({
   professionalNotes: '',
 })
 
-const cancelAppointmentById = async (id) => {
-  try {
-    const token = localStorage.getItem('authToken')
-    const response = await fetch(`http://localhost:3000/api/appointment/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        status: { cancelled: true, timestamp: new Date() },
-      }),
-    })
-    if (!response.ok) {
-      const errorData = await response.json()
-      const error = new Error(errorData.error || 'Error al cancelar cita')
-      error.messageCode = errorData.messageCode || 'INTERNAL_SERVER_ERROR'
-      error.details = errorData.details || null
-      throw error
-    }
-
-    const result = await response.json()
-    return result
-  } catch (error) {
-    console.error('Error cancelando cita:', error)
-    throw error
-  }
-}
-
-const handleEventDrop = async (info) => {
-  const event = info.event
-
-  // Log para depuración
-  console.log('Evento arrastrado:', event)
-
-  try {
-    await cancelAppointmentById(event.id)
-    console.log('La cita antigua fue cancela con éxito')
-
-    // Crear nueva cita directamente con fetch API
-    const newAppointmentData = {
-      startDate: event.start,
-      endDate: event.end,
-      patientId: event.extendedProps.patientId,
-      professionalId: event.extendedProps.professionalId,
-      notes: event.extendedProps.notes,
-    }
-
-    const response = await post('/appointment', newAppointmentData)
-
-    console.log('Reprogramación exitosa', response)
-
-    // Actualizar el ID del evento en el calendario
-    event.setProp('id', response.data._id)
-
-    // Refrescar eventos del calendario
-    calendarRef.value.getApi().refetchEvents()
-
-    alert.show = true
-    alert.type = 'success'
-    alert.messageCode = response.messageCode || 'APPOINTMENT_RESCHEDULED'
-    alert.details = null
-    alert.params = {}
-    alert.message = t(`messages.success.${response.messageCode || 'APPOINTMENT_RESCHEDULED'}`)
-  } catch (error) {
-    console.error('Error al reprogramar:', error)
-    info.revert()
-
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'APPOINTMENT_RESCHEDULE_FAILED'
-    alert.details = error.details || null
-    alert.params = {}
-    alert.message = t(`messages.error.${error.messageCode || 'APPOINTMENT_RESCHEDULE_FAILED'}`)
-  }
-}
-
-const resetAlert = () => {
-  alert.show = false
-  alert.message = ''
-  alert.type = 'success'
-  alert.messageCode = 'OPERATION_SUCCESS'
-  alert.details = null
-  alert.params = {}
-}
-
-const cancelAppointment = async () => {
-  try {
-    const token = localStorage.getItem('authToken')
-    const response = await fetch(
-      `http://localhost:3000/api/appointment/${selectedEvent.value.id}`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          status: {
-            cancelled: true,
-            timestamp: new Date(),
-          },
-        }),
-      },
-    )
-
-    if (response.ok) {
-      const result = await response.json()
-
-      alert.type = 'success'
-      alert.messageCode = result.messageCode || 'APPOINTMENT_CANCELLED'
-      alert.details = null
-      alert.params = {}
-      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_CANCELLED'}`)
-      alert.show = true
-    } else {
-      const errorData = await response.json()
-
-      alert.type = 'error'
-      alert.messageCode = errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'
-      alert.details = errorData.details || null
-      alert.params = {}
-      alert.message = t(`messages.error.${errorData.messageCode || 'APPOINTMENT_CANCEL_FAILED'}`)
-      alert.show = true
-    }
-  } catch (error) {
-    console.error('Error de conexión al cancelar la cita:', error)
-
-    alert.type = 'error'
-    alert.messageCode = 'NETWORK_ERROR'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('messages.error.NETWORK_ERROR')
-    alert.show = true
-  }
-  await fetchAppointments()
-  calendarRef.value.getApi().refetchEvents()
-}
-
-const saveAppointment = async () => {
-  if (!form.value.patientId) return
-
-  // Asegurar que el professionalId está asignado para profesionales logueados
-  if (isProfessional.value && user.value?.profileId && !form.value.professionalId) {
-    form.value.professionalId = user.value.profileId
-  }
-
-  if (!form.value.professionalId) return
-
-  // Verificar disponibilidad del profesional logueado
-  if (!isProfessionalAvailable.value) {
-    alert.type = 'error'
-    alert.messageCode = 'PROFESSIONAL_NOT_AVAILABLE'
-    alert.details = null
-    alert.params = {}
-    alert.message = ''
-    alert.show = true
-    return
-  }
-
-  const event = {
-    startDate: form.value.start,
-    endDate: form.value.end,
-    patientId: form.value.patientId,
-    professionalId: form.value.professionalId,
-    notes: form.value.notes || '',
-    professionalNotes: form.value.professionalNotes || '',
-  }
-  try {
-    const response = await post('/appointment', event)
-
-    alert.type = 'success'
-    alert.messageCode = response.messageCode || 'APPOINTMENT_CREATED'
-    alert.details = null
-    alert.params = {}
-    alert.message = response.message || ''
-    alert.show = true
-
-    // Solo resetear si fue exitoso
-    form.value = {
-      patientId: '',
-      professionalId: '',
-      start: null,
-      end: null,
-      notes: '',
-      professionalNotes: '',
-    }
-    selectedPatient.value = null
-    dialog.value = false
-    await fetchAppointments()
-    calendarRef.value.getApi().refetchEvents()
-  } catch (error) {
-    console.error('Error:', error)
-
-    alert.type = 'error'
-    alert.messageCode = error.messageCode || 'APPOINTMENT_CREATE_FAILED'
-    alert.details = error.details || null
-    alert.params = {}
-    // Usar el mensaje de error del backend si está disponible, sino usar traducción
-    alert.message = error.message || ''
-    alert.show = true
-  }
-}
-
-const updateNotes = async () => {
-  try {
-    const token = localStorage.getItem('authToken')
-    const response = await fetch(
-      `http://localhost:3000/api/appointment/${selectedEvent.value.id}/notes`,
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          notes: editableNotes.value,
-          professionalNotes: editableProfessionalNotes.value,
-        }),
-      },
-    )
-
-    if (response.ok) {
-      const result = await response.json()
-
-      alert.type = 'success'
-      alert.messageCode = result.messageCode || 'APPOINTMENT_NOTES_UPDATED'
-      alert.details = null
-      alert.params = {}
-      alert.message = t(`messages.success.${result.messageCode || 'APPOINTMENT_NOTES_UPDATED'}`)
-      alert.show = true
-
-      // Actualizar las notas en el evento seleccionado
-      selectedEvent.value.setExtendedProp('notes', editableNotes.value)
-
-      // Refrescar eventos del calendario
-      calendarRef.value.getApi().refetchEvents()
-    } else {
-      const errorData = await response.json()
-
-      alert.type = 'error'
-      alert.messageCode = errorData.messageCode || 'APPOINTMENT_NOTES_UPDATE_FAILED'
-      alert.details = errorData.details || null
-      alert.params = {}
-      alert.message = t(
-        `messages.error.${errorData.messageCode || 'APPOINTMENT_NOTES_UPDATE_FAILED'}`,
-      )
-      alert.show = true
-    }
-  } catch (error) {
-    console.error('Error al actualizar notas:', error)
-
-    alert.type = 'error'
-    alert.messageCode = 'NETWORK_ERROR'
-    alert.details = null
-    alert.params = {}
-    alert.message = t('messages.error.NETWORK_ERROR')
-    alert.show = true
-  }
-}
-
-const formatDate = (date) => {
-  if (!date) return ''
-  const d = new Date(date)
-  // Día y hora (ejemplo: "lun, 10:30")
-  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' }
-  return d.toLocaleString('es-ES', options)
-}
-
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
   initialView: 'listWeek',
@@ -549,7 +270,6 @@ const calendarOptions = ref({
   expandRows: false,
   height: 'auto',
 
-  // ✅ Personalizar el contenido del evento
   eventContent: (arg) => {
     const { event, view } = arg
 
@@ -626,7 +346,6 @@ const calendarOptions = ref({
 
       // Validar que data sea un array
       if (!Array.isArray(data)) {
-        console.error('API response data is not an array:', data)
         successCallback([])
         return
       }
@@ -676,14 +395,21 @@ const calendarOptions = ref({
     }
   },
   select: async (info) => {
-    resetAlert()
+    resetAlert(alert)
     form.value.start = info.startStr
     form.value.end = info.endStr
-    // Asignar automáticamente el ID del profesional logueado
+    
+    // Asegurar que se establezca el professionalId
     if (isProfessional.value && user.value?.profileId) {
       form.value.professionalId = user.value.profileId
     }
-    await fetchAppointments()
+    
+    // Reset otros campos
+    form.value.patientId = ''
+    form.value.notes = ''
+    selectedPatient.value = null
+    
+    appointments.value = await fetchAppointments()
     dialog.value = true
   },
   firstDay: 1,
@@ -695,90 +421,129 @@ const calendarOptions = ref({
   slotMinTime: '07:00:00',
   slotMaxTime: '22:00:00',
   eventClick: async (info) => {
-    resetAlert()
+    resetAlert(alert)
     selectedEvent.value = info.event
     editableNotes.value = info.event.extendedProps.notes || ''
     showEventDialog.value = true
   },
-  eventDrop: handleEventDrop,
+  eventDrop: (info) => handleEventDrop(info, {
+  calendarRef,
+  alert,
+  fetchAppointmentsFn: async () => { 
+    appointments.value = await fetchAppointments() 
+  }
+}),
 })
 
-// ✅ Función para navegar al historial del paciente
 const goToPatientHistory = (patientId) => {
   // Emitir evento al componente padre para mostrar PatientHistoryCalendar
   emit('openPatientHistory', patientId)
 }
 
-// ✅ Definir emit para el componente PatientHistoryCalendar
 const emit = defineEmits(['openPatientHistory'])
 
-// Ensure appointments are fetched and displayed correctly
-const fetchAppointments = async () => {
-  try {
-    const response = await get('/appointment')
-    appointments.value = response.data || []
-
-    if (calendarRef.value) {
-      calendarRef.value.getApi().refetchEvents()
-    }
-  } catch (error) {
-    console.error('Error fetching appointments:', error)
-  }
-}
-
-const fetchProfessionals = async () => {
-  try {
-    const response = await get('/professionals')
-    professionals.value = response.data || []
-  } catch (error) {
-    console.error('Error fetching professionals:', error)
-  }
-}
-
-const fetchPatients = async () => {
-  try {
-    const response = await get('/patients')
-    patients.value = response.data || []
-  } catch (error) {
-    console.error('Error fetching patients:', error)
-  }
-}
-
-const reloadCalendarEvents = () => {
-  if (calendarRef.value?.getApi) {
-    calendarRef.value.getApi().refetchEvents()
-  }
-}
-// Call fetchAppointments on component mount
 onMounted(async () => {
   try {
-    // Cargar todos los datos necesarios primero
-    await Promise.all([fetchPatients(), fetchProfessionals()])
+   const [patientsData, professionalsData] = await Promise.all([
+      fetchPatients(),     
+      fetchProfessionals(),
+    ])
+      
+    const appointmentsData = await fetchAppointments() 
+    
+    patients.value = patientsData
+    professionals.value = professionalsData
+    appointments.value = appointmentsData
 
-    // Marcar que los datos están cargados
-    isDataLoaded.value = true
-
-    // Recargar los eventos del calendario
-    reloadCalendarEvents()
+    isDataLoaded.value = true 
+    reloadCalendarEvents(calendarRef)
   } catch (error) {
-    console.error('Error al cargar datos iniciales:', error)
+    showError(error, alert)
   }
 })
+
+const handleUpdateNotesProfessional = async () => {
+  try {
+    if (!selectedEvent.value) return
+
+    await updateNotesProfessional(
+      selectedEvent.value,
+      editableNotes.value,
+      editableProfessionalNotes.value,
+      alert,
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        showEventDialog.value = false
+        resetAlert(alert)
+      }, 3000) 
+    } 
+
+  } catch (error) {
+    showError(error, alert)
+  }
+}
+
+const handleCancelAppointment = async () => {
+  try {
+    await cancelAppointment(
+      selectedEvent, 
+      alert, 
+      calendarRef, 
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        showEventDialog.value = false
+        resetAlert(alert)
+      }, 3000)
+    }
+
+  } catch (error) {
+    showError(error, alert)
+  }
+}
+const handleSaveAppointment = async () => {
+  try {
+    await saveAppointmentProfessional( // ← Usar la nueva función
+      form, 
+      selectedPatient, 
+      alert, 
+      calendarRef,
+      async () => { 
+        appointments.value = await fetchAppointments() 
+      }
+    )
+  
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        dialog.value = false
+        resetAlert(alert)
+      }, 3000)
+    }
+  } catch (error) {
+    showError(error, alert)
+  }
+}
 </script>
 
 <style scoped>
 /* Igualar la altura de todas las filas de slots en FullCalendar */
 .equal-slot-height .fc-timegrid-slot {
   height: 40px !important;
-  /* Ajusta el valor según lo que necesites */
 }
 
-/* ✅ Estilos para los eventos del calendario */
 :deep(.fc-list-event) {
   position: relative;
 }
 
-/* Asegurar que el texto del evento no se superponga con el botón */
 :deep(.fc-list-event-title) {
   padding-right: 60px;
 }
