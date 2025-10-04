@@ -96,7 +96,7 @@
             t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
-        <Alert
+        <AlertMessage
           :show="alert.show"
           :type="alert.type"
           :message-code="alert.messageCode"
@@ -116,10 +116,11 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
-import Alert from './AlertMessage.vue'
+import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
+import { fetchProfessionals, formatDate, reloadCalendarEvents, resetAlert, showError } from '../utils/calendarFunctions'
 
 const { t } = useI18n()
 const { user, isProfessional, isAdmin } = useAuth()
@@ -170,32 +171,11 @@ watch(
   [professionals],
   () => {
     if (isDataLoaded.value) {
-      reloadCalendarEvents()
+      reloadCalendarEvents(calendarRef) // ← Pasar calendarRef como parámetro
     }
   },
   { deep: true },
 )
-
-const resetAlert = () => {
-  alert.show = false
-  alert.message = ''
-  alert.type = 'success'
-  alert.messageCode = 'OPERATION_SUCCESS'
-  alert.details = null
-  alert.params = {}
-}
-
-// Función reactiva para formatear fechas basada en el locale
-const formatDate = computed(() => {
-  const locale = props.calendarLocale === 'es' ? 'es-ES' : 'en-US'
-  const options = { weekday: 'short', hour: '2-digit', minute: '2-digit' }
-
-  return (date) => {
-    if (!date) return ''
-    const d = new Date(date)
-    return d.toLocaleString(locale, options)
-  }
-})
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
@@ -283,39 +263,27 @@ const calendarOptions = ref({
   slotMinTime: '07:00:00',
   slotMaxTime: '22:00:00',
   eventClick: async (info) => {
-    resetAlert()
+    resetAlert(alert) // ← Pasar alert como parámetro
     selectedEvent.value = info.event
     showEventDialog.value = true
   },
 })
 
-const fetchProfessionals = async () => {
-  try {
-    const response = await get('/professionals')
-    professionals.value = response.data || []
-  } catch (error) {
-    console.error('Error fetching professionals:', error)
-  }
-}
-
-const reloadCalendarEvents = () => {
-  if (calendarRef.value?.getApi) {
-    calendarRef.value.getApi().refetchEvents()
-  }
-}
-
+// ELIMINAR el primer onMounted y mantener solo uno corregido
 onMounted(async () => {
   try {
-    // Cargar solo los datos necesarios
-    await fetchProfessionals()
+    console.log('🎯 Loading initial data for PatientHistoryCalendar...')
+    
+    const professionalsData = await fetchProfessionals()
+    professionals.value = professionalsData
 
-    // Marcar que los datos están cargados
-    isDataLoaded.value = true
-
-    // Recargar los eventos del calendario
-    reloadCalendarEvents()
+    isDataLoaded.value = true 
+    reloadCalendarEvents(calendarRef) // ← Pasar calendarRef como parámetro
+    
+    console.log('✅ Initial data loaded successfully')
   } catch (error) {
     console.error('Error al cargar datos iniciales:', error)
+    showError(error, alert)
   }
 })
 
@@ -324,7 +292,7 @@ watch(
   () => props.patientId,
   () => {
     if (isDataLoaded.value) {
-      reloadCalendarEvents()
+      reloadCalendarEvents(calendarRef) // ← Pasar calendarRef como parámetro
     }
   },
 )
