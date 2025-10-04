@@ -233,6 +233,7 @@
       "PATIENT_NOT_FOUND": "Paciente no encontrado",
       "PROFESSIONAL_NOT_FOUND": "Profesional no encontrado",
       "APPOINTMENT_NOT_FOUND": "No se ha encontrado ninguna cita.",
+      "ERROR_LOADING_APPPOINTMENTS": "Error al cargar las citas",
       "EMAIL_ALREADY_EXISTS": "El correo electrónico ya existe.",
       "INVALID_EMAIL_FORMAT": "Formato de correo electrónico no válido",
       "INTERNAL_SERVER_ERROR": "Error interno del servidor",

@@ -233,6 +233,7 @@
       "INVALID_EMAIL_FORMAT": "Invalid email format",
       "INTERNAL_SERVER_ERROR": "Internal server error",
       "APPOINTMENT_CONFLICT": "Appointment time conflict",
+      "ERROR_LOADING_APPPOINTMENTS": "Error loading appointments",
       "NETWORK_ERROR": "Network connection error",
       "PATIENT_CREATION_FAILED": "Failed to create patient",
       "PROFESSIONAL_CREATION_FAILED": "Failed to create professional",

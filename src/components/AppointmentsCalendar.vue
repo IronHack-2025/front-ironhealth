@@ -52,7 +52,7 @@
           }}</v-btn>
           <v-btn color="primary" @click="handleSaveAppointment">{{ t('common.buttons.save') }}</v-btn>
         </v-card-actions>
-        <Alert :show="alert.show" :type="alert.type" :message="alert.message" />
+        <AlertMessage :show="alert.show" :type="alert.type" :message="alert.message" />
       </v-card>
     </v-dialog>
 
@@ -107,7 +107,7 @@
             t('common.buttons.close')
           }}</v-btn>
         </v-card-actions>
-        <Alert
+        <AlertMessage
           :show="alert.show"
           :type="alert.type"
           :message-code="alert.messageCode"
@@ -128,7 +128,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
-import Alert from './AlertMessage.vue'
+import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 import { 
@@ -196,7 +196,7 @@ const availablePatients = computed(() => {
   if (!form.value.start || !form.value.end) {
     return patients.value.map((pat) => ({ ...pat, disabled: false }))
   }
-  
+
   const availablePatients = patients.value.filter((pat) => {
     return isPersonAvailable(pat._id, form.value.start, form.value.end, appointments.value, 'patient')
   })
