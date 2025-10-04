@@ -6,7 +6,7 @@
         :label="$t('views.profile.changePassword.currentPassword')"
         type="password"
         prepend-inner-icon="mdi-lock"
-        :rules="currentPasswordRules"
+        :rules="[rules.currentPassword(currentPassword)]"
         :error-messages="errors.currentPassword"
         variant="outlined"
         class="mb-3"
@@ -18,7 +18,7 @@
         :label="$t('views.profile.changePassword.newPassword')"
         type="password"
         prepend-inner-icon="mdi-lock-plus"
-        :rules="newPasswordRules"
+        :rules="[rules.newPassword(newPassword)]"
         :error-messages="errors.newPassword"
         variant="outlined"
         class="mb-3"
@@ -30,7 +30,7 @@
         :label="$t('views.profile.changePassword.confirmPassword')"
         type="password"
         prepend-inner-icon="mdi-lock-check"
-        :rules="confirmPasswordRules"
+        :rules="[rules.confirmPassword(confirmPassword, newPassword)]"
         variant="outlined"
         class="mb-4"
         required
@@ -60,13 +60,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { post } from '@/services/api.js'
 import AlertMessage from '@/components/AlertMessage.vue'
+import { buildRules } from '@/utils/rules.js'
 
-const { t: $t } = useI18n()
+const { t , locale } = useI18n()
+const rules = computed(() => buildRules(t))
+
+watch(locale, () => {
+  if (form.value) {
+    form.value.validate()
+  }
+})
 const router = useRouter()
 
 // Reactive data
@@ -89,22 +97,8 @@ const alertMessage = reactive({
 const errors = reactive({
   currentPassword: [],
   newPassword: [],
+  confirmPassword: [],
 })
-
-// Validation rules
-const currentPasswordRules = [
-  (v) => !!v || $t('views.profile.changePassword.messages.currentPasswordRequired'),
-]
-
-const newPasswordRules = [
-  (v) => !!v || $t('views.profile.changePassword.messages.newPasswordRequired'),
-  (v) => (v && v.length >= 6) || $t('views.profile.changePassword.messages.passwordMinLength'),
-]
-
-const confirmPasswordRules = [
-  (v) => !!v || $t('views.profile.changePassword.messages.confirmPasswordRequired'),
-  (v) => v === newPassword.value || $t('views.profile.changePassword.messages.passwordsNotMatch'),
-]
 
 // Clear alertMessage
 const clearAlert = () => {
@@ -138,7 +132,7 @@ const handleSubmit = async () => {
     alertMessage.messageCode = response.messageCode || 'OPERATION_SUCCESS'
     alertMessage.details = Array.isArray(response.details) ? response.details : undefined
     alertMessage.params = response.params || {}
-    alertMessage.message = $t(`messages.success.${response.messageCode}`)
+    alertMessage.message = t(`messages.success.${response.messageCode}`)
 
     // Reset form
     currentPassword.value = ''
@@ -158,13 +152,13 @@ const handleSubmit = async () => {
       error.details.forEach((err) => {
         if (err.field === 'currentPassword') {
           errors.currentPassword.push(
-            $t('views.profile.changePassword.messages.invalidCurrentPassword'),
+            t('views.profile.changePassword.messages.invalidCurrentPassword'),
           )
         } else if (err.field === 'newPassword') {
           if (err.code === 'PASSWORD_MIN_LENGTH') {
-            errors.newPassword.push($t('views.profile.changePassword.messages.passwordMinLength'))
+            errors.newPassword.push(t('views.profile.changePassword.messages.passwordMinLength'))
           } else {
-            errors.newPassword.push($t('views.profile.changePassword.messages.newPasswordRequired'))
+            errors.newPassword.push(t('views.profile.changePassword.messages.newPasswordRequired'))
           }
         }
       })
@@ -175,7 +169,7 @@ const handleSubmit = async () => {
     alertMessage.messageCode = error.messageCode || 'INTERNAL_SERVER_ERROR'
     alertMessage.details = Array.isArray(error.details) ? error.details : undefined
     alertMessage.params = error.params || {}
-    alertMessage.message = $t(`messages.error.${error.messageCode}`)
+    alertMessage.message = t(`messages.error.${error.messageCode}`)
   } finally {
     loading.value = false
   }

@@ -36,12 +36,6 @@ const headers = computed(() => [
     sortable: true,
   },
   {
-    title: t('views.users.table.profileModel'),
-    key: 'profileModel',
-    align: 'center',
-    sortable: true,
-  },
-  {
     title: t('views.users.table.isActive'),
     key: 'isActive',
     align: 'center',

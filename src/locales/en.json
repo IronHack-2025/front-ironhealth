@@ -149,18 +149,13 @@
       "search": "Search...",
       "required": "This field is required",
       "actions": "Actions",
-      "invalidEmail": "Invalid email format",
-      "invalidPhone": "Invalid phone number",
-      "invalidDate": "Invalid date",
-      "validLength": "This field must be between {min} and {max} characters.",
       "imageRequired": "Image upload is required.",
       "city": "City",
       "street": "Street",
       "postalCode": "Postal Code",
       "gender": "Gender",
       "emergencyContact": "Emergency contact",
-      "nationality": "Nationality",
-      "invalidDNI": "DNI must be 7 or 8 digits followed by a letter"
+      "nationality": "Nationality"
     },
     "confirmations": {
       "deleteTitle": "Confirm deletion",
@@ -202,7 +197,9 @@
       "genderMan": "Man",
       "genderWoman": "Woman",
       "genderNonBinary": "Non-binary"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "messages": {
     "success": {
@@ -276,8 +273,10 @@
       "ID_INVALID_FORMAT": "Invalid ID",
       "PASSWORD_LENGTH": "Password must be at least 6 characters long",
       "PASSWORD_INCORRECT": "Incorrect password",
+      "PASSWORDS_DO_NOT_MATCH": "Passwords do not match",
       "DNI_ALREADY_EXISTS": "This DNI is already registered",
-      "DNI_INVALID_FORMAT": "DNI must be 7 or 8 digits"
+      "DNI_INVALID_FORMAT": "DNI must be 7 or 8 digits",
+      "ACCEPTED_LENGTH": "This field must be between {min} and {max} characters."
     },
     "fields": {
       "firstName": "First name",

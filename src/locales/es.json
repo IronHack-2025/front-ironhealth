@@ -149,10 +149,6 @@
       "photo": "Foto",
       "required": "Este campo es obligatorio",
       "actions": "Acciones",
-      "invalidEmail": "Por favor ingrese un email válido",
-      "invalidPhone": "Por favor ingrese un número de teléfono válido",
-      "invalidDate": "Fecha inválida",
-      "validLength": "Debe tener entre {min} y {max} caracteres",
       "search": "Buscar...",
       "city": "Ciudad",
       "street": "Calle",
@@ -160,7 +156,6 @@
       "gender": "Género",
       "emergencyContact": "Contacto de emergencia",
       "nationality": "Nacionalidad",
-      "invalidDNI": "El DNI debe tener 7 u 8 dígitos seguidos de una letra",
       "imageRequired": "La carga de imagen es obligatoria."
     },
     "confirmations": {
@@ -206,7 +201,9 @@
       "genderMan": "Hombre",
       "genderWoman": "Mujer",
       "genderNonBinary": "No binario"
-    }
+    },
+    "yes": "Sí",
+    "no": "No"
   },
   "messages": {
     "success": {
@@ -279,7 +276,11 @@
       "NOTES_TOO_LONG": "Las notas no pueden exceder los {max} caracteres",
       "ID_INVALID_FORMAT": "ID inválido",
       "PASSWORD_LENGTH": "La contraseña debe tener al menos 6 caracteres",
-      "PASSWORD_INCORRECT": "Contraseña incorrecta"
+      "PASSWORD_INCORRECT": "Contraseña incorrecta",
+      "PASSWORDS_DO_NOT_MATCH": "Las contraseñas no coinciden",
+      "DNI_ALREADY_EXISTS": "Este DNI ya está registrado",
+      "DNI_INVALID_FORMAT": "El DNI debe tener 7 u 8 dígitos",
+      "ACCEPTED_LENGTH": "Debe tener entre {min} y {max} caracteres"
     },
     "fields": {
       "firstName": "Nombre",
