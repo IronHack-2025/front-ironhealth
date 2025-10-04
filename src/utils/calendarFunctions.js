@@ -1,5 +1,5 @@
 import { post, get, put, patch } from '../services/api'
-import { useI18n } from 'vue-i18n'
+
 
 export function hasTimeOverlap(start1, end1, start2, end2) {
   const start1Time = new Date(start1).getTime()
@@ -44,7 +44,6 @@ export function reloadCalendarEvents(calendarRef) {
 }
 export function showSuccess(response, alert) {
   if (!alert) {
-    console.error('Alert object is undefined')
     return
   }
   
@@ -76,7 +75,6 @@ export function showSuccess(response, alert) {
 
 export function showError(error, alert) {
   if (!alert) {
-    console.error('Alert object is undefined')
     return
   }
   
@@ -180,11 +178,9 @@ export async function cancelAppointment(selectedEvent, alert, calendarRef, fetch
 
 export async function handleEventDrop(info, { calendarRef, alert, fetchAppointmentsFn }) {
   const event = info.event
-  console.log('Evento arrastrado:', event)
 
   try {
     await cancelAppointmentById(event.id)
-    console.log('La cita antigua fue cancelada con éxito')
 
     const newAppointmentData = {
       startDate: event.start,
@@ -195,13 +191,14 @@ export async function handleEventDrop(info, { calendarRef, alert, fetchAppointme
     }
 
     const response = await post('/appointment', newAppointmentData)
-    console.log('Reprogramación exitosa', response)
 
     event.setProp('id', response.data._id)
     calendarRef.value.getApi().refetchEvents()
     showSuccess(response, alert)
+    if (fetchAppointmentsFn) {
+      await fetchAppointmentsFn()
+    }
   } catch (error) {
-    console.error('Error al reprogramar:', error)
     info.revert()
     showError(error, alert)
   }
@@ -227,18 +224,10 @@ export async function updateNotesProfessional(selectedEvent, editableNotes, edit
   }
 
   try {
-    console.log('🎯 updateNotesProfessional called with:', { 
-      eventId: selectedEvent.id, 
-      notes: editableNotes, 
-      professionalNotes: editableProfessionalNotes 
-    })
-
     const response = await patch(`/appointment/${selectedEvent.id}/notes`, {
       notes: editableNotes,
       professionalNotes: editableProfessionalNotes,
     })
-
-    console.log('✅ Update notes response:', response)
 
     showSuccess(response, alert)
     
@@ -250,7 +239,6 @@ export async function updateNotesProfessional(selectedEvent, editableNotes, edit
     }
 
   } catch (error) {
-    console.error('❌ Update notes error:', error)
     showError(error, alert)
     throw error
   }
@@ -271,7 +259,6 @@ export async function saveAppointment(form, selectedPatient, selectedProfessiona
   
   try {
     const response = await post('/appointment', event)
-    console.log('✅ Save appointment response:', response) // Debug log
     
     showSuccess(response, alert)
     
@@ -285,7 +272,6 @@ export async function saveAppointment(form, selectedPatient, selectedProfessiona
       calendarRef.value.getApi().refetchEvents()
     }
   } catch (error) {
-    console.error('❌ Save appointment error:', error)
     showError(error, alert)
     throw error
   }
@@ -294,7 +280,6 @@ export async function saveAppointment(form, selectedPatient, selectedProfessiona
 export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fetchAppointmentsFn) {
   try {
     if (!alert) {
-      console.error('Alert object is undefined')
       return
     }
 
@@ -317,7 +302,6 @@ export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fe
     }
 
     const response = await post('/appointment', appointmentData)
-    console.log('✅ Save own patient appointment response:', response) // Debug log
     
     showSuccess(response, alert)
     
@@ -330,7 +314,6 @@ export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fe
     }
     
   } catch (error) {
-    console.error('❌ Save own patient appointment error:', error)
     showError(error, alert)
     throw error
   }
@@ -338,8 +321,6 @@ export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fe
 
 // Nueva función específica para profesionales
 export async function saveAppointmentProfessional(form, selectedPatient, alert, calendarRef, fetchAppointmentsFn) {
-  console.log('🎯 saveAppointmentProfessional called with alert:', alert)
-  
   if (!form.value.patientId || !form.value.professionalId) {
     showError('Patient and professional must be selected', alert)
     return
@@ -355,11 +336,8 @@ export async function saveAppointmentProfessional(form, selectedPatient, alert, 
   
   try {
     const response = await post('/appointment', event)
-    console.log('✅ Save appointment response:', response)
     
-    console.log('🔍 About to call showSuccess with:', { response, alert })
     showSuccess(response, alert)
-    console.log('🔍 After showSuccess, alert.show is:', alert.show)
     
     // Reset form
     form.value = { 
@@ -380,10 +358,7 @@ export async function saveAppointmentProfessional(form, selectedPatient, alert, 
       calendarRef.value.getApi().refetchEvents()
     }
     
-    console.log('🔍 End of saveAppointmentProfessional, alert.show is:', alert.show)
-    
   } catch (error) {
-    console.error('❌ Save appointment error:', error)
     showError(error, alert)
     throw error
   }

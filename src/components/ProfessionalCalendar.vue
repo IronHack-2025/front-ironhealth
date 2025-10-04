@@ -346,7 +346,6 @@ const calendarOptions = ref({
 
       // Validar que data sea un array
       if (!Array.isArray(data)) {
-        console.error('API response data is not an array:', data)
         successCallback([])
         return
       }
@@ -459,7 +458,6 @@ onMounted(async () => {
     isDataLoaded.value = true 
     reloadCalendarEvents(calendarRef)
   } catch (error) {
-    console.error('Error al cargar datos iniciales:', error)
     showError(error, alert)
   }
 })
@@ -467,8 +465,6 @@ onMounted(async () => {
 const handleUpdateNotesProfessional = async () => {
   try {
     if (!selectedEvent.value) return
-
-    console.log('🎯 Starting update notes...') // Debug log
 
     await updateNotesProfessional(
       selectedEvent.value,
@@ -480,30 +476,20 @@ const handleUpdateNotesProfessional = async () => {
       }
     )
 
-    console.log('✅ Update notes completed, alert state:', alert) // Debug log
-
-    // Solo cerrar el diálogo si la operación fue exitosa
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         showEventDialog.value = false
         resetAlert(alert)
-      }, 3000) // Aumentar a 3 segundos para dar más tiempo
-    } else if (alert.show && alert.type === 'error') {
-      // Si hay error, no cerrar el diálogo automáticamente
-      // Dejar que el usuario vea el error y cierre manualmente
-    }
+      }, 3000) 
+    } 
 
   } catch (error) {
-    console.error('❌ Error in handleUpdateNotesProfessional:', error)
     showError(error, alert)
-    // No cerrar el diálogo en caso de error
   }
 }
 
 const handleCancelAppointment = async () => {
   try {
-    console.log('🎯 Starting cancel appointment...') // Debug log
-
     await cancelAppointment(
       selectedEvent, 
       alert, 
@@ -513,9 +499,6 @@ const handleCancelAppointment = async () => {
       }
     )
 
-    console.log('✅ Cancel appointment completed, alert state:', alert) // Debug log
-
-    // Solo cerrar si la operación fue exitosa
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         showEventDialog.value = false
@@ -524,14 +507,11 @@ const handleCancelAppointment = async () => {
     }
 
   } catch (error) {
-    console.error('❌ Error in handleCancelAppointment:', error)
     showError(error, alert)
   }
 }
 const handleSaveAppointment = async () => {
   try {
-    console.log('🎯 Starting save appointment...')
-    
     await saveAppointmentProfessional( // ← Usar la nueva función
       form, 
       selectedPatient, 
@@ -541,9 +521,7 @@ const handleSaveAppointment = async () => {
         appointments.value = await fetchAppointments() 
       }
     )
-    
-    console.log('✅ Save appointment completed, alert state:', alert)
-    
+  
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         dialog.value = false
@@ -551,7 +529,6 @@ const handleSaveAppointment = async () => {
       }, 3000)
     }
   } catch (error) {
-    console.error('❌ Error in handleSaveAppointment:', error)
     showError(error, alert)
   }
 }
@@ -561,15 +538,12 @@ const handleSaveAppointment = async () => {
 /* Igualar la altura de todas las filas de slots en FullCalendar */
 .equal-slot-height .fc-timegrid-slot {
   height: 40px !important;
-  /* Ajusta el valor según lo que necesites */
 }
 
-/* ✅ Estilos para los eventos del calendario */
 :deep(.fc-list-event) {
   position: relative;
 }
 
-/* Asegurar que el texto del evento no se superponga con el botón */
 :deep(.fc-list-event-title) {
   padding-right: 60px;
 }

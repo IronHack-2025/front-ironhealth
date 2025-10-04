@@ -93,12 +93,6 @@ async function handleResponse(response) {
     // Manejar errores HTTP
     try {
       const errorData = await response.json()
-      console.error('❌ API Error Response:', errorData)
-
-      // ¡IMPORTANTE! Mostrar los detalles de validación
-      if (errorData.details && Array.isArray(errorData.details)) {
-        console.error('📋 Validation Details:', errorData.details)
-      }
 
       // Crear error estructurado con código de mensaje
       const error = new Error(errorData.message || errorData.error || 'API request failed')
@@ -114,8 +108,6 @@ async function handleResponse(response) {
         throw parseError
       }
 
-      console.error('❌ Could not parse error response:', parseError)
-
       // Si no se puede parsear el JSON del error
       const error = new Error(`HTTP ${response.status}: ${response.statusText}`)
       error.messageCode = 'HTTP_ERROR'
@@ -129,24 +121,14 @@ async function handleResponse(response) {
 
 export const post = async (endpoint, data) => {
   try {
-    console.log('🚀 POST Request Details:')
-    console.log('URL:', `${apiBaseUrl}${endpoint}`)
-    console.log('Headers:', getAuthHeaders())
-    console.log('Body Data:', data)
-    console.log('Body JSON:', JSON.stringify(data))
-
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(data),
     })
 
-    console.log('📥 Response Status:', response.status)
-    console.log('📥 Response Headers:', [...response.headers.entries()])
-
     return await handleResponse(response)
   } catch (error) {
-    console.error('❌ POST Error:', error)
     // Si es un error de red o fetch (no tiene messageCode)
     if (!error.messageCode) {
       error.messageCode = 'NETWORK_ERROR'
@@ -179,21 +161,13 @@ export const get = async (endpoint) => {
 // Añadimos PUT con el mismo manejo
 export const put = async (endpoint, data) => {
   try {
-    console.log(':cohete: PUT Request Details:')
-    console.log('URL:', `${apiBaseUrl}${endpoint}`)
-    console.log('Headers:', getAuthHeaders())
-    console.log('Body Data:', data)
-    console.log('Body JSON:', JSON.stringify(data))
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(data),
     })
-    console.log(':bandeja_de_entrada: Response Status:', response.status)
-    console.log(':bandeja_de_entrada: Response Headers:', [...response.headers.entries()])
     return await handleResponse(response)
   } catch (error) {
-    console.error(':x: PUT Error:', error)
     // Si es un error de red o fetch (no tiene messageCode)
     if (!error.messageCode) {
       error.messageCode = 'NETWORK_ERROR'
@@ -205,21 +179,13 @@ export const put = async (endpoint, data) => {
 
 export const patch = async (endpoint, data) => {
   try {
-    console.log(':cohete: PATCH Request Details:')
-    console.log('URL:', `${apiBaseUrl}${endpoint}`)
-    console.log('Headers:', getAuthHeaders())
-    console.log('Body Data:', data)
-    console.log('Body JSON:', JSON.stringify(data))
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
       body: JSON.stringify(data),
     })
-    console.log(':bandeja_de_entrada: Response Status:', response.status)
-    console.log(':bandeja_de_entrada: Response Headers:', [...response.headers.entries()])
     return await handleResponse(response)
   } catch (error) {
-    console.error(':x: PATCH Error:', error)
     // Si es un error de red o fetch (no tiene messageCode)
     if (!error.messageCode) {
       error.messageCode = 'NETWORK_ERROR'

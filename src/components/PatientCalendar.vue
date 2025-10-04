@@ -139,7 +139,7 @@
 </template>
 
 <script setup>
-import { post, get, put } from '../services/api'
+import { get} from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -281,8 +281,6 @@ const isPatientAvailable = computed(() => {
 
 const handleCancelAppointment = async () => {
   try {
-    console.log('🎯 Starting cancel appointment...') // Debug log
-    
     await cancelAppointment(
       selectedEvent, 
       alert, 
@@ -291,10 +289,7 @@ const handleCancelAppointment = async () => {
         appointments.value = await fetchAppointments() 
       }
     )
-    
-    console.log('✅ Cancel appointment completed, alert state:', alert) // Debug log
-    
-    // Solo cerrar si la operación fue exitosa
+ 
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         showEventDialog.value = false
@@ -303,15 +298,12 @@ const handleCancelAppointment = async () => {
     }
     
   } catch (error) {
-    console.error('Error in handleCancelAppointment:', error)
     showError(error, alert)
   }
 }
 
 const handleSaveAppointment = async () => {
   try {
-    console.log('🎯 Starting save appointment...') // Debug log
-    
     await saveAppointmentOwnPatient(
       form.value, 
       alert, 
@@ -321,9 +313,6 @@ const handleSaveAppointment = async () => {
       }
     )
     
-    console.log('✅ Save appointment completed, alert state:', alert) // Debug log
-    
-    // Reset form después del éxito
     form.value = {
       patientId: user.value?.profileId || '',
       professionalId: '',
@@ -333,16 +322,14 @@ const handleSaveAppointment = async () => {
     }
     selectedProfessional.value = null
     
-    // Solo cerrar el diálogo y resetear la alerta después de mostrarla
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         dialog.value = false
         resetAlert(alert)
-      }, 3000) // Dar 3 segundos para ver la alerta
+      }, 3000) 
     }
     
   } catch (error) {
-    console.error('Error in handleSaveAppointment:', error)
     showError(error, alert)
   }
 }
@@ -372,7 +359,6 @@ const calendarOptions = ({
       const data = response.data || []
 
       if (!Array.isArray(data)) {
-        console.error('API response data is not an array:', data)
         successCallback([])
         return
       }
@@ -410,7 +396,6 @@ const calendarOptions = ({
       })
       successCallback(events)
     } catch (error) {
-      console.error('Error loading events:', error)
       failureCallback(error)
     }
   },
@@ -460,16 +445,13 @@ onMounted(async () => {
     isDataLoaded.value = true 
     reloadCalendarEvents(calendarRef)
   } catch (error) {
-    console.error('Error al cargar datos iniciales:', error)
     showError(error, alert)
   }
 })
 </script>
 
 <style scoped>
-/* Igualar la altura de todas las filas de slots en FullCalendar */
 .equal-slot-height .fc-timegrid-slot {
   height: 40px !important;
-  /* Ajusta el valor según lo que necesites */
 }
 </style>

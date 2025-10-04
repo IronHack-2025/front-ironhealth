@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { post, get } from '../services/api'
+import { get } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -278,7 +278,6 @@ const calendarOptions = ref({
 
       // Validar que data sea un array
       if (!Array.isArray(data)) {
-        console.error('API response data is not an array:', data)
         successCallback([])
         return
       }
@@ -357,7 +356,6 @@ onMounted(async () => {
     isDataLoaded.value = true 
     reloadCalendarEvents(calendarRef)
   } catch (error) {
-    console.error('Error al cargar datos iniciales:', error)
     showError(error, alert)
   }
 })
@@ -384,14 +382,11 @@ const handleCancelAppointment = async () => {
     }
     
   } catch (error) {
-    console.error('Error in handleCancelAppointment:', error)
-    // La función cancelAppointment ya maneja los errores
+    showError(error, alert)
   }
 }
 const handleSaveAppointment = async () => {
   try {
-    console.log('🎯 Starting save appointment...') // Debug log
-    
     await saveAppointment(
       form, 
       selectedPatient, 
@@ -404,8 +399,6 @@ const handleSaveAppointment = async () => {
       }
     )
     
-    console.log('✅ Save appointment completed, alert state:', alert) // Debug log
-    
     // Dar tiempo para ver la alerta antes de cerrar el diálogo
     if(alert.show && alert.type === 'success') {
       setTimeout(() => {
@@ -416,8 +409,7 @@ const handleSaveAppointment = async () => {
     
     
   } catch (error) {
-    console.error('❌ Error in handleSaveAppointment:', error)
-    // La función saveAppointment ya maneja los errores y muestra la alerta
+    showError(error, alert)
   }
 }
 </script>

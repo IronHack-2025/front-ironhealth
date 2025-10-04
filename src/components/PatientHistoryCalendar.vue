@@ -188,7 +188,7 @@ const calendarOptions = ref({
   expandRows: false,
   height: 'auto',
 
-  events: async (fetchInfo, successCallback, failureCallback) => {
+  events: async (_fetchInfo, successCallback, failureCallback) => {
     try {
       if (!isDataLoaded.value) {
         successCallback([])
@@ -198,7 +198,6 @@ const calendarOptions = ref({
       const data = response.data || []
 
       if (!Array.isArray(data)) {
-        console.error('API response data is not an array:', data)
         successCallback([])
         return
       }
@@ -269,20 +268,14 @@ const calendarOptions = ref({
   },
 })
 
-// ELIMINAR el primer onMounted y mantener solo uno corregido
 onMounted(async () => {
   try {
-    console.log('🎯 Loading initial data for PatientHistoryCalendar...')
-    
     const professionalsData = await fetchProfessionals()
     professionals.value = professionalsData
 
     isDataLoaded.value = true 
     reloadCalendarEvents(calendarRef) // ← Pasar calendarRef como parámetro
-    
-    console.log('✅ Initial data loaded successfully')
   } catch (error) {
-    console.error('Error al cargar datos iniciales:', error)
     showError(error, alert)
   }
 })
@@ -292,20 +285,17 @@ watch(
   () => props.patientId,
   () => {
     if (isDataLoaded.value) {
-      reloadCalendarEvents(calendarRef) // ← Pasar calendarRef como parámetro
+      reloadCalendarEvents(calendarRef) 
     }
   },
 )
 </script>
 
 <style scoped>
-/* Igualar la altura de todas las filas de slots en FullCalendar */
 .equal-slot-height .fc-timegrid-slot {
   height: 40px !important;
-  /* Ajusta el valor según lo que necesites */
 }
 
-/* Estilos para citas canceladas */
 :deep(.cancelled-appointment) {
   opacity: 0.8;
 }
