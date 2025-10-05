@@ -210,7 +210,7 @@ import AlertMessage from './AlertMessage.vue'
 import CloudinaryUpload from './CloudinaryUpload.vue'
 import { post, put } from '@/services/api.js'
 import nationalitiesData from '@/assets/data/nationalities.json'
-import { buildRules } from '@/utils/rules.js'
+import { buildRules } from '@/utils/validationRules.js'
 const { t, locale } = useI18n()
 const rules = computed(() => buildRules(t))
 
