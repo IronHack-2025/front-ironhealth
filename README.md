@@ -33,3 +33,30 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Testing
+
+This project uses Vitest for unit/component testing and Playwright for E2E. A sample Playwright E2E test is available at `__test__/login.e2e.js`.
+
+Quick E2E run (Playwright):
+
+1. Install Playwright:
+
+```sh
+npm install --save-dev @playwright/test
+npx playwright install
+```
+
+2. Start dev server:
+
+```sh
+npm run dev
+```
+
+3. Run the login test:
+
+```sh
+npx playwright test __test__/login.e2e.js
+```
+
+Adjust the test URL or selectors in `__test__/login.e2e.js` if your app uses different markup or runs on another port.
