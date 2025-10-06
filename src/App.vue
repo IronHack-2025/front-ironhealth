@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '@/composables/useAuth.js'
 import SelectLanguage from '@/components/SelectLanguage.vue'
+import ironhealthLogo from '@/assets/ironhealth-logo.png'
 
 const drawer = ref(true)
 const rail = ref(true)
@@ -44,7 +45,7 @@ watch(currentLocale, (newLocale) => {
         <v-list-item>
           <template v-slot:prepend>
             <v-avatar>
-              <v-img src="src\assets\ironhealth-logo.png"></v-img>
+              <v-img :src="ironhealthLogo"></v-img>
             </v-avatar>
           </template>
           <v-list-item-title v-if="!rail"> IronHealth </v-list-item-title>
