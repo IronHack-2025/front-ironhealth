@@ -260,6 +260,8 @@ const calendarOptions = ref({
   initialView: 'listWeek',
   selectable: true,
   editable: true,
+  eventStartEditable: true, 
+  eventDurationEditable: false,
   selectAllow(selectInfo) {
     const now = new Date()
     return selectInfo.start >= now
