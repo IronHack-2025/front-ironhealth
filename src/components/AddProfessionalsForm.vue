@@ -121,7 +121,15 @@
               />
 
               <!-- Botón principal -->
-              <v-btn block color="primary" class="mt-6" size="large" @click="submitForm">
+              <v-btn
+                block
+                color="primary"
+                class="mt-6"
+                size="large"
+                :loading="isLoading"
+                :disabled="isLoading"
+                @click="submitForm"
+              >
                 {{ btnTitle }}
               </v-btn>
             </v-form>
@@ -171,6 +179,7 @@ const props = defineProps({
 const emit = defineEmits(['professional-added', 'professional-updated'])
 const formRef = ref(null)
 const isValid = ref(false)
+const isLoading = ref(false)
 const form = reactive({
   firstName: '',
   lastName: '',
@@ -274,6 +283,7 @@ async function submitForm() {
   const { valid } = await formRef.value.validate()
   if (!valid) return showValidationErrors()
 
+  isLoading.value = true
   alert.show = false
   clearFieldErrors()
 
@@ -303,6 +313,7 @@ async function submitForm() {
   } catch (error) {
     showError(error)
   } finally {
+    isLoading.value = false
     setTimeout(() => (alert.show = false), 3000)
   }
 }

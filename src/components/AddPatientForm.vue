@@ -180,7 +180,15 @@
               />
 
               <!-- Botón -->
-              <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
+              <v-btn
+                block
+                color="primary"
+                class="mt-6"
+                size="large"
+                :loading="isLoading"
+                :disabled="isLoading"
+                @click="newPatient"
+              >
                 {{ btnTitle }}
               </v-btn>
             </v-form>
@@ -230,6 +238,7 @@ const props = defineProps({
 const emit = defineEmits(['patient-added', 'patient-updated'])
 const formRef = ref(null)
 const isValid = ref(false)
+const isLoading = ref(false)
 const form = reactive({
   firstName: '',
   lastName: '',
@@ -329,6 +338,7 @@ async function newPatient() {
   const { valid } = await formRef.value.validate()
   if (!valid) return showValidationErrors()
 
+  isLoading.value = true
   alert.show = false
   clearFieldErrors()
 
@@ -358,6 +368,7 @@ async function newPatient() {
   } catch (error) {
     showError(error)
   } finally {
+    isLoading.value = false
     setTimeout(() => (alert.show = false), 3000)
   }
 }
