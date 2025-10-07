@@ -5,10 +5,10 @@ import { post } from '@/services/api'
 // 📝 Constantes para claves de localStorage (fuente única de verdad)
 const STORAGE_KEYS = Object.freeze({
   AUTH_TOKEN: 'authToken',
-  USER: 'user', 
+  USER: 'user',
   USER_ROLE: 'userRole',
   PROFILE_ID: 'profileId',
-  USER_ID: 'userId'
+  USER_ID: 'userId',
 })
 // Estado global reactivo
 const authToken = ref(localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || null)
@@ -35,7 +35,7 @@ const storage = {
     try {
       const item = localStorage.getItem(key)
       if (item === null) return defaultValue
-      
+
       // Intentar parsear como JSON, si falla devolver string
       try {
         return JSON.parse(item)
@@ -57,10 +57,10 @@ const storage = {
   },
 
   clear() {
-    Object.values(STORAGE_KEYS).forEach(key => this.remove(key))
+    Object.values(STORAGE_KEYS).forEach((key) => this.remove(key))
     // Limpiar cookies
     document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-  }
+  },
 }
 
 export function useAuth() {
@@ -207,6 +207,6 @@ export function useAuth() {
     getAuthHeaders,
 
     // ✅ Constantes para tests y consistencia
-    STORAGE_KEYS
+    STORAGE_KEYS,
   }
 }

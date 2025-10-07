@@ -116,7 +116,9 @@
           <v-btn color="red" variant="tonal" @click="handleCancelAppointment">{{
             t('common.buttons.cancel')
           }}</v-btn>
-          <v-btn color="blue" variant="tonal" @click="handleUpdateNotesProfessional">{{ t('common.buttons.saveNotes') }}</v-btn>
+          <v-btn color="blue" variant="tonal" @click="handleUpdateNotesProfessional">{{
+            t('common.buttons.saveNotes')
+          }}</v-btn>
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
             t('common.buttons.close')
           }}</v-btn>
@@ -146,7 +148,7 @@ import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
-import { 
+import {
   cancelAppointment,
   handleEventDrop,
   updateNotesProfessional,
@@ -158,7 +160,7 @@ import {
   reloadCalendarEvents,
   resetAlert,
   showError,
-  isPersonAvailable
+  isPersonAvailable,
 } from '../utils/calendarFunctions'
 
 const { t } = useI18n()
@@ -190,17 +192,23 @@ const isProfessionalAvailable = computed(() => {
     form.value.start,
     form.value.end,
     appointments.value,
-    'professional'
+    'professional',
   )
 })
 
- const availablePatients = computed(() => {
+const availablePatients = computed(() => {
   if (!form.value.start || !form.value.end) {
     return patients.value.map((pat) => ({ ...pat, disabled: false }))
   }
 
   const availablePatients = patients.value.filter((pat) => {
-    return isPersonAvailable(pat._id, form.value.start, form.value.end, appointments.value, 'patient')
+    return isPersonAvailable(
+      pat._id,
+      form.value.start,
+      form.value.end,
+      appointments.value,
+      'patient',
+    )
   })
 
   return availablePatients
@@ -260,7 +268,7 @@ const calendarOptions = ref({
   initialView: 'listWeek',
   selectable: true,
   editable: true,
-  eventStartEditable: true, 
+  eventStartEditable: true,
   eventDurationEditable: false,
   selectAllow(selectInfo) {
     const now = new Date()
@@ -400,17 +408,17 @@ const calendarOptions = ref({
     resetAlert(alert)
     form.value.start = info.startStr
     form.value.end = info.endStr
-    
+
     // Asegurar que se establezca el professionalId
     if (isProfessional.value && user.value?.profileId) {
       form.value.professionalId = user.value.profileId
     }
-    
+
     // Reset otros campos
     form.value.patientId = ''
     form.value.notes = ''
     selectedPatient.value = null
-    
+
     appointments.value = await fetchAppointments()
     dialog.value = true
   },
@@ -428,13 +436,14 @@ const calendarOptions = ref({
     editableNotes.value = info.event.extendedProps.notes || ''
     showEventDialog.value = true
   },
-  eventDrop: (info) => handleEventDrop(info, {
-  calendarRef,
-  alert,
-  fetchAppointmentsFn: async () => { 
-    appointments.value = await fetchAppointments() 
-  }
-}),
+  eventDrop: (info) =>
+    handleEventDrop(info, {
+      calendarRef,
+      alert,
+      fetchAppointmentsFn: async () => {
+        appointments.value = await fetchAppointments()
+      },
+    }),
 })
 
 const goToPatientHistory = (patientId) => {
@@ -446,18 +455,18 @@ const emit = defineEmits(['openPatientHistory'])
 
 onMounted(async () => {
   try {
-   const [patientsData, professionalsData] = await Promise.all([
-      fetchPatients(),     
+    const [patientsData, professionalsData] = await Promise.all([
+      fetchPatients(),
       fetchProfessionals(),
     ])
-      
-    const appointmentsData = await fetchAppointments() 
-    
+
+    const appointmentsData = await fetchAppointments()
+
     patients.value = patientsData
     professionals.value = professionalsData
     appointments.value = appointmentsData
 
-    isDataLoaded.value = true 
+    isDataLoaded.value = true
     reloadCalendarEvents(calendarRef)
   } catch (error) {
     showError(error, alert)
@@ -473,32 +482,9 @@ const handleUpdateNotesProfessional = async () => {
       editableNotes.value,
       editableProfessionalNotes.value,
       alert,
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
-    )
-
-    if (alert.show && alert.type === 'success') {
-      setTimeout(() => {
-        showEventDialog.value = false
-        resetAlert(alert)
-      }, 3000) 
-    } 
-
-  } catch (error) {
-    showError(error, alert)
-  }
-}
-
-const handleCancelAppointment = async () => {
-  try {
-    await cancelAppointment(
-      selectedEvent, 
-      alert, 
-      calendarRef, 
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
+      async () => {
+        appointments.value = await fetchAppointments()
+      },
     )
 
     if (alert.show && alert.type === 'success') {
@@ -507,23 +493,40 @@ const handleCancelAppointment = async () => {
         resetAlert(alert)
       }, 3000)
     }
+  } catch (error) {
+    showError(error, alert)
+  }
+}
 
+const handleCancelAppointment = async () => {
+  try {
+    await cancelAppointment(selectedEvent, alert, calendarRef, async () => {
+      appointments.value = await fetchAppointments()
+    })
+
+    if (alert.show && alert.type === 'success') {
+      setTimeout(() => {
+        showEventDialog.value = false
+        resetAlert(alert)
+      }, 3000)
+    }
   } catch (error) {
     showError(error, alert)
   }
 }
 const handleSaveAppointment = async () => {
   try {
-    await saveAppointmentProfessional( // ← Usar la nueva función
-      form, 
-      selectedPatient, 
-      alert, 
+    await saveAppointmentProfessional(
+      // ← Usar la nueva función
+      form,
+      selectedPatient,
+      alert,
       calendarRef,
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
+      async () => {
+        appointments.value = await fetchAppointments()
+      },
     )
-  
+
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         dialog.value = false

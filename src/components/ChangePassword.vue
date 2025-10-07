@@ -67,7 +67,7 @@ import { post } from '@/services/api.js'
 import AlertMessage from '@/components/AlertMessage.vue'
 import { buildRules } from '@/utils/validationRules.js'
 
-const { t , locale } = useI18n()
+const { t, locale } = useI18n()
 const rules = computed(() => buildRules(t))
 
 watch(locale, () => {

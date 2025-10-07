@@ -1,12 +1,11 @@
 import { post, get, put, patch } from '../services/api'
 
-
 export function hasTimeOverlap(start1, end1, start2, end2) {
   const start1Time = new Date(start1).getTime()
   const end1Time = new Date(end1).getTime()
   const start2Time = new Date(start2).getTime()
   const end2Time = new Date(end2).getTime()
-  
+
   return start1Time < end2Time && end1Time > start2Time
 }
 
@@ -14,7 +13,7 @@ export function findProfessionalConflicts(professionalId, formStart, formEnd, ap
   return appointments.filter((appointment) => {
     if (appointment.status?.cancelled) return false
     if (appointment.professionalId !== professionalId) return false
-    
+
     return hasTimeOverlap(formStart, formEnd, appointment.startDate, appointment.endDate)
   })
 }
@@ -23,16 +22,21 @@ export function findPatientConflicts(patientId, formStart, formEnd, appointments
   return appointments.filter((appointment) => {
     if (appointment.status?.cancelled) return false
     if (appointment.patientId !== patientId) return false
-    
+
     return hasTimeOverlap(formStart, formEnd, appointment.startDate, appointment.endDate)
   })
 }
 
-export function isPersonAvailable(personId, formStart, formEnd, appointments, personType = 'professional') {
-  const findConflicts = personType === 'professional' 
-    ? findProfessionalConflicts 
-    : findPatientConflicts
-    
+export function isPersonAvailable(
+  personId,
+  formStart,
+  formEnd,
+  appointments,
+  personType = 'professional',
+) {
+  const findConflicts =
+    personType === 'professional' ? findProfessionalConflicts : findPatientConflicts
+
   const conflicts = findConflicts(personId, formStart, formEnd, appointments)
   return conflicts.length === 0
 }
@@ -46,10 +50,10 @@ export function showSuccess(response, alert) {
   if (!alert) {
     return
   }
-  
+
   alert.show = true
   alert.type = 'success'
-  
+
   // Extraer el mensaje del objeto de respuesta
   if (typeof response === 'string') {
     alert.message = response
@@ -57,18 +61,21 @@ export function showSuccess(response, alert) {
   } else if (response && typeof response === 'object') {
     // Extraer messageCode de la respuesta
     const messageCode = response.messageCode || response.data?.messageCode || 'OPERATION_SUCCESS'
-    
+
     alert.message = response.message || response.data?.message || ''
     alert.messageCode = messageCode
     // Asegurar que details sea un array o null
-    alert.details = Array.isArray(response.details) ? response.details : 
-                   Array.isArray(response.data?.details) ? response.data.details : null
+    alert.details = Array.isArray(response.details)
+      ? response.details
+      : Array.isArray(response.data?.details)
+        ? response.data.details
+        : null
     alert.params = response.params || response.data?.params || {}
   } else {
     alert.message = ''
     alert.messageCode = 'OPERATION_SUCCESS'
   }
-  
+
   if (!alert.details) alert.details = null
   if (!alert.params) alert.params = {}
 }
@@ -77,10 +84,10 @@ export function showError(error, alert) {
   if (!alert) {
     return
   }
-  
+
   alert.show = true
   alert.type = 'error'
-  
+
   // Extraer propiedades del objeto de error
   if (typeof error === 'string') {
     alert.message = error
@@ -90,15 +97,18 @@ export function showError(error, alert) {
   } else if (error && typeof error === 'object') {
     // Manejar errores de API con estructura response.data
     const errorData = error.response?.data || error
-    
+
     // Extraer messageCode del error
     const messageCode = errorData.messageCode || error.messageCode || 'INTERNAL_SERVER_ERROR'
-    
+
     alert.message = errorData.message || error.message || ''
     alert.messageCode = messageCode
     // Asegurar que details sea un array o null
-    alert.details = Array.isArray(errorData.details) ? errorData.details : 
-                   Array.isArray(error.details) ? error.details : null
+    alert.details = Array.isArray(errorData.details)
+      ? errorData.details
+      : Array.isArray(error.details)
+        ? error.details
+        : null
     alert.params = errorData.params || error.params || {}
   } else {
     alert.message = ''
@@ -135,7 +145,7 @@ export function formatDate(date) {
 
 export async function cancelAppointmentById(id) {
   if (!id) throw new Error('Invalid appointment ID')
-  
+
   const response = await put(`/appointment/${id}`, {
     status: { cancelled: true },
   })
@@ -159,15 +169,15 @@ export async function fetchAppointments() {
 
 export async function cancelAppointment(selectedEvent, alert, calendarRef, fetchAppointmentsFn) {
   if (!selectedEvent.value || !selectedEvent.value.id) return
-  
+
   try {
     const response = await put(`/appointment/${selectedEvent.value.id}`, {
-      status: { 
+      status: {
         cancelled: true,
-        timestamp: new Date()
+        timestamp: new Date(),
       },
     })
-    
+
     showSuccess(response, alert)
     await fetchAppointmentsFn()
     calendarRef.value.getApi().refetchEvents()
@@ -217,7 +227,13 @@ export async function updateNotes(selectedEvent, editableNotes, alert) {
     showError(error, alert)
   }
 }
-export async function updateNotesProfessional(selectedEvent, editableNotes, editableProfessionalNotes, alert, fetchAppointmentsFn) {
+export async function updateNotesProfessional(
+  selectedEvent,
+  editableNotes,
+  editableProfessionalNotes,
+  alert,
+  fetchAppointmentsFn,
+) {
   if (!selectedEvent || !selectedEvent.id) {
     showError('No event selected', alert)
     return
@@ -230,20 +246,27 @@ export async function updateNotesProfessional(selectedEvent, editableNotes, edit
     })
 
     showSuccess(response, alert)
-    
+
     // Actualizar las propiedades del evento
     selectedEvent.setExtendedProp('notes', editableNotes)
     selectedEvent.setExtendedProp('professionalNotes', editableProfessionalNotes)
     if (fetchAppointmentsFn) {
       await fetchAppointmentsFn()
     }
-
   } catch (error) {
     showError(error, alert)
     throw error
   }
 }
-export async function saveAppointment(form, selectedPatient, selectedProfessional, dialog, alert, calendarRef, fetchAppointmentsFn) {
+export async function saveAppointment(
+  form,
+  selectedPatient,
+  selectedProfessional,
+  dialog,
+  alert,
+  calendarRef,
+  fetchAppointmentsFn,
+) {
   if (!form.value.patientId || !form.value.professionalId) {
     showError('Patient and professional must be selected', alert)
     return
@@ -256,17 +279,17 @@ export async function saveAppointment(form, selectedPatient, selectedProfessiona
     professionalId: form.value.professionalId,
     notes: form.value.notes || '',
   }
-  
+
   try {
     const response = await post('/appointment', event)
-    
+
     showSuccess(response, alert)
-    
+
     // Reset form
     form.value = { patientId: '', professionalId: '', start: null, end: null, notes: '' }
     selectedPatient.value = null
     selectedProfessional.value = null
-    
+
     await fetchAppointmentsFn()
     if (calendarRef && calendarRef.value) {
       calendarRef.value.getApi().refetchEvents()
@@ -287,7 +310,7 @@ export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fe
       showError('Professional must be selected', alert)
       return
     }
-    
+
     if (!formData.patientId) {
       showError('Patient ID is required', alert)
       return
@@ -302,17 +325,16 @@ export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fe
     }
 
     const response = await post('/appointment', appointmentData)
-    
+
     showSuccess(response, alert)
-    
+
     if (fetchAppointmentsFn) {
       await fetchAppointmentsFn()
     }
-    
+
     if (calendarRef && calendarRef.value) {
       calendarRef.value.getApi().refetchEvents()
     }
-    
   } catch (error) {
     showError(error, alert)
     throw error
@@ -320,7 +342,13 @@ export async function saveAppointmentOwnPatient(formData, alert, calendarRef, fe
 }
 
 // Nueva función específica para profesionales
-export async function saveAppointmentProfessional(form, selectedPatient, alert, calendarRef, fetchAppointmentsFn) {
+export async function saveAppointmentProfessional(
+  form,
+  selectedPatient,
+  alert,
+  calendarRef,
+  fetchAppointmentsFn,
+) {
   if (!form.value.patientId || !form.value.professionalId) {
     showError('Patient and professional must be selected', alert)
     return
@@ -333,31 +361,30 @@ export async function saveAppointmentProfessional(form, selectedPatient, alert, 
     professionalId: form.value.professionalId,
     notes: form.value.notes || '',
   }
-  
+
   try {
     const response = await post('/appointment', event)
-    
+
     showSuccess(response, alert)
-    
+
     // Reset form
-    form.value = { 
-      patientId: '', 
-      professionalId: '', 
-      start: null, 
-      end: null, 
-      notes: '' 
+    form.value = {
+      patientId: '',
+      professionalId: '',
+      start: null,
+      end: null,
+      notes: '',
     }
-    
+
     // Solo resetear selectedPatient (no hay selectedProfessional en contexto profesional)
     if (selectedPatient && selectedPatient.value !== undefined) {
       selectedPatient.value = null
     }
-    
+
     await fetchAppointmentsFn()
     if (calendarRef && calendarRef.value) {
       calendarRef.value.getApi().refetchEvents()
     }
-    
   } catch (error) {
     showError(error, alert)
     throw error
