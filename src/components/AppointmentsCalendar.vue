@@ -257,6 +257,8 @@ const calendarOptions = ref({
   initialView: 'timeGridWeek',
   selectable: true,
   editable: true,
+  eventStartEditable: true, 
+  eventDurationEditable: false,
   selectAllow(selectInfo) {
     const now = new Date()
     return selectInfo.start >= now
