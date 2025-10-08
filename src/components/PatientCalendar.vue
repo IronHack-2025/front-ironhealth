@@ -57,14 +57,14 @@
             {{ t('common.buttons.save') }}
           </v-btn>
         </v-card-actions>
-       <AlertMessage 
-              :show="alert.show" 
-              :type="alert.type" 
-              :message-code="alert.messageCode" 
-              :details="alert.details" 
-              :message-params="alert.params" 
-              :fallback-message="alert.message" 
-            />
+        <AlertMessage
+          :show="alert.show"
+          :type="alert.type"
+          :message-code="alert.messageCode"
+          :details="alert.details"
+          :message-params="alert.params"
+          :fallback-message="alert.message"
+        />
       </v-card>
     </v-dialog>
 
@@ -119,7 +119,9 @@
           <v-spacer />
           <!-- Botones solo para citas propias -->
           <template v-if="selectedEvent && selectedEvent.extendedProps.isOwnAppointment">
-            <v-btn color="red" variant="tonal" @click="handleCancelAppointment">{{ t('common.buttons.cancel') }}</v-btn>
+            <v-btn color="red" variant="tonal" @click="handleCancelAppointment">{{
+              t('common.buttons.cancel')
+            }}</v-btn>
           </template>
           <v-btn color="primary" variant="tonal" @click="showEventDialog = false">{{
             t('common.buttons.close')
@@ -139,7 +141,7 @@
 </template>
 
 <script setup>
-import { get} from '../services/api'
+import { get } from '../services/api'
 import { ref, onMounted, watch, reactive, computed } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -150,7 +152,7 @@ import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
-import { 
+import {
   cancelAppointment,
   saveAppointmentOwnPatient,
   formatDate,
@@ -159,8 +161,8 @@ import {
   reloadCalendarEvents,
   resetAlert,
   showError,
-  isPersonAvailable
-  } from '../utils/calendarFunctions'
+  isPersonAvailable,
+} from '../utils/calendarFunctions'
 
 const { t } = useI18n()
 const { user } = useAuth()
@@ -179,7 +181,6 @@ const showEventDialog = ref(false)
 const calendarRef = ref(null)
 const appointments = ref([])
 const isDataLoaded = ref(false)
-
 
 const form = ref({
   patientId: '',
@@ -246,7 +247,13 @@ const availableProfessionals = computed(() => {
 
   // Filtrar para mostrar solo profesionales disponibles
   const filtered = professionals.value.filter((pro) => {
-    return isPersonAvailable(pro._id, form.value.start, form.value.end, appointments.value, 'professional')
+    return isPersonAvailable(
+      pro._id,
+      form.value.start,
+      form.value.end,
+      appointments.value,
+      'professional',
+    )
   })
 
   // Si no hay profesionales disponibles, mostrar mensaje
@@ -262,7 +269,7 @@ const availableProfessionals = computed(() => {
   }
 
   return filtered
-}) 
+})
 
 const isPatientAvailable = computed(() => {
   if (!form.value.start || !form.value.end || !user.value?.profileId) {
@@ -270,33 +277,26 @@ const isPatientAvailable = computed(() => {
   }
 
   return isPersonAvailable(
-    user.value.profileId, 
-    form.value.start, 
-    form.value.end, 
-    appointments.value, 
-    'patient'
+    user.value.profileId,
+    form.value.start,
+    form.value.end,
+    appointments.value,
+    'patient',
   )
 })
 
-
 const handleCancelAppointment = async () => {
   try {
-    await cancelAppointment(
-      selectedEvent, 
-      alert, 
-      calendarRef, 
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
-    )
- 
+    await cancelAppointment(selectedEvent, alert, calendarRef, async () => {
+      appointments.value = await fetchAppointments()
+    })
+
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         showEventDialog.value = false
         resetAlert(alert)
       }, 3000)
     }
-    
   } catch (error) {
     showError(error, alert)
   }
@@ -304,15 +304,10 @@ const handleCancelAppointment = async () => {
 
 const handleSaveAppointment = async () => {
   try {
-    await saveAppointmentOwnPatient(
-      form.value, 
-      alert, 
-      calendarRef, 
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
-    )
-    
+    await saveAppointmentOwnPatient(form.value, alert, calendarRef, async () => {
+      appointments.value = await fetchAppointments()
+    })
+
     form.value = {
       patientId: user.value?.profileId || '',
       professionalId: '',
@@ -321,20 +316,19 @@ const handleSaveAppointment = async () => {
       notes: '',
     }
     selectedProfessional.value = null
-    
+
     if (alert.show && alert.type === 'success') {
       setTimeout(() => {
         dialog.value = false
         resetAlert(alert)
-      }, 3000) 
+      }, 3000)
     }
-    
   } catch (error) {
     showError(error, alert)
   }
 }
 
-const calendarOptions = ({
+const calendarOptions = {
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
   initialView: 'timeGridWeek',
   selectable: true,
@@ -348,7 +342,7 @@ const calendarOptions = ({
   selectMirror: true,
   expandRows: false,
   height: 'auto',
-  
+
   events: async (fetchInfo, successCallback, failureCallback) => {
     try {
       if (!isDataLoaded.value) {
@@ -426,14 +420,12 @@ const calendarOptions = ({
   },
   slotMinTime: '07:00:00',
   slotMaxTime: '22:00:00',
-})
+}
 
 onMounted(async () => {
   try {
-   const [professionalsData] = await Promise.all([
-      fetchProfessionals(),
-    ])
-        if (user.value?.profileId) {
+    const [professionalsData] = await Promise.all([fetchProfessionals()])
+    if (user.value?.profileId) {
       form.value.patientId = user.value.profileId
     }
 
@@ -442,7 +434,7 @@ onMounted(async () => {
     professionals.value = professionalsData
     appointments.value = appointmentsData
 
-    isDataLoaded.value = true 
+    isDataLoaded.value = true
     reloadCalendarEvents(calendarRef)
   } catch (error) {
     showError(error, alert)

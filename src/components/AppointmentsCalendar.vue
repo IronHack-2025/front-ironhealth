@@ -50,9 +50,19 @@
           <v-btn color="red" variant="tonal" @click="dialog = false">{{
             t('common.buttons.close')
           }}</v-btn>
-          <v-btn color="primary" @click="handleSaveAppointment">{{ t('common.buttons.save') }}</v-btn>
+          <v-btn color="primary" @click="handleSaveAppointment">{{
+            t('common.buttons.save')
+          }}</v-btn>
         </v-card-actions>
-        <AlertMessage :show="alert.show" :type="alert.type" :message="alert.message" :message-code="alert.messageCode" :details="alert.details" :message-params="alert.params" :fallback-message="alert.fallbackMessage" />
+        <AlertMessage
+          :show="alert.show"
+          :type="alert.type"
+          :message="alert.message"
+          :message-code="alert.messageCode"
+          :details="alert.details"
+          :message-params="alert.params"
+          :fallback-message="alert.fallbackMessage"
+        />
       </v-card>
     </v-dialog>
 
@@ -131,7 +141,7 @@ import listPlugin from '@fullcalendar/list'
 import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
-import { 
+import {
   cancelAppointment,
   handleEventDrop,
   updateNotes,
@@ -143,8 +153,8 @@ import {
   reloadCalendarEvents,
   resetAlert,
   showError,
-  isPersonAvailable
-  } from '../utils/calendarFunctions'
+  isPersonAvailable,
+} from '../utils/calendarFunctions'
 
 const { t } = useI18n()
 
@@ -170,7 +180,13 @@ const availableProfessionals = computed(() => {
 
   // Filtrar para mostrar solo profesionales disponibles
   const filtered = professionals.value.filter((pro) => {
-    return isPersonAvailable(pro._id, form.value.start, form.value.end, appointments.value, 'professional')
+    return isPersonAvailable(
+      pro._id,
+      form.value.start,
+      form.value.end,
+      appointments.value,
+      'professional',
+    )
   })
 
   // Si no hay profesionales disponibles, mostrar mensaje
@@ -186,7 +202,7 @@ const availableProfessionals = computed(() => {
   }
 
   return filtered
-}) 
+})
 
 const availablePatients = computed(() => {
   if (!form.value.start || !form.value.end) {
@@ -194,7 +210,13 @@ const availablePatients = computed(() => {
   }
 
   const availablePatients = patients.value.filter((pat) => {
-    return isPersonAvailable(pat._id, form.value.start, form.value.end, appointments.value, 'patient')
+    return isPersonAvailable(
+      pat._id,
+      form.value.start,
+      form.value.end,
+      appointments.value,
+      'patient',
+    )
   })
 
   return availablePatients
@@ -251,13 +273,12 @@ const form = ref({
   notes: '',
 })
 
-
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
   initialView: 'timeGridWeek',
   selectable: true,
   editable: true,
-  eventStartEditable: true, 
+  eventStartEditable: true,
   eventDurationEditable: false,
   selectAllow(selectInfo) {
     const now = new Date()
@@ -333,29 +354,30 @@ const calendarOptions = ref({
     editableNotes.value = info.event.extendedProps.notes || ''
     showEventDialog.value = true
   },
- eventDrop: (info) => handleEventDrop(info, {
-  calendarRef,
-  alert,
-  fetchAppointmentsFn: async () => { 
-    appointments.value = await fetchAppointments() 
-  }
-}),
+  eventDrop: (info) =>
+    handleEventDrop(info, {
+      calendarRef,
+      alert,
+      fetchAppointmentsFn: async () => {
+        appointments.value = await fetchAppointments()
+      },
+    }),
 })
 
 onMounted(async () => {
   try {
-   const [patientsData, professionalsData] = await Promise.all([
-      fetchPatients(),     
+    const [patientsData, professionalsData] = await Promise.all([
+      fetchPatients(),
       fetchProfessionals(),
     ])
-      
-    const appointmentsData = await fetchAppointments() 
-    
+
+    const appointmentsData = await fetchAppointments()
+
     patients.value = patientsData
     professionals.value = professionalsData
     appointments.value = appointmentsData
 
-    isDataLoaded.value = true 
+    isDataLoaded.value = true
     reloadCalendarEvents(calendarRef)
   } catch (error) {
     showError(error, alert)
@@ -368,21 +390,15 @@ const handleUpdateNotes = async () => {
 
 const handleCancelAppointment = async () => {
   try {
-    await cancelAppointment(
-      selectedEvent, 
-      alert, 
-      calendarRef, 
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
-    )
-    if(alert.show && alert.type === 'success') {
+    await cancelAppointment(selectedEvent, alert, calendarRef, async () => {
+      appointments.value = await fetchAppointments()
+    })
+    if (alert.show && alert.type === 'success') {
       setTimeout(() => {
-      dialog.value = false
-      resetAlert(alert)
-    }, 2000)
+        dialog.value = false
+        resetAlert(alert)
+      }, 2000)
     }
-    
   } catch (error) {
     showError(error, alert)
   }
@@ -390,26 +406,24 @@ const handleCancelAppointment = async () => {
 const handleSaveAppointment = async () => {
   try {
     await saveAppointment(
-      form, 
-      selectedPatient, 
-      selectedProfessional, 
-      dialog, 
-      alert, 
+      form,
+      selectedPatient,
+      selectedProfessional,
+      dialog,
+      alert,
       calendarRef,
-      async () => { 
-        appointments.value = await fetchAppointments() 
-      }
+      async () => {
+        appointments.value = await fetchAppointments()
+      },
     )
-    
+
     // Dar tiempo para ver la alerta antes de cerrar el diálogo
-    if(alert.show && alert.type === 'success') {
+    if (alert.show && alert.type === 'success') {
       setTimeout(() => {
-      dialog.value = false
-      resetAlert(alert)
-    }, 2000)
+        dialog.value = false
+        resetAlert(alert)
+      }, 2000)
     }
-    
-    
   } catch (error) {
     showError(error, alert)
   }

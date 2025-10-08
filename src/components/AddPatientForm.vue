@@ -180,7 +180,14 @@
               />
 
               <!-- Botón -->
-              <v-btn block color="primary" class="mt-6" size="large" @click="newPatient">
+              <v-btn
+                block
+                color="primary"
+                class="mt-6"
+                size="large"
+                @click="newPatient"
+                :disabled="submitting"
+              >
                 {{ btnTitle }}
               </v-btn>
             </v-form>
@@ -230,6 +237,7 @@ const props = defineProps({
 const emit = defineEmits(['patient-added', 'patient-updated'])
 const formRef = ref(null)
 const isValid = ref(false)
+const submitting = ref(false)
 const form = reactive({
   firstName: '',
   lastName: '',
@@ -326,11 +334,13 @@ watch(() => props.items, loadPatientData, { immediate: true })
 watch(() => props.mode, loadPatientData)
 
 async function newPatient() {
+  if (submitting.value) return
   const { valid } = await formRef.value.validate()
   if (!valid) return showValidationErrors()
 
   alert.show = false
   clearFieldErrors()
+  submitting.value = true
 
   const formData = {
     ...form,
@@ -357,8 +367,14 @@ async function newPatient() {
     showSuccess(response)
   } catch (error) {
     showError(error)
+    submitting.value = false
   } finally {
-    setTimeout(() => (alert.show = false), 3000)
+    if (alert.type === 'success') {
+      setTimeout(() => {
+        alert.show = false
+        submitting.value = false
+      }, 3000)
+    }
   }
 }
 
@@ -371,7 +387,7 @@ function showSuccess(response) {
   alert.params = response?.params || {}
 }
 function showError(error) {
-  console.error('Error saving professional:', error)
+  console.error('Error saving patient:', error)
   alert.show = true
   alert.type = 'error'
   // Usar el messageCode del error si existe, sino usar uno por defecto
