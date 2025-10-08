@@ -1,7 +1,5 @@
-
 <template>
-  <v-container class="HomeView" fluid>
-  </v-container>
+  <v-container class="HomeView" fluid> </v-container>
 </template>
 
 <style scoped>
@@ -15,5 +13,4 @@
   justify-content: center;
   align-items: center;
 }
-
 </style>

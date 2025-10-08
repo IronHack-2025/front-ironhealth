@@ -3,7 +3,7 @@ import { cleanEmpty } from '../utils/cleanEmpty.js'
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 const getAuthToken = () => {
-  return localStorage.getItem('authToken') 
+  return localStorage.getItem('authToken')
 }
 const getAuthHeaders = () => {
   const token = getAuthToken()
@@ -124,7 +124,7 @@ async function handleResponse(response) {
 export const post = async (endpoint, data) => {
   try {
     const cleanedData = cleanEmpty(data)
-    
+
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -162,19 +162,25 @@ export const get = async (endpoint) => {
   }
 }
 
-// Añadimos PUT con el mismo manejo
 export const put = async (endpoint, data) => {
   try {
-    const cleanedData = cleanEmpty(data)
-    
-    const response = await fetch(`${apiBaseUrl}${endpoint}`, {
+    let options = {
       method: 'PUT',
       headers: getAuthHeaders(),
-      body: JSON.stringify(cleanedData),
-    })
+    }
+
+    if (data !== undefined && data !== null) {
+      const cleanedData = cleanEmpty(data)
+      // Solo agrega body si cleanedData no es un objeto vacío
+      if (Object.keys(cleanedData).length > 0) {
+        options.body = JSON.stringify(cleanedData)
+      }
+    }
+
+    const response = await fetch(`${apiBaseUrl}${endpoint}`, options)
+
     return await handleResponse(response)
   } catch (error) {
-    // Si es un error de red o fetch (no tiene messageCode)
     if (!error.messageCode) {
       error.messageCode = 'NETWORK_ERROR'
       error.messageType = 'error'
@@ -186,7 +192,7 @@ export const put = async (endpoint, data) => {
 export const patch = async (endpoint, data) => {
   try {
     const cleanedData = cleanEmpty(data)
-    
+
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
