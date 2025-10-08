@@ -183,14 +183,9 @@ const handleProfessionalAdded = () => {
 // Profesional actualizado
 const handleProfessionalUpdated = () => {
   fetchProfessionals()
-  alert.show = true
-  alert.type = 'success'
-  alert.messageCode = 'PROFESSIONAL_UPDATED'
-  alert.message = t('messages.success.PROFESSIONAL_UPDATED')
 
   setTimeout(() => {
     dialog.value = false
-    alert.show = false
     edit.value = false
     editingProfessional.value = null
   }, 3000)

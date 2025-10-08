@@ -140,14 +140,9 @@ const handlePatientAdded = () => {
 // Paciente actualizado
 const handlePatientUpdated = () => {
   fetchPatients()
-  alertView.show = true
-  alertView.type = 'success'
-  alertView.messageCode = 'PATIENT_UPDATED'
-  alertView.message = t('messages.success.PATIENT_UPDATED')
 
   setTimeout(() => {
     dialog.value = false
-    alertView.show = false
     edit.value = false
     editingPatient.value = null
   }, 3000)
