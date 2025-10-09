@@ -39,7 +39,6 @@ watch(currentLocale, (newLocale) => {
         v-model="drawer"
         :rail="rail"
         permanent
-        @click="rail = false"
         theme="dark"
       >
         <v-list-item>
@@ -49,10 +48,17 @@ watch(currentLocale, (newLocale) => {
             </v-avatar>
           </template>
           <v-list-item-title v-if="!rail"> IronHealth </v-list-item-title>
-          <template v-slot:append>
-            <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
-          </template>
         </v-list-item>
+
+        <div class="d-flex justify-center pa-2">
+          <v-btn
+            :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
+            variant="text"
+            @click.stop="rail = !rail"
+            size="small"
+            color="white"
+          ></v-btn>
+        </div>
         <v-divider />
         <v-list>
           <v-list-item
@@ -102,6 +108,11 @@ watch(currentLocale, (newLocale) => {
 
       <v-main>
         <v-app-bar app density="compact" flat theme="dark">
+          <v-btn
+            icon="mdi-menu"
+            @click="rail = !rail"
+            :title="rail ? $t('navbar.expandMenu') : $t('navbar.collapseMenu')"
+          ></v-btn>
           <v-spacer />
           <SelectLanguage v-model="currentLocale" />
 
