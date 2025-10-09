@@ -50,7 +50,7 @@ watch(currentLocale, (newLocale) => {
           <v-list-item-title v-if="!rail"> IronHealth </v-list-item-title>
         </v-list-item>
 
-        <div class="d-flex justify-center pa-2">
+        <div class="d-flex justify-end pa-2">
           <v-btn
             :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
             variant="text"
