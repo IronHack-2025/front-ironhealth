@@ -120,7 +120,13 @@ import AlertMessage from './AlertMessage.vue'
 import esLocale from '@fullcalendar/core/locales/es'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
-import { fetchProfessionals, formatDate, reloadCalendarEvents, resetAlert, showError } from '../utils/calendarFunctions'
+import {
+  fetchProfessionals,
+  formatDate,
+  reloadCalendarEvents,
+  resetAlert,
+  showError,
+} from '../utils/calendarFunctions'
 
 const { t } = useI18n()
 const { user, isProfessional, isAdmin } = useAuth()
@@ -273,7 +279,7 @@ onMounted(async () => {
     const professionalsData = await fetchProfessionals()
     professionals.value = professionalsData
 
-    isDataLoaded.value = true 
+    isDataLoaded.value = true
     reloadCalendarEvents(calendarRef) // ← Pasar calendarRef como parámetro
   } catch (error) {
     showError(error, alert)
@@ -285,7 +291,7 @@ watch(
   () => props.patientId,
   () => {
     if (isDataLoaded.value) {
-      reloadCalendarEvents(calendarRef) 
+      reloadCalendarEvents(calendarRef)
     }
   },
 )
