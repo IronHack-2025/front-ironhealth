@@ -1,73 +1,103 @@
-
-# IronHealth Frontend
-
----
+# 🏥 IronHealth - Healthcare Management System
 
 ## 🇬🇧 English
 
-### Collaborative Project
-This project is a collaborative effort by **a team of full-stack developer students** and **a lead teacher** (acting as project lead) at Ironhack. It is a real-world, team-based development experience.
-
----
-
 ## Table of Contents
 - [Project Overview](#project-overview)
+- [Features](#features)
 - [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Repository Structure](#repository-structure)
 - [App Structure & Workflows](#app-structure--workflows)
-- [Main Features](#main-features)
+- [Project Structure](#project-structure)
+- [Getting started](#getting-started)
+- [License](#license)
 - [Team](#team)
 
 ---
 
 ## Project Overview
-IronHealth is a healthcare management platform for clinics and professionals. It allows for the registration and management of patients, professionals, appointments, and user roles, with a focus on usability and security.
+IronHealth is a healthcare management platform for clinics and professionals. It lets teams register and manage patients and healthcare professionals, schedule appointments with a calendar view, and administer users and permissions. Built with Vue 3 + Vuetify, it emphasizes usability, security, internationalization, and seamless integration with a [REST API](https://github.com/IronHack-2025/backend-ironhealth) and FullCalendar.
 
 ---
 
-## Tech Stack
-- **Vue 3** (Composition API)
-- **Vite** (build tool)
-- **Vuetify 3** (UI framework)
-- **Vue Router** (SPA routing)
-- **Vue I18n** (internationalization)
-- **FullCalendar** (calendar views)
-- **Cloudinary** (image uploads)
-- **ESLint & Prettier** (code quality)
-- **Vercel** (deployment)
+## 🚀 Features
+
+- 🧑‍⚕️ **Patient and Professional Registration & Management**  
+  Create, edit, and manage user profiles efficiently.
+
+- 📅 **Appointment Scheduling with Calendar View**  
+  Interactive calendar interface for booking and managing appointments.
+
+- 🔐 **Multi-role Authentication**  
+  Supports **admin**, **professional**, and **patient** roles with secure access control.
+
+- 👤 **User Profile Management**  
+  Update personal information and change passwords easily.
+
+- 🌐 **Internationalization (i18n)**  
+  Fully supports **English** and **Spanish** languages.
+
+- 💻 **Responsive, Modern UI (Vuetify)**  
+  Optimized for desktop, tablet, and mobile devices.
+
+- 🖼️ **Image Upload via Cloudinary**  
+  Secure and fast image hosting and delivery.
+
+- 🔎 **Search, Filter, and Edit in Lists**  
+  Quickly locate and manage records with dynamic table views.
+
+- ⚠️ **Alerts and Error Handling**  
+  User-friendly feedback for successes, warnings, and errors.
+
+- 🧩 **Modular, Scalable Codebase**  
+  Well-structured for easy maintenance and future expansion.
 
 ---
 
-## Installation
-1. **Clone the repository:**
-	```sh
-	git clone <repo-url>
-	cd front-ironhealth
-	```
-2. **Install dependencies:**
-	```sh
-	npm install
-	```
-3. **Environment variables:**
-	- Copy `.env.example` to `.env` and set the required variables (e.g., `VITE_API_BASE_URL`).
-4. **Run the app in development:**
-	```sh
-	npm run dev
-	```
-5. **Build for production:**
-	```sh
-	npm run build
-	```
-6. **Lint and format code:**
-	```sh
-	npm run lint
-	npm run format
-	```
+## 🛠️ Tech Stack
+
+**Frontend Framework**
+- Vue 3 (Composition API)
+- Vite (dev server & build)
+
+**UI & Components**
+- Vuetify 3 (Material Design components)
+- Reusable component library (forms, lists, dialogs)
+
+**Routing**
+- Vue Router (SPA routing, protected routes)
+
+**State & Data**
+- Vue composables (auth, API services)
+- REST API integration (services layer)
+
+**Internationalization**
+- Vue I18n (en, es)
+
+**Calendars & Scheduling**
+- FullCalendar (calendar views)
+
+**Media & External Services**
+- Cloudinary (image uploads)
+
+**Authentication & Security**
+- Role-Based Access Control (RBAC)
+- Route guards and protected views
+- Token-based auth integration with backend (JWT)
+
+**Validation**
+- Client-side form validation (HTML5 + custom rules)
+
+**Development Tools**
+- ESLint (linting)
+- Prettier (code formatting)
+- Vite scripts (dev/build)
+
+**Deployment**
+- Vercel (static SPA hosting)
 
 ---
 
-## Repository Structure
+## 🗂️ Project Structure
 
 ```
 front-ironhealth/
@@ -91,7 +121,7 @@ front-ironhealth/
 
 ---
 
-## App Structure & Workflows
+## 🧭 App Structure & Workflows
 
 ### Main Flows
 
@@ -114,95 +144,162 @@ flowchart TD
 - **ProfessionalsView**: List, add, edit, delete professionals
 - **AppointmentsView**: Calendar for appointments
 - **MyAppointmentsView**: Personal calendar/history
+- **PatientSummaryView**: Detailed patient information
 - **UsersView**: Admin-only user management
 - **ProfileView**: User profile & password change
 
 ---
 
-## Main Features
-- Multi-role authentication (admin, professional, patient)
-- Patient and professional registration & management
-- Appointment scheduling with calendar view
-- User profile management (including password change)
-- Internationalization (English/Spanish)
-- Responsive, modern UI (Vuetify)
-- Image upload via Cloudinary
-- Search, filter, and edit in lists
-- Alerts and error handling
-- Modular, scalable codebase
+## 🚀 Getting Started
 
----
-
-## Team
-This project was developed collaboratively by **a team of full-stack developer students** and **a lead teacher** (project lead) at Ironhack.
-
----
-
-## 🇪🇸 Español
-
-### Proyecto Colaborativo
-Este proyecto es el resultado del trabajo conjunto de **un equipo de alumnos desarrolladores full-stack** y **un profesor** (como project lead) en Ironhack. Es una experiencia real de desarrollo en equipo.
-
----
-
-## Índice
-- [Resumen del Proyecto](#resumen-del-proyecto)
-- [Stack Tecnológico](#stack-tecnológico)
-- [Instalación](#instalación)
-- [Estructura del Repositorio](#estructura-del-repositorio)
-- [Estructura y Flujos de la App](#estructura-y-flujos-de-la-app)
-- [Principales Funcionalidades](#principales-funcionalidades)
-- [Equipo](#equipo)
-
----
-
-## Resumen del Proyecto
-IronHealth es una plataforma de gestión sanitaria para clínicas y profesionales. Permite registrar y gestionar pacientes, profesionales, citas y usuarios, con foco en la usabilidad y la seguridad.
-
----
-
-## Stack Tecnológico
-- **Vue 3** (Composition API)
-- **Vite** (herramienta de build)
-- **Vuetify 3** (UI framework)
-- **Vue Router** (ruteo SPA)
-- **Vue I18n** (internacionalización)
-- **FullCalendar** (vistas de calendario)
-- **Cloudinary** (subida de imágenes)
-- **ESLint & Prettier** (calidad de código)
-- **Vercel** (despliegue)
-
----
-
-## Instalación
-1. **Clona el repositorio:**
+1. **Clone the repository:**
 	```sh
-	git clone <repo-url>
+	git clone https://github.com/IronHack-2025/front-ironhealth.git
+
 	cd front-ironhealth
 	```
-2. **Instala las dependencias:**
+2. **Install dependencies:**
 	```sh
 	npm install
 	```
-3. **Variables de entorno:**
-	- Copia `.env.example` a `.env` y configura las variables necesarias (por ejemplo, `VITE_API_BASE_URL`).
-4. **Ejecuta la app en desarrollo:**
+3. **Environment variables:**
+	- Copy `.env.example` to `.env` and set the required variables (e.g., `VITE_API_BASE_URL`).
+4. **Run the app in development:**
 	```sh
 	npm run dev
 	```
-5. **Build para producción:**
+5. **Build for production:**
 	```sh
 	npm run build
 	```
-6. **Lint y formato de código:**
+6. **Lint and format code:**
 	```sh
 	npm run lint
 	npm run format
 	```
 
 ---
+## 📝 License
 
-## Estructura del Repositorio
+This project was created as part of the Ironhack Web Development Bootcamp curriculum.
+
+
+## 👥 Team
+**Developers**
+- [Alejandro Noriega](https://github.com/alenorgue) - Full Stack Developer
+- [Christian Baron](https://github.com/ccbaron) - Full Stack Developer
+- [Robert Maynou](https://github.com/ErebosXYZ) - Full Stack Developer
+- [Juan David Ospina](https://github.com/juandation) - Full Stack Developer
+- [Maria Jie Bolós](https://github.com/shimotachi3) - Full Stack Developer
+- [Sergio Calvo](https://github.com/SergioCaMi) - Full Stack Developer
+
+**Lead Instructor**
+- [Óscar Miras](https://github.com/omiras) - Ironhack Lead Teacher
+
+---
+
+Built with ❤️ during Ironhack's 2025 Web Development Bootcamp
+
+
+
+## 🇪🇸 Español
+
+## Índice
+- [Resumen del Proyecto](#resumen-del-proyecto)
+- [Características](#características)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Estructura y Flujos de la App](#estructura-y-flujos-de-la-app)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Cómo empezar](#cómo-empezar)
+- [Licencia](#licencia)
+- [Equipo](#equipo)
+
+---
+
+## Resumen del Proyecto
+ IronHealth es una plataforma de administración para centros de salud y profesionales. Permite registrar y gestionar pacientes y profesionales de la salud, programar citas con una vista de calendario y administrar usuarios y permisos. Construida con Vue 3 + Vuetify, prioriza la experiencia del usuario, la seguridad, la internacionalización y la integración fluida con una [API REST](https://github.com/IronHack-2025/backend-ironhealth) y FullCalendar.
+
+---
+
+## 🚀 Características
+
+- 🧑‍⚕️ **Registro y Gestión de Pacientes y Profesionales**  
+  Crea, edita y administra perfiles de usuario eficientemente.
+
+- 📅 **Programación de Citas con Vista de Calendario**  
+  Interfaz de calendario interactiva para reservar y gestionar citas.
+
+- 🔐 **Autenticación Multi-rol**  
+  Soporta roles de **administrador**, **profesional** y **paciente** con un control de acceso seguro.
+
+- 👤 **Gestión de Perfil de Usuario**  
+  Actualiza información personal y cambia la contraseña fácilmente.
+
+- 🌐 **Internacionalización (i18n)**  
+  Versión en **inglés** y **español**.
+
+- 💻 **UI Moderna y Responsive (Vuetify)**  
+  Optimizada para escritorio, tablet y móvil.
+
+- 🖼️ **Subida de Imágenes con Cloudinary**  
+  Alojamiento y publicación de imágenes de forma segura y rápida.
+
+- 🔎 **Búsqueda, Filtro y Edición en Listas**  
+  Localiza y gestiona registros con tablas dinámicas.
+
+- ⚠️ **Alertas y Manejo de Errores**  
+  Feedback claro e intuitivo para advertencias y errores.
+
+- 🧩 **Código Modular y Escalable**  
+  Estructura preparada para su mantenimiento y expansión.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+**Framework Frontend**
+- Vue 3 (Composition API)
+- Vite (dev server y build)
+
+**UI y Componentes**
+- Vuetify 3 (componentes Material Design)
+- Librería de componentes reutilizables (formularios, listas, cuadros de diálogo)
+
+**Enrutado**
+- Vue Router (SPA, rutas protegidas)
+
+**Estado y Datos**
+- Composables de Vue (auth, servicios API)
+- Integración con API REST (capa de servicios)
+
+**Internacionalización**
+- Vue I18n (en, es)
+
+**Calendarios y Planificación**
+- FullCalendar (vistas de calendario)
+
+**Medios y Servicios Externos**
+- Cloudinary (subida de imágenes)
+
+**Autenticación y Seguridad**
+- Control de Acceso Basado en Roles (RBAC)
+- Guards de ruta y vistas protegidas
+- Integración de tokens con el backend (JWT)
+
+**Validación**
+- Validación en cliente (HTML5 + reglas personalizadas)
+
+**Herramientas de Desarrollo**
+- ESLint (linting)
+- Prettier (formato de código)
+- Scripts de Vite (dev/build)
+
+**Despliegue**
+- Vercel (hosting estático de SPA)
+
+---
+
+## 🗂️ Estructura del Proyecto
 
 ```
 front-ironhealth/
@@ -210,36 +307,36 @@ front-ironhealth/
 ├── src/
 │   ├── assets/            # Imágenes, CSS, datos (profesiones, nacionalidades)
 │   ├── components/        # Componentes Vue (formularios, listas, calendario, etc.)
-│   ├── composables/       # Composables Vue (auth, etc.)
+│   ├── composables/       # Composables de Vue (auth, etc.)
 │   ├── locales/           # Traducciones i18n (en, es)
-│   ├── router/            # Configuración de rutas
+│   ├── router/            # Configuración de Vue Router
 │   ├── services/          # Capa de servicios API
-│   ├── utils/             # Utilidades
+│   ├── utils/             # Funciones utilitarias
 │   └── views/             # Vistas principales (páginas)
-├── .vscode/               # Configuración de editor
-├── .env.example           # Ejemplo de configuración de entorno
-├── package.json           # Metadatos y scripts
+├── .vscode/               # Configuración/recomendaciones del editor
+├── .env.example           # Ejemplo de variables de entorno
+├── package.json           # Metadatos y scripts del proyecto
 ├── vite.config.js         # Configuración de Vite
-├── vercel.json            # Configuración de despliegue
+├── vercel.json            # Configuración de despliegue en Vercel
 └── ...
 ```
 
 ---
 
-## Estructura y Flujos de la App
+## 🧭 Estructura y Flujos de la App
 
 ### Flujos principales
 
 ```mermaid
 flowchart TD
-	 Login[Inicio de Sesión] --> Dashboard[Dashboard]
-	 Dashboard -->|Admin| Users[Gestión de Usuarios]
-	 Dashboard -->|Admin| Professionals[Gestión de Profesionales]
-	 Dashboard -->|Admin/Profesional| Patients[Gestión de Pacientes]
-	 Dashboard -->|Todos| Appointments[Calendario de Citas]
-	 Appointments -->|Profesional| MyAppointments[Mis Citas]
-	 Patients --> PatientDetail[Detalle Paciente]
-	 Professionals --> ProfessionalDetail[Detalle Profesional]
+     Login[Inicio de Sesión] --> Dashboard[Dashboard]
+     Dashboard -->|Admin| Users[Gestión de Usuarios]
+     Dashboard -->|Admin| Professionals[Gestión de Profesionales]
+     Dashboard -->|Admin/Profesional| Patients[Gestión de Pacientes]
+     Dashboard -->|Todos| Appointments[Calendario de Citas]
+     Appointments -->|Profesional| MyAppointments[Mis Citas]
+     Patients --> PatientDetail[Detalle Paciente]
+     Professionals --> ProfessionalDetail[Detalle Profesional]
 ```
 
 ### Vistas principales
@@ -249,24 +346,57 @@ flowchart TD
 - **ProfessionalsView**: Listado, alta, edición y baja de profesionales
 - **AppointmentsView**: Calendario de citas
 - **MyAppointmentsView**: Calendario/historial personal
+- **PatientSummaryView**: Información detallada del paciente
 - **UsersView**: Gestión de usuarios (solo admin)
 - **ProfileView**: Perfil de usuario y cambio de contraseña
 
 ---
 
-## Principales Funcionalidades
-- Autenticación multi-rol (admin, profesional, paciente)
-- Registro y gestión de pacientes y profesionales
-- Gestión de citas con vista de calendario
-- Gestión de perfil de usuario (incluye cambio de contraseña)
-- Internacionalización (inglés/español)
-- UI moderna y responsive (Vuetify)
-- Subida de imágenes vía Cloudinary
-- Búsqueda, filtrado y edición en listas
-- Alertas y manejo de errores
-- Código modular y escalable
+## 🚀 Cómo empezar
+
+1. Clona el repositorio:
+    ```sh
+    git clone https://github.com/IronHack-2025/front-ironhealth.git
+
+    cd front-ironhealth
+    ```
+2. Instala las dependencias:
+    ```sh
+    npm install
+    ```
+3. Variables de entorno:
+    - Copia `.env.example` a `.env` y configura las variables necesarias (por ejemplo, `VITE_API_BASE_URL`).
+4. Ejecuta la app en desarrollo:
+    ```sh
+    npm run dev
+    ```
+5. Build para producción:
+    ```sh
+    npm run build
+    ```
+6. Lint y formateo de código:
+    ```sh
+    npm run lint
+    npm run format
+    ```
 
 ---
 
-## Equipo
-Proyecto desarrollado colaborativamente por **equipo de alumnos desarrolladores full-stack** y **un profesor** (project lead) en Ironhack.
+## 📝 Licencia
+Este proyecto fue creado como parte del plan de estudios del Bootcamp de Desarrollo Web de Ironhack.
+
+## 👥 Equipo
+**Desarrolladores**
+- [Alejandro Noriega](https://github.com/alenorgue) - Desarrollador Full Stack
+- [Christian Baron](https://github.com/ccbaron) - Desarrollador Full Stack
+- [Robert Maynou](https://github.com/ErebosXYZ) - Desarrollador Full Stack
+- [Juan David Ospina](https://github.com/juandation) - Desarrollador Full Stack
+- [Maria Jie Bolós](https://github.com/shimotachi3) - Desarrolladora Full Stack
+- [Sergio Calvo](https://github.com/SergioCaMi) - Desarrollador Full Stack
+
+**Profesor Principal**
+- [Óscar Miras](https://github.com/omiras) - Ironhack Lead Teacher
+
+---
+
+Construido con ❤️ durante el Bootcamp de Desarrollo Web 2025 de Ironhack
