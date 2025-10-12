@@ -108,11 +108,6 @@ watch(currentLocale, (newLocale) => {
 
       <v-main>
         <v-app-bar app density="compact" flat theme="dark">
-          <v-btn
-            icon="mdi-menu"
-            @click="rail = !rail"
-            :title="rail ? $t('navbar.expandMenu') : $t('navbar.collapseMenu')"
-          ></v-btn>
           <v-spacer />
           <SelectLanguage v-model="currentLocale" />
 
