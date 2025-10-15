@@ -24,19 +24,21 @@
     </v-expand-transition>
 
     <!-- Listado de profesionales -->
-    <GenericList
-      :title="$t('views.professionals.listTitle')"
-      :items="professionals"
-      :headers="headers"
-      :loading="loading"
-      :error="error"
-      :search-placeholder="$t('common.forms.search')"
-      :canEdit="isAdmin"
-      :canDelete="isAdmin"
-      @refresh="fetchProfessionals"
-      @edit="onEdit"
-      @delete="onDelete"
-    />
+    <template v-if=professionals.length>0>
+      <GenericList
+        :title="$t('views.professionals.listTitle')"
+        :items="professionals"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+        :canEdit="isAdmin"
+        :canDelete="isAdmin"
+        @refresh="fetchProfessionals"
+        @edit="onEdit"
+        @delete="onDelete"
+      />
+    </template>
 
     <!-- Alertas -->
     <AlertMessage
