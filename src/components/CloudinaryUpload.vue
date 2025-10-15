@@ -23,17 +23,19 @@ const imageUrl = ref('')
 // Abrir el widget firmado
 const openWidget = async () => {
   try {
-    // Obtener firma del backend
-    const res = await fetch(`${props.apiUrl}?folder=${props.folder}`)
-    const { cloudName, apiKey, signature, timestamp } = await res.json()
     const widget = window.cloudinary.createUploadWidget(
       {
-        cloudName,
-        apiKey,
-        uploadSignature: (cb) => cb({ signature, timestamp }),
+        cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+        uploadSignatureURL: props.apiUrl,
         uploadPreset: props.preset,
         folder: props.folder,
         multiple: false,
+        resourceType: 'image',
+        cropping: true,
+        croppingAspectRatio: 1,
+        croppingShowBackButton: true,
+        croppingValidateDimensions: true,
+        showAdvancedOptions: true,
       },
       (error, result) => {
         if (!error && result && result.event === 'success') {
