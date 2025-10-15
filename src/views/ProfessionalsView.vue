@@ -171,6 +171,7 @@ const fetchProfessionals = async () => {
   } catch (e) {
     professionals.value = []
     error.value = e.message
+    console.error('Error fetching professionals:', e)
   } finally {
     loading.value = false
   }
@@ -211,15 +212,18 @@ const onEdit = async (id) => {
     edit.value = true
     dialog.value = true
   } catch (error) {
-    console.log('error:', error)
-    alert.show = true
-    alert.type = 'error'
-    alert.messageCode = 'INTERNAL_SERVER_ERROR'
-    alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
+    console.error('Error editing professional:', error)
+    // Solo mostrar alerta si no es un error de sesión expirada (401)
+    if (error.statusCode !== 401) {
+      alert.show = true
+      alert.type = 'error'
+      alert.messageCode = 'INTERNAL_SERVER_ERROR'
+      alert.message = error.message || t('messages.error.INTERNAL_SERVER_ERROR')
 
-    setTimeout(() => {
-      alert.show = false
-    }, 5000)
+      setTimeout(() => {
+        alert.show = false
+      }, 5000)
+    }
   }
 }
 
