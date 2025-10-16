@@ -34,13 +34,7 @@ watch(currentLocale, (newLocale) => {
 <template>
   <header>
     <v-app>
-      <v-navigation-drawer
-        app
-        v-model="drawer"
-        :rail="rail"
-        permanent
-        theme="dark"
-      >
+      <v-navigation-drawer app v-model="drawer" :rail="rail" permanent theme="dark">
         <v-list-item>
           <template v-slot:prepend>
             <v-avatar>

@@ -18,6 +18,12 @@ const getAuthHeaders = () => {
 async function handleResponse(response) {
   if (response.status === 401) {
     localStorage.removeItem('authToken')
+
+    // Redirigir directamente al login usando window.location para evitar problemas de dependencias
+    if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+      window.location.href = '/login'
+    }
+
     const error = new Error('Token expired or invalid')
     error.messageCode = 'INVALID_TOKEN'
     error.messageType = 'error'

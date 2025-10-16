@@ -24,21 +24,23 @@
       </div>
     </v-expand-transition>
     <!-- Listado de pacientes -->
-    <GenericList
-      :title="$t('views.patients.listTitle')"
-      :items="patients"
-      :headers="headers"
-      :loading="loading"
-      :error="error"
-      :search-placeholder="$t('common.forms.search')"
-      route-name="PatientDetail"
-      id-field="_id"
-      :row-clickable="true"
-      :canEdit="true"
-      :canDelete="true"
-      @edit="onEdit"
-      @delete="onDelete"
-    />
+    <template v-if="patients.length > 0">
+      <GenericList
+        :title="$t('views.patients.listTitle')"
+        :items="patients"
+        :headers="headers"
+        :loading="loading"
+        :error="error"
+        :search-placeholder="$t('common.forms.search')"
+        route-name="PatientDetail"
+        id-field="_id"
+        :row-clickable="true"
+        :canEdit="true"
+        :canDelete="true"
+        @edit="onEdit"
+        @delete="onDelete"
+      />
+    </template>
 
     <!-- Alertas -->
     <AlertMessage

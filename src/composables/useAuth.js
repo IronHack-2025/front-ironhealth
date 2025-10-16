@@ -178,6 +178,23 @@ export function useAuth() {
     return false
   }
 
+  // Función para manejar la expiración de sesión
+  function handleSessionExpired() {
+    // Limpiar estado reactivo
+    authToken.value = null
+    user.value = null
+    userRole.value = null
+    loginError.value = null
+
+    // Limpiar storage
+    storage.clear()
+
+    // Redirigir a login solo si no estamos ya en la página de login
+    if (router.currentRoute.value.name !== 'login') {
+      router.push('/login')
+    }
+  }
+
   // ✅ Función de inicialización mejorada
   function initializeAuth() {
     authToken.value = storage.get(STORAGE_KEYS.AUTH_TOKEN)
@@ -205,6 +222,7 @@ export function useAuth() {
     hasPermission,
     initializeAuth,
     getAuthHeaders,
+    handleSessionExpired,
 
     // ✅ Constantes para tests y consistencia
     STORAGE_KEYS,
