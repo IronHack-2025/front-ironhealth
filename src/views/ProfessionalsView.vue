@@ -24,8 +24,7 @@
     </v-expand-transition>
 
     <!-- Listado de profesionales -->
-    <template v-if="professionals.length"
-      >0>
+    <template v-if="professionals.length > 0">
       <GenericList
         :title="$t('views.professionals.listTitle')"
         :items="professionals"
