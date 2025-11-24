@@ -146,7 +146,7 @@ teamMembers.forEach((_, index) => {
 })
 
 const getImagePath = (imageName) => {
-  return new URL(`../../about-us/images/${imageName}`, import.meta.url).href
+  return `/about-us/images/${imageName}`
 }
 
 let observer = null
@@ -206,7 +206,7 @@ onUnmounted(() => {
   justify-content: flex-start;
   align-items: center;
   text-align: left;
-  background-image: url('../../about-us/images/BannerBackground.jpg');
+  background-image: url('/about-us/images/BannerBackground.jpg');
   background-size: cover;
 background-position: center -40px;}
 
