@@ -151,7 +151,7 @@ export function useAuth() {
       // ✅ Usar helper unificado para limpiar storage
       storage.clear()
 
-      router.push('/login')
+      router.push('/')
     }
   }
 

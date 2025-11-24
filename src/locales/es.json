@@ -295,5 +295,33 @@
       "specialty": "Especialidad",
       "professionLicenceNumber": "Nº de licencia"
     }
+  },
+  "aboutUs": {
+    "banner": {
+      "title": "Sobre Nosotros",
+      "subtitle": "Innovando la salud, juntos"
+    },
+    "ourStory": {
+      "title": "Nuestra Historia",
+      "text": "En IronHealth, somos un equipo diverso de desarrolladores full-stack y programadores con distintos niveles de experiencia, unidos por nuestra pasión por crear aplicaciones web significativas. Este proyecto marca la culminación de nuestro módulo \"Implantación de aplicaciones web en entornos Internet, intranet y extranet\" en IronHack.\n\nA lo largo de este viaje, hemos combinado los conocimientos adquiridos durante todo el curso, colaborando estrechamente para diseñar y desarrollar una aplicación web funcional para gestionar una clínica simulada. Usando tecnologías modernas como Vue, Vite 3, GitHub y MongoDB, implementamos funcionalidades como gestión de datos de pacientes, autenticación, programación de citas y administración de clientes y profesionales.\n\nIronHealth es más que un proyecto: es un testimonio de nuestro trabajo en equipo, dedicación y las habilidades que hemos desarrollado durante el curso. Nuestro objetivo es demostrar cómo los proyectos de desarrollo web del mundo real pueden abordarse con rigor técnico y colaboración creativa."
+    },
+    "ourApproach": {
+      "title": "Nuestros Valores Fundamentales",
+      "text": "El desarrollo de IronHealth, como proyecto final del Bootcamp de IronHack 2025, se basa en tres pilares esenciales que garantizan calidad, seguridad y eficiencia en la gestión de la atención médica.\n1. Integridad y Seguridad Rigurosa\nPriorizamos la confidencialidad estricta de los datos sensibles. Esto se logra mediante Control de Acceso Basado en Roles (RBAC) y validación de datos exhaustiva para blindar el sistema contra vulnerabilidades (XSS).\n2. Rigor y Calidad de Código\nBuscamos entregar un producto robusto y escalable. Aseguramos la calidad con una revisión obligatoria por pares (QA), mantenemos la consistencia con herramientas de linting y formateo automatizado, y garantizamos la fiabilidad con pruebas aisladas (Jest).\n3. Enfoque y Eficiencia del Usuario\nDiseñamos una experiencia clara e intuitiva, adaptada a cada rol. Mejoramos la eficiencia con flujos de trabajo optimizados, comunicación automatizada (confirmaciones .ics) y ofrecemos soporte multilingüe."
+    },
+    "team": {
+      "title": "Sobre el equipo",
+      "role": "Full Stack Developer",
+      "mentorRole": "Mentor del Proyecto"
+    },
+    "footer": {
+      "aboutTitle": "Sobre este proyecto",
+      "githubText": "Encuentra este proyecto en nuestro:",
+      "educationalText": "Proyecto educativo realizado para",
+      "joinTitle": "Únete a nosotros",
+      "joinText": "¿Quieres colaborar o saber más?",
+      "contactBtn": "Contáctanos",
+      "whereTitle": "¿Dónde encontrarnos?"
+    }
   }
 }

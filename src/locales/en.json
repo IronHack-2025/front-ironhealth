@@ -291,5 +291,33 @@
       "phone": "Phone Number",
       "birthDate": "Date of Birth"
     }
+  },
+  "aboutUs": {
+    "banner": {
+      "title": "About Us",
+      "subtitle": "Innovating Health, Together"
+    },
+    "ourStory": {
+      "title": "Our Story",
+      "text": "At IronHealth, we are a diverse team of full-stack developers and programmers with varying levels of experience, united by our passion for creating meaningful web applications. This project marks the culmination of our \"Implementation of Web Applications in Internet, Intranet, and Extranet Environments\" module at IronHack.\nThroughout this journey, we have combined our knowledge from the entire course, collaborating closely to design and build a functional web application for managing a simulated healthcare clinic. Using modern technologies such as Vue, Vite 3, GitHub, and MongoDB, we implemented features including patient data management, authentication, appointment scheduling, and client and professional administration.\n\nIronHealth is more than just a project—it is a testament to our teamwork, dedication, and the skills we have developed over the course. We aim to demonstrate how real-world web development projects can be approached with both technical rigor and creative collaboration."
+    },
+    "ourApproach": {
+      "title": "Our Core Values",
+      "text": "As the final project of the IronHack Bootcamp 2025, the development of IronHealth is based on three pillars that represent our promise of quality, security, and efficiency in healthcare management.\n1. Rigorous Integrity and Security\nThe protection of sensitive data and access limitation are the non-negotiable core of our architecture, ensuring the privacy and trust of all users.\nStrict Confidentiality: We implement measures to guarantee total privacy of medical information. For example, professional notes are private and confidential, limiting their visibility and access.\nRole-Based Access Control (RBAC): We ensure that each user (Administrator, Professional, and Patient) can only access and perform actions strictly necessary for their role, preventing unauthorized access to data or functionalities.\nVulnerability Protection: We apply exhaustive server-side data validation and use content sanitization tools (sanitize-html) to prevent malicious code injection (XSS).\n2. Code Rigor, Quality, and Maintainability\nOur mission is to deliver a robust, stable, and long-term scalable product, adhering to software engineering and team collaboration best practices.\nQuality Assurance (QA): Every change undergoes mandatory internal review through Pull Requests before being integrated into the stable version, ensuring traceability and code quality.\nConsistency and Cleanliness: We use automated linting and formatting tools (Prettier and ESLint) to ensure the code is consistently clean and easy to maintain by any collaborator.\nIsolated Testing: We conduct unit and integration tests in temporary in-memory databases (Jest with MongoMemoryServer), ensuring tests run in a clean environment and results are reliable.\n3. User Focus and Efficiency\nWe focus on providing a clear, intuitive, and efficient user experience, specifically adapted to the needs of the complex healthcare environment.\nRole-Optimized Workflow: The application design is tailored so each user focuses on their key tasks: the Administrator on total management, the Professional on their schedule, and the Patient on self-managing their appointments.\nAutomated Communication: We enhance the experience through automatic sending of transactional emails (welcome, confirmation), including .ics files so patients can integrate appointments directly into their personal calendar.\nMultilingual Support: We offer support for Spanish and English, allowing users to select their preferred language at any time, expanding the project's accessibility."
+    },
+    "team": {
+      "title": "About the team",
+      "role": "Full Stack Developer",
+      "mentorRole": "Project Mentor"
+    },
+    "footer": {
+      "aboutTitle": "About this project",
+      "githubText": "Find this project in our:",
+      "educationalText": "Educational project made for",
+      "joinTitle": "Join Us",
+      "joinText": "Want to collaborate or learn more?",
+      "contactBtn": "Contact Us",
+      "whereTitle": "Where can you find us?"
+    }
   }
 }
