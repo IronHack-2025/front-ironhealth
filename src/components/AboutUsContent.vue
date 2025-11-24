@@ -355,6 +355,8 @@ footer {
 footer h3 {
   color: var(--ironhealth-blue);
   margin-bottom: 0.8rem;
+  text-decoration:underline;
+  font-weight: bold;
 }
 
 footer p {
@@ -385,7 +387,7 @@ footer a:hover {
   display: inline-block;
   padding: 0.6rem 1.2rem;
   background-color: var(--ironhealth-blue);
-  color: white;
+  color: black;
   text-decoration: none;
   border-radius: 6px;
   transition: background 0.3s ease;
