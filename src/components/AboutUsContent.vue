@@ -230,7 +230,7 @@ onUnmounted(() => {
   position: relative;
   color: white;
   max-width: 90%;
-  transform: translateY(120px);
+  transform: translateY(100px);
 }
 
 .banner-content h1 {
