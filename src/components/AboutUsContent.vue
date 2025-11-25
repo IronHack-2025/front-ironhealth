@@ -1,7 +1,7 @@
 <template>
   <div class="about-us-page">
     <!-- Banner -->
-    <section class="banner">
+    <section class="banner" :style="{ backgroundImage: `url(${bannerImage})` }">
       <div class="overlay">
         <div class="banner-content">
           <h1>{{ t('aboutUs.banner.title') }}</h1>
@@ -90,6 +90,8 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
+const bannerImage = `${import.meta.env.BASE_URL}about-us/images/BannerBackground.jpg`
+
 const teamMembers = [
   {
     name: 'Christian Baron',
@@ -146,7 +148,7 @@ teamMembers.forEach((_, index) => {
 })
 
 const getImagePath = (imageName) => {
-  return `/about-us/images/${imageName}`
+  return `${import.meta.env.BASE_URL}about-us/images/${imageName}`
 }
 
 let observer = null
@@ -206,9 +208,9 @@ onUnmounted(() => {
   justify-content: flex-start;
   align-items: center;
   text-align: left;
-  background-image: url('/about-us/images/BannerBackground.jpg');
   background-size: cover;
-background-position: center -40px;}
+  background-position: center -40px;
+}
 
 .overlay {
   position: absolute;
