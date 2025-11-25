@@ -1,6 +1,10 @@
 <template>
-  <v-container class="HomeView" fluid> </v-container>
+  <AboutUsContent />
 </template>
+
+<script setup>
+import AboutUsContent from '@/components/AboutUsContent.vue'
+</script>
 
 <style scoped>
 .HomeView {

@@ -35,7 +35,7 @@ watch(currentLocale, (newLocale) => {
   <header>
     <v-app>
       <v-navigation-drawer app v-model="drawer" :rail="rail" permanent theme="dark">
-        <v-list-item>
+        <v-list-item to="/" class="logo-item">
           <template v-slot:prepend>
             <v-avatar>
               <v-img :src="ironhealthLogo"></v-img>
